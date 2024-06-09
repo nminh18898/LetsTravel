@@ -55,7 +55,10 @@ fun TripDetailScreen(modifier: Modifier = Modifier) {
             icon = R.drawable.hotel_24,
             title = R.string.hotels,
             modifier = modifier) {
-                EmptySection()
+                HotelDetailBodyPager(
+                    hotelInfo = MockDataProvider.provideHotelInfo(),
+                    modifier = modifier
+                )
         }
         Spacer(Modifier.height(16.dp))
     }

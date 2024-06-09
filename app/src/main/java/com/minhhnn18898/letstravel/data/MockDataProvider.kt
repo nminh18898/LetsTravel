@@ -2,6 +2,7 @@ package com.minhhnn18898.letstravel.data
 
 import com.minhhnn18898.letstravel.tripdetail.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.FlightInfo
+import com.minhhnn18898.letstravel.tripdetail.HotelInfo
 
 object MockDataProvider {
 
@@ -38,6 +39,30 @@ object MockDataProvider {
                 arrivalTime =  "23:25, 25 May 2024",
                 duration = "2:25",
                 price = "1357.400"
+            ))
+        }
+    }
+
+    fun provideHotelInfo(): List<HotelInfo> {
+        return mutableListOf<HotelInfo>().apply {
+            add(HotelInfo(
+                hotelName = "Travelodge Nimman",
+                address = "Chiang Mai, Thailand",
+                checkInDate = "20 May, 2024",
+                checkOutDate = "23 May, 2024",
+                duration = "3 nights",
+                price = "2.400.000"
+
+            ))
+
+            add(HotelInfo(
+                hotelName = "Amber Inn",
+                address = "Pratunam, Bangkok, Thailand",
+                checkInDate = "23 May, 2024",
+                checkOutDate = "25 May, 2024",
+                duration = "2 nights",
+                price = "1.600.000"
+
             ))
         }
     }

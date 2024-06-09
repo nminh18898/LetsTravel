@@ -19,7 +19,9 @@ data class AirportInfo(
 
 data class HotelInfo(
     val hotelName: String,
+    val address: String,
     val checkInDate: String,
     val checkOutDate: String,
-    val price: String
+    val duration: String,
+    val price: String,
 )

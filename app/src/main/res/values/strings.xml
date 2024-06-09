@@ -5,4 +5,5 @@
     <string name="hotels">Hotels</string>
     <string name="prices">Prices</string>
     <string name="flight_number">Flight number</string>
+    <string name="address">Address</string>
 </resources>
