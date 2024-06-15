@@ -6,4 +6,15 @@
     <string name="prices">Prices</string>
     <string name="flight_number">Flight number</string>
     <string name="address">Address</string>
+    <string name="choose_date">Choose date</string>
+    <string name="choose_time">Choose time</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="airport_code">Airport code</string>
+    <string name="airport_name">Airport name</string>
+    <string name="city">City</string>
+    <string name="departure_flight">Departure flight</string>
+    <string name="arrival_flight">Return flight</string>
+    <string name="airlines">Airlines</string>
+    <string name="flight_info">Flight info</string>
 </resources>
