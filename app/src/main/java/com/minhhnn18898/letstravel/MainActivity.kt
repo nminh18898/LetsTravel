@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.minhhnn18898.letstravel.tripdetail.EditFlightInfoPage
+import com.minhhnn18898.letstravel.tripdetail.editflightinfo.EditFlightInfoPage
 import com.minhhnn18898.letstravel.ui.theme.LetsTravelTheme
 
 class MainActivity : ComponentActivity() {

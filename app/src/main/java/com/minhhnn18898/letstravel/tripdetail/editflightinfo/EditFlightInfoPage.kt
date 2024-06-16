@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripdetail
+package com.minhhnn18898.letstravel.tripdetail.editflightinfo
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +30,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,12 +38,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.ui.theme.typography
 import com.minhhnn18898.letstravel.utils.DateTimeUtils
 
 @Composable
-fun EditFlightInfoPage(modifier: Modifier = Modifier) {
+fun EditFlightInfoPage(
+    modifier: Modifier = Modifier,
+    viewModel: EditFlightInfoViewModel = viewModel()) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
@@ -56,38 +58,109 @@ fun EditFlightInfoPage(modifier: Modifier = Modifier) {
             modifier = defaultModifier
         )
         Spacer(modifier = Modifier.height(8.dp))
-        EditFlightInfo(modifier = defaultModifier)
+        EditFlightInfo(
+            modifier = defaultModifier,
+            viewModel = viewModel
+        )
     }
 }
 
 @Composable
 fun EditFlightInfo(
+    viewModel: EditFlightInfoViewModel,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
 
-        InputTextRow(R.drawable.airplane_ticket_24, stringResource(id = R.string.flight_number))
+        InputTextRow(
+            iconRes = R.drawable.airplane_ticket_24,
+            label = stringResource(id = R.string.flight_number),
+            inputText = viewModel.flightNumber,
+            onTextChanged = {
+                viewModel.onFlightNumberUpdated(it)
+            })
 
         Spacer(modifier = Modifier.height(8.dp))
-        InputTextRow(R.drawable.airlines_24, stringResource(id = R.string.airlines))
+        InputTextRow(
+            iconRes = R.drawable.airlines_24,
+            label = stringResource(id = R.string.airlines),
+            inputText = viewModel.operatedAirlines,
+            onTextChanged = {
+                viewModel.onAirlinesUpdated(it)
+            })
 
         Spacer(modifier = Modifier.height(8.dp))
-        InputTextRow(R.drawable.payments_24, stringResource(id = R.string.prices))
+        InputTextRow(
+            iconRes = R.drawable.payments_24,
+            label = stringResource(id = R.string.prices),
+            inputText = viewModel.prices,
+            onTextChanged = {
+                viewModel.onPricesUpdated(it)
+            })
 
         Spacer(modifier = Modifier.height(12.dp))
-        InputFlightDateTimeRow()
+        InputFlightDateTimeRow(
+            date = viewModel.flightDate,
+            onDateSelected = {
+                viewModel.onFlightDateUpdated(it)
+            },
+            timeFrom = viewModel.getFlightTime(EditFlightInfoViewModel.ItineraryType.DEPARTURE),
+            onTimeFromSelected = {
+                viewModel.onFlightTimeUpdated(EditFlightInfoViewModel.ItineraryType.DEPARTURE, it)
+            },
+            timeTo = viewModel.getFlightTime(EditFlightInfoViewModel.ItineraryType.ARRIVAL),
+            onTimeToSelected = {
+                viewModel.onFlightTimeUpdated(EditFlightInfoViewModel.ItineraryType.ARRIVAL, it)
+            }
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
-        EditAirportInfo("From")
+        val departureType = EditFlightInfoViewModel.ItineraryType.DEPARTURE
+        EditAirportInfo(
+            label = stringResource(id = R.string.from),
+            airportCode = viewModel.getAirportCode(departureType),
+            onAirportCodeUpdated = {
+                viewModel.onAirportCodeUpdated(departureType, it)
+            },
+            airportName = viewModel.getAirportName(departureType),
+            onAirportNameUpdated = {
+                viewModel.onAirportNameUpdated(departureType, it)
+            },
+            city = viewModel.getAirportCity(departureType),
+            onCityUpdated = {
+                viewModel.onAirportCityUpdated(departureType, it)
+            }
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
-        EditAirportInfo(label = "To")
+        val arrivalType = EditFlightInfoViewModel.ItineraryType.ARRIVAL
+        EditAirportInfo(
+            label = stringResource(id = R.string.to),
+            airportCode = viewModel.getAirportCode(arrivalType),
+            onAirportCodeUpdated = {
+                viewModel.onAirportCodeUpdated(arrivalType, it)
+            },
+            airportName = viewModel.getAirportName(arrivalType),
+            onAirportNameUpdated = {
+                viewModel.onAirportNameUpdated(arrivalType, it)
+            },
+            city = viewModel.getAirportCity(arrivalType),
+            onCityUpdated = {
+                viewModel.onAirportCityUpdated(arrivalType, it)
+            }
+        )
     }
 }
 
 @Composable
 fun EditAirportInfo(
     label: String,
+    airportCode: String,
+    onAirportCodeUpdated: (String) -> Unit,
+    airportName: String,
+    onAirportNameUpdated: (String) -> Unit,
+    city: String,
+    onCityUpdated: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier) {
@@ -99,13 +172,28 @@ fun EditAirportInfo(
                 maxLines = 1
             )
 
-            InputTextRow(R.drawable.pin_24, stringResource(id = R.string.airport_code))
+            InputTextRow(
+                iconRes = R.drawable.pin_24,
+                label = stringResource(id = R.string.airport_code),
+                inputText = airportCode,
+                onTextChanged = onAirportCodeUpdated
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
-            InputTextRow(R.drawable.id_card_24, stringResource(id = R.string.airport_name))
+            InputTextRow(
+                iconRes = R.drawable.id_card_24,
+                label = stringResource(id = R.string.airport_name),
+                inputText = airportName,
+                onTextChanged = onAirportNameUpdated
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
-            InputTextRow(R.drawable.apartment_24, stringResource(id = R.string.city))
+            InputTextRow(
+                iconRes = R.drawable.apartment_24,
+                label = stringResource(id = R.string.city),
+                inputText = city,
+                onTextChanged = onCityUpdated
+            )
         }
     }
 }
@@ -144,10 +232,10 @@ fun SectionHeader(
 fun InputTextRow(
     @DrawableRes iconRes: Int,
     label: String,
+    inputText: String,
+    onTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var text by remember { mutableStateOf("") }
-
     Row(modifier = modifier,
         verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
@@ -160,8 +248,8 @@ fun InputTextRow(
                 )
             },
             modifier = modifier.fillMaxWidth(),
-            value = text,
-            onValueChange = { text = it },
+            value = inputText,
+            onValueChange = onTextChanged,
             label = { Text(label) }
         )
     }
@@ -169,22 +257,35 @@ fun InputTextRow(
 
 @Composable
 fun InputFlightDateTimeRow(
+    date: Long?,
+    onDateSelected: (Long?) -> Unit,
+    timeFrom: Pair<Int, Int>,
+    onTimeFromSelected: (Pair<Int, Int>) -> Unit,
+    timeTo: Pair<Int, Int>,
+    onTimeToSelected: (Pair<Int, Int>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        DatePickerWithDialog()
+        DatePickerWithDialog(
+            date = date,
+            onDateSelected = onDateSelected
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        InputFlightTime()
+        InputFlightTime(timeFrom, onTimeFromSelected, timeTo, onTimeToSelected)
     }
 }
 
 @Composable
 fun InputFlightTime(
+    timeFrom: Pair<Int, Int>,
+    onTimeFromSelected: (Pair<Int, Int>) -> Unit,
+    timeTo: Pair<Int, Int>,
+    onTimeToSelected: (Pair<Int, Int>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier,
         verticalAlignment = Alignment.CenterVertically) {
-        TimePickerWithDialog()
+        TimePickerWithDialog(timeFrom, onTimeFromSelected)
         Icon(
             modifier = Modifier
                 .size(32.dp)
@@ -193,7 +294,7 @@ fun InputFlightTime(
             contentDescription = "",
             tint = MaterialTheme.colorScheme.primary
         )
-        TimePickerWithDialog()
+        TimePickerWithDialog(timeTo, onTimeToSelected)
     }
 
 }
@@ -201,11 +302,15 @@ fun InputFlightTime(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerWithDialog(
+    date: Long?,
+    onDateSelected: (Long?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val dateState = rememberDatePickerState()
+    val state = rememberDatePickerState(
+        initialSelectedDateMillis = date
+    )
 
-    val millisToLocalDate = dateState.selectedDateMillis?.let {
+    val millisToLocalDate = date?.let {
         DateTimeUtils().convertMillisToLocalDate(it)
     }
 
@@ -241,7 +346,10 @@ fun DatePickerWithDialog(
             onDismissRequest = { showDialog = false },
             confirmButton = {
                 TextButton(
-                    onClick = { showDialog = false }
+                    onClick = {
+                        showDialog = false
+                        onDateSelected.invoke(state.selectedDateMillis)
+                    }
                 ) {
                     Text(text = stringResource(id = R.string.confirm))
                 }
@@ -258,7 +366,7 @@ fun DatePickerWithDialog(
             }
         ) {
             DatePicker(
-                state = dateState,
+                state = state,
                 showModeToggle = true
             )
         }
@@ -267,13 +375,17 @@ fun DatePickerWithDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimePickerWithDialog(modifier: Modifier = Modifier) {
-    var selectedHour by remember { mutableIntStateOf(0) }
-    var selectedMinute by remember { mutableIntStateOf(0) }
+fun TimePickerWithDialog(
+    time: Pair<Int, Int>,
+    onTimeSelected: (Pair<Int, Int>) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
     var showDialog by remember { mutableStateOf(false) }
+
     val timeState = rememberTimePickerState(
-        initialHour = selectedHour,
-        initialMinute = selectedMinute
+        initialHour = time.first,
+        initialMinute = time.second
     )
 
     TextButton(
@@ -292,7 +404,7 @@ fun TimePickerWithDialog(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = DateTimeUtils().formatTime(timeState.hour, timeState.minute),
+            text = DateTimeUtils().formatTime(time.first, time.second),
             style = MaterialTheme.typography.bodyLarge
         )
     }
@@ -333,8 +445,7 @@ fun TimePickerWithDialog(modifier: Modifier = Modifier) {
 
                         TextButton(onClick = {
                             showDialog = false
-                            selectedHour = timeState.hour
-                            selectedMinute = timeState.minute
+                            onTimeSelected.invoke(Pair(timeState.hour, timeState.minute))
                         }) {
                             Text(text = stringResource(id = R.string.confirm))
                         }

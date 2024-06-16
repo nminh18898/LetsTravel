@@ -17,4 +17,6 @@
     <string name="arrival_flight">Return flight</string>
     <string name="airlines">Airlines</string>
     <string name="flight_info">Flight info</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>
