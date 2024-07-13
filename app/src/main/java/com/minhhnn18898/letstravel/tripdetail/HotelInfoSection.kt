@@ -42,19 +42,19 @@ private val defaultPageItemSize = object : PageSize {
 
 @Composable
 fun HotelDetailBodyPager(
-    hotelInfo: List<HotelInfo>,
+    hotelDisplayInfo: List<HotelDisplayInfo>,
     modifier: Modifier = Modifier
 ) {
 
     val pagerState = rememberPagerState(pageCount = {
-        hotelInfo.size
+        hotelDisplayInfo.size
     })
 
     HorizontalPager(
         state = pagerState,
         pageSize = defaultPageItemSize
     ) { page ->
-        val pageInfo = hotelInfo[page]
+        val pageInfo = hotelDisplayInfo[page]
 
         Box(
             modifier = Modifier
@@ -71,11 +71,11 @@ fun HotelDetailBodyPager(
                     horizontal = 16.dp)
                 ) {
 
-                    HotelBasicInfo(hotelInfo = pageInfo)
+                    HotelBasicInfo(hotelDisplayInfo = pageInfo)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    HotelAdditionalInfo(hotelInfo = pageInfo)
+                    HotelAdditionalInfo(hotelDisplayInfo = pageInfo)
                 }
             }
         }
@@ -84,12 +84,12 @@ fun HotelDetailBodyPager(
 
 @Composable
 fun HotelBasicInfo(
-    hotelInfo: HotelInfo,
+    hotelDisplayInfo: HotelDisplayInfo,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Text(
-            text = hotelInfo.hotelName,
+            text = hotelDisplayInfo.hotelName,
             style = typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1
@@ -97,13 +97,13 @@ fun HotelBasicInfo(
         
         Spacer(modifier = Modifier.height(4.dp))
         
-        HotelStayDurationInfo(hotelInfo)
+        HotelStayDurationInfo(hotelDisplayInfo)
     }
 }
 
 @Composable
 fun HotelStayDurationInfo(
-    hotelInfo: HotelInfo,
+    hotelDisplayInfo: HotelDisplayInfo,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -112,16 +112,16 @@ fun HotelStayDurationInfo(
     ) {
         HotelDateInfo(
             title = "Check in",
-            date = hotelInfo.checkInDate
+            date = hotelDisplayInfo.checkInDate
         )
 
         HotelDateDivider(
-            description = hotelInfo.duration
+            description = hotelDisplayInfo.duration
         )
 
         HotelDateInfo(
             title = "Check out",
-            date = hotelInfo.checkOutDate
+            date = hotelDisplayInfo.checkOutDate
         )
     }
 }
@@ -180,20 +180,20 @@ fun HotelDateInfo(
 
 @Composable
 fun HotelAdditionalInfo(
-    hotelInfo: HotelInfo,
+    hotelDisplayInfo: HotelDisplayInfo,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         HotelAdditionalInfoRow(
             title = stringResource(id = R.string.address),
-            description = hotelInfo.address
+            description = hotelDisplayInfo.address
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         HotelAdditionalInfoRow(
             title = stringResource(id = R.string.prices),
-            description = hotelInfo.price
+            description = hotelDisplayInfo.price
         )
     }
 }

@@ -43,19 +43,19 @@ private val defaultPageItemSize = object : PageSize {
 
 @Composable
 fun FlightDetailBodyPager(
-    flightInfo: List<FlightInfo>,
+    flightDisplayInfo: List<FlightDisplayInfo>,
     modifier: Modifier = Modifier
 ) {
 
     val pagerState = rememberPagerState(pageCount = {
-        flightInfo.size
+        flightDisplayInfo.size
     })
 
     HorizontalPager(
         state = pagerState,
         pageSize = defaultPageItemSize
     ) { page ->
-        val pageInfo = flightInfo[page]
+        val pageInfo = flightDisplayInfo[page]
 
         Box(
             modifier = Modifier
@@ -72,11 +72,11 @@ fun FlightDetailBodyPager(
                     horizontal = 16.dp)
                 ) {
 
-                    FlightBasicInfoRow(flightInfo = pageInfo)
+                    FlightBasicInfoRow(flightDisplayInfo = pageInfo)
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    FlightAdditionalInfo(flightInfo = pageInfo)
+                    FlightAdditionalInfo(flightDisplayInfo = pageInfo)
                 }
             }
         }
@@ -85,20 +85,20 @@ fun FlightDetailBodyPager(
 
 @Composable
 fun FlightAdditionalInfo(
-    flightInfo: FlightInfo,
+    flightDisplayInfo: FlightDisplayInfo,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         FlightAdditionalInfoRow(
             title = stringResource(id = R.string.flight_number),
-            description = "${flightInfo.flightNumber} - ${flightInfo.operatedAirlines}"
+            description = "${flightDisplayInfo.flightNumber} - ${flightDisplayInfo.operatedAirlines}"
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         FlightAdditionalInfoRow(
             title = stringResource(id = R.string.prices),
-            description = flightInfo.price
+            description = flightDisplayInfo.price
         )
     }
 }
@@ -135,7 +135,7 @@ fun FlightAdditionalInfoRow(
 
 @Composable
 fun FlightBasicInfoRow(
-    flightInfo: FlightInfo,
+    flightDisplayInfo: FlightDisplayInfo,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -143,8 +143,8 @@ fun FlightBasicInfoRow(
         modifier = modifier
     ) {
         FlightDestinationInfoRow(
-            airportInfo = flightInfo.departAirport,
-            time = flightInfo.departureTime
+            airportDisplayInfo = flightDisplayInfo.departAirport,
+            time = flightDisplayInfo.departureTime
         )
 
         Column(
@@ -152,7 +152,7 @@ fun FlightBasicInfoRow(
             modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             Text(
-                text = flightInfo.duration,
+                text = flightDisplayInfo.duration,
                 style = typography.bodySmall,
                 color = MaterialTheme.colorScheme.tertiary,
                 maxLines = 1
@@ -167,15 +167,15 @@ fun FlightBasicInfoRow(
         }
 
         FlightDestinationInfoRow(
-            airportInfo = flightInfo.destinationAirport,
-            time = flightInfo.arrivalTime
+            airportDisplayInfo = flightDisplayInfo.destinationAirport,
+            time = flightDisplayInfo.arrivalTime
         )
     }
 }
 
 @Composable
 fun FlightDestinationInfoRow(
-    airportInfo: AirportInfo,
+    airportDisplayInfo: AirportDisplayInfo,
     time: String,
     modifier: Modifier = Modifier
 ) {
@@ -184,7 +184,7 @@ fun FlightDestinationInfoRow(
         modifier = modifier
     ) {
         Text(
-            text = airportInfo.code,
+            text = airportDisplayInfo.code,
             style = typography.titleLarge,
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1,
@@ -192,7 +192,7 @@ fun FlightDestinationInfoRow(
         )
 
         Text(
-            text = airportInfo.city,
+            text = airportDisplayInfo.city,
             style = typography.bodyMedium,
             color = MaterialTheme.colorScheme.secondary,
             maxLines = 1,
@@ -200,7 +200,7 @@ fun FlightDestinationInfoRow(
         )
 
         Text(
-            text = "(${airportInfo.airportName})",
+            text = "(${airportDisplayInfo.airportName})",
             style = typography.bodySmall,
             color = MaterialTheme.colorScheme.secondary,
             maxLines = 1,

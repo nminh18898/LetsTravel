@@ -1,17 +1,17 @@
 package com.minhhnn18898.letstravel.data
 
-import com.minhhnn18898.letstravel.tripdetail.AirportInfo
-import com.minhhnn18898.letstravel.tripdetail.FlightInfo
-import com.minhhnn18898.letstravel.tripdetail.HotelInfo
+import com.minhhnn18898.letstravel.tripdetail.AirportDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.FlightDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.HotelDisplayInfo
 
 object MockDataProvider {
 
-    fun provideFlightInfo(): List<FlightInfo> {
-        return mutableListOf<FlightInfo>().apply {
-            add(FlightInfo(
+    fun provideFlightInfo(): List<FlightDisplayInfo> {
+        return mutableListOf<FlightDisplayInfo>().apply {
+            add(FlightDisplayInfo(
                 flightNumber = "VN 939",
-                departAirport = AirportInfo("Ho Chi Minh", "SGN", "Tan Son Nhat"),
-                destinationAirport = AirportInfo("Chiang Mai", "CNX", "Chiang Mai"),
+                departAirport = AirportDisplayInfo("Ho Chi Minh", "SGN", "Tan Son Nhat"),
+                destinationAirport = AirportDisplayInfo("Chiang Mai", "CNX", "Chiang Mai"),
                 operatedAirlines = "Vietnam Airlines",
                 departureTime = "08:00, 20 May 2024",
                 arrivalTime =  "10:00, 20 May 2024",
@@ -19,10 +19,10 @@ object MockDataProvider {
                 price = "1.200.000"
             ))
 
-            add(FlightInfo(
+            add(FlightDisplayInfo(
                 flightNumber = "TG 557",
-                departAirport =  AirportInfo("Chiang Mai", "CNX", "Chiang Mai"),
-                destinationAirport = AirportInfo("Bangkok", "BKK", "Suvarnabhumi"),
+                departAirport =  AirportDisplayInfo("Chiang Mai", "CNX", "Chiang Mai"),
+                destinationAirport = AirportDisplayInfo("Bangkok", "BKK", "Suvarnabhumi"),
                 operatedAirlines = "Thai Airways",
                 departureTime = "20:00, 23 May 2024",
                 arrivalTime =  "21:10, 23 May 2024",
@@ -30,10 +30,10 @@ object MockDataProvider {
                 price = "900.000"
             ))
 
-            add(FlightInfo(
+            add(FlightDisplayInfo(
                 flightNumber = "TG 557",
-                departAirport =  AirportInfo("Bangkok ", "BKK", "Suvarnabhumi"),
-                destinationAirport = AirportInfo("Ho Chi Minh ", "SGN", "Tan Son Nhat"),
+                departAirport =  AirportDisplayInfo("Bangkok ", "BKK", "Suvarnabhumi"),
+                destinationAirport = AirportDisplayInfo("Ho Chi Minh ", "SGN", "Tan Son Nhat"),
                 operatedAirlines = "Thai Airways",
                 departureTime = "21:00, 25 May 2024",
                 arrivalTime =  "23:25, 25 May 2024",
@@ -43,9 +43,9 @@ object MockDataProvider {
         }
     }
 
-    fun provideHotelInfo(): List<HotelInfo> {
-        return mutableListOf<HotelInfo>().apply {
-            add(HotelInfo(
+    fun provideHotelInfo(): List<HotelDisplayInfo> {
+        return mutableListOf<HotelDisplayInfo>().apply {
+            add(HotelDisplayInfo(
                 hotelName = "Travelodge Nimman",
                 address = "Chiang Mai, Thailand",
                 checkInDate = "20 May, 2024",
@@ -55,7 +55,7 @@ object MockDataProvider {
 
             ))
 
-            add(HotelInfo(
+            add(HotelDisplayInfo(
                 hotelName = "Amber Inn",
                 address = "Pratunam, Bangkok, Thailand",
                 checkInDate = "23 May, 2024",

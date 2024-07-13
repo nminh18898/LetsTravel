@@ -47,7 +47,7 @@ fun TripDetailScreen(modifier: Modifier = Modifier) {
             title = R.string.flights,
             modifier = modifier) {
                 FlightDetailBodyPager(
-                    flightInfo = MockDataProvider.provideFlightInfo(),
+                    flightDisplayInfo = MockDataProvider.provideFlightInfo(),
                     modifier = modifier
                 )
         }
@@ -56,7 +56,7 @@ fun TripDetailScreen(modifier: Modifier = Modifier) {
             title = R.string.hotels,
             modifier = modifier) {
                 HotelDetailBodyPager(
-                    hotelInfo = MockDataProvider.provideHotelInfo(),
+                    hotelDisplayInfo = MockDataProvider.provideHotelInfo(),
                     modifier = modifier
                 )
         }

@@ -1,9 +1,9 @@
 package com.minhhnn18898.letstravel.tripdetail
 
-data class FlightInfo(
+data class FlightDisplayInfo(
     val flightNumber: String,
-    val departAirport: AirportInfo,
-    val destinationAirport: AirportInfo,
+    val departAirport: AirportDisplayInfo,
+    val destinationAirport: AirportDisplayInfo,
     val operatedAirlines: String,
     val departureTime: String,
     val arrivalTime: String,
@@ -11,13 +11,13 @@ data class FlightInfo(
     val price: String
 )
 
-data class AirportInfo(
+data class AirportDisplayInfo(
     val city: String,
     val code: String,
     val airportName: String = "",
 )
 
-data class HotelInfo(
+data class HotelDisplayInfo(
     val hotelName: String,
     val address: String,
     val checkInDate: String,

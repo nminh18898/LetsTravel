@@ -19,4 +19,8 @@
     <string name="flight_info">Flight info</string>
     <string name="from">From</string>
     <string name="to">To</string>
+    <string name="your_trips">Your trips</string>
+    <string name="create_your_first_trip">"Create your first trip"</string>
+    <string name="trip_info">Trip info</string>
+    <string name="back">Back</string>
 </resources>
