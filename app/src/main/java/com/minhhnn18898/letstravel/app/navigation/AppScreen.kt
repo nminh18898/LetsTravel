@@ -1,6 +1,7 @@
 package com.minhhnn18898.letstravel.app.navigation
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,12 +20,17 @@ enum class AppScreen(@StringRes val title: Int) {
     EditTripInfo(title = R.string.trip_info),
 }
 
+data class AppBarActionsState(
+    val actions: (@Composable RowScope.() -> Unit)? = null
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppBar(
     currentScreen: AppScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    actions: @Composable (RowScope.() -> Unit),
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -45,6 +51,7 @@ fun MainAppBar(
                     )
                 }
             }
-        }
+        },
+        actions = actions
     )
 }

@@ -18,6 +18,9 @@ class EditTripViewModel(private val getListDefaultCoverUseCase: GetListDefaultCo
     var listCoverDefault by mutableStateOf(emptyList<DefaultCoverUI>())
         private set
 
+    var allowSaveContent by mutableStateOf(false)
+        private set
+
     private val defaultCoverList = mapOf(
         DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER to R.drawable.trip_cover_default_1,
         DefaultCoverElement.COVER_DEFAULT_THEME_LONG_TRIP to R.drawable.trip_cover_default_2,
@@ -33,12 +36,21 @@ class EditTripViewModel(private val getListDefaultCoverUseCase: GetListDefaultCo
 
     fun onTripTitleUpdated(value: String) {
         tripTitle = value
+        checkAllowSaveContent()
     }
 
     fun onDefaultCoverSelected(coverId: Int) {
         listCoverDefault = listCoverDefault.map {
             it.copy(isSelected = it.coverId == coverId)
         }
+        checkAllowSaveContent()
+    }
+
+    private fun checkAllowSaveContent() {
+        val isValidTitle = tripTitle.isNotBlank() && tripTitle.isNotEmpty()
+        val isValidCover = listCoverDefault.any { it.isSelected }
+
+        allowSaveContent = isValidTitle && isValidCover
     }
 
     private fun initDefaultCoverList() {

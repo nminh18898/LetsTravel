@@ -21,10 +21,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,14 +37,37 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
+import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
 import com.minhhnn18898.letstravel.baseuicomponent.InputTextRow
 import com.minhhnn18898.letstravel.ui.theme.typography
 
 @Composable
 fun EditTripScreen(
+    onComposedTopBarActions: (AppBarActionsState) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditTripViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    LaunchedEffect(key1 = true) {
+        onComposedTopBarActions(
+            AppBarActionsState(
+                actions = {
+                    IconButton(
+                        onClick = {
+
+                        },
+                        enabled = viewModel.allowSaveContent
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.save_as_24),
+                            contentDescription = "",
+                            tint = if(viewModel.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
+                        )
+                    }
+                }
+            )
+        )
+    }
+
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
