@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.triplisting
+package com.minhhnn18898.letstravel.tripinfo.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

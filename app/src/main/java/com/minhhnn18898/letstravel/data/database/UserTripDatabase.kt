@@ -7,11 +7,11 @@ import androidx.room.RoomDatabase
 import com.minhhnn18898.letstravel.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.data.dao.FlightInfoDao
 import com.minhhnn18898.letstravel.data.dao.FlightWithAirportInfoMappingDao
-import com.minhhnn18898.letstravel.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.data.model.AirportInfo
 import com.minhhnn18898.letstravel.data.model.FlightInfo
 import com.minhhnn18898.letstravel.data.model.FlightWithAirportInfoMapping
-import com.minhhnn18898.letstravel.triplisting.model.TripInfo
+import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 
 @Database(entities = [
         AirportInfo::class,

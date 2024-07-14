@@ -23,4 +23,6 @@
     <string name="create_your_first_trip">"Create your first trip"</string>
     <string name="trip_info">Trip info</string>
     <string name="back">Back</string>
+    <string name="trip_name">Trip name</string>
+    <string name="choose_cover">Choose cover</string>
 </resources>

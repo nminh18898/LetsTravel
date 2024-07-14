@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.triplisting.model
+package com.minhhnn18898.letstravel.tripinfo.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded

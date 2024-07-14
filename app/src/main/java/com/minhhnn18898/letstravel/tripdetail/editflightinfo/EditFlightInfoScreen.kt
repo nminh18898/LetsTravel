@@ -1,6 +1,5 @@
 package com.minhhnn18898.letstravel.tripdetail.editflightinfo
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +20,6 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,14 +37,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.letstravel.baseuicomponent.InputTextRow
 import com.minhhnn18898.letstravel.ui.theme.typography
 import com.minhhnn18898.letstravel.utils.DateTimeUtils
 
 @Composable
-fun EditFlightInfoPage(
+fun EditFlightInfoScreen(
     modifier: Modifier = Modifier,
-    viewModel: EditFlightInfoViewModel = viewModel()) {
+    viewModel: EditFlightInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
@@ -225,33 +225,6 @@ fun SectionHeader(
                 maxLines = 1
             )
         }
-    }
-}
-
-@Composable
-fun InputTextRow(
-    @DrawableRes iconRes: Int,
-    label: String,
-    inputText: String,
-    onTextChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically) {
-        OutlinedTextField(
-            leadingIcon = {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(iconRes),
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            },
-            modifier = modifier.fillMaxWidth(),
-            value = inputText,
-            onValueChange = onTextChanged,
-            label = { Text(label) }
-        )
     }
 }
 

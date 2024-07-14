@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel
+package com.minhhnn18898.letstravel.app
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,14 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.minhhnn18898.letstravel.navigation.AppScreen
-import com.minhhnn18898.letstravel.navigation.MainAppBar
-import com.minhhnn18898.letstravel.triplisting.EditTripScreen
-import com.minhhnn18898.letstravel.triplisting.TripListingScreen
+import com.minhhnn18898.letstravel.app.navigation.AppNavHost
+import com.minhhnn18898.letstravel.app.navigation.AppScreen
+import com.minhhnn18898.letstravel.app.navigation.MainAppBar
 import com.minhhnn18898.letstravel.ui.theme.LetsTravelTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,20 +51,9 @@ fun MainApp(
         }
     ) { innerPadding ->
 
-        NavHost(
+        AppNavHost(
             navController = navController,
-            startDestination = AppScreen.Home.name,
             modifier = modifier.padding(innerPadding)
-        ) {
-            composable(route = AppScreen.Home.name) {
-                TripListingScreen(onClickEmptyView = {
-                    navController.navigate(AppScreen.EditTripInfo.name)
-                })
-            }
-
-            composable(route = AppScreen.EditTripInfo.name) {
-                EditTripScreen()
-            }
-        }
+        )
     }
 }
