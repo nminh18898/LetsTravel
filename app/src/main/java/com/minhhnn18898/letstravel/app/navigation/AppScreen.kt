@@ -18,6 +18,7 @@ import com.minhhnn18898.letstravel.R
 enum class AppScreen(@StringRes val title: Int) {
     Home(title = R.string.app_name),
     EditTripInfo(title = R.string.trip_info),
+    SavedTripListingFull(title = R.string.saved_trips)
 }
 
 data class AppBarActionsState(

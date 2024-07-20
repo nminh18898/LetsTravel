@@ -17,13 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,10 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -50,20 +44,24 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
+import com.minhhnn18898.letstravel.baseuicomponent.BasicLoadingView
+import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
 import com.minhhnn18898.letstravel.baseuicomponent.RoundedPolygonShape
 import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentError
-import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentLoading
-import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentResult
-import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentState
+import com.minhhnn18898.letstravel.tripinfo.ui.EmptySavedTripView
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.ui.getResult
+import com.minhhnn18898.letstravel.tripinfo.ui.hasError
+import com.minhhnn18898.letstravel.tripinfo.ui.hasResult
+import com.minhhnn18898.letstravel.tripinfo.ui.isContentLoading
 import com.minhhnn18898.letstravel.ui.theme.typography
 
 @Composable
-fun TripListingScreen(
+fun HomeScreen(
     onClickEmptyView: () -> Unit,
     onClickCreateNew: () -> Unit,
+    onClickShowAllSavedTrips: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -77,13 +75,15 @@ fun TripListingScreen(
                 sectionCtaData = SectionCtaData(
                     icon = R.drawable.chevron_right_24,
                     title = R.string.show_all,
-                    onClick = {
-
-                    }
+                    onClick = onClickShowAllSavedTrips
                 )
             ) {
                 if (contentState.isContentLoading()) {
-                    ContentLoadingView(modifier)
+                    BasicLoadingView(modifier)
+                }
+
+                if(contentState.hasError()) {
+                    DefaultErrorView(modifier = modifier)
                 }
 
                 if (contentState.hasResult()) {
@@ -93,26 +93,11 @@ fun TripListingScreen(
                     if (hasUserTrip) {
                         ContentListTripItem(modifier = modifier, listUserTripItem = items, onClickCreateNew)
                     } else {
-                        EmptyTripView(onClick = onClickEmptyView)
+                        EmptySavedTripView(onClick = onClickEmptyView)
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ContentLoadingView(modifier: Modifier) {
-    Box(modifier = modifier
-        .padding(vertical = 16.dp)
-        .wrapContentHeight()
-        .fillMaxWidth(),
-        contentAlignment = Alignment.Center) {
-
-        CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.secondary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant
-        )
     }
 }
 
@@ -311,7 +296,7 @@ private fun TripListingScreenSection(
             if(sectionCtaData != null) {
                 Row(
                     modifier = Modifier.clickable {
-                        sectionCtaData.onClick
+                        sectionCtaData.onClick.invoke()
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -339,55 +324,8 @@ private fun TripListingScreenSection(
     }
 }
 
-@Composable
-private fun EmptyTripView(
-    onClick: () -> Unit
-) {
-    val stroke = Stroke(width = 6f,
-        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
-    )
-    val color = MaterialTheme.colorScheme.primary
-
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .padding(horizontal = 24.dp, vertical = 4.dp)
-            .drawBehind {
-                drawRoundRect(color = color, style = stroke, cornerRadius = CornerRadius(16.dp.toPx()))
-            }
-            .clickable {
-                onClick.invoke()
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = painterResource(R.drawable.edit_note_24),
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.secondary
-            )
-
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = stringResource(R.string.create_your_first_trip),
-                style = typography.bodyMedium,
-                color = MaterialTheme.colorScheme.secondary,
-                maxLines = 1
-            )
-        }
-    }
-}
-
 data class SectionCtaData (
     @DrawableRes val icon: Int,
     @StringRes val title: Int,
     val onClick: () -> Unit
 )
-
-private fun GetSavedTripInfoContentState.isContentLoading(): Boolean = this is GetSavedTripInfoContentLoading
-private fun GetSavedTripInfoContentState.hasResult(): Boolean = this is GetSavedTripInfoContentResult
-private fun GetSavedTripInfoContentState.getResult(): List<TripInfoItemDisplay> = (this as? GetSavedTripInfoContentResult)?.listTripItem ?: emptyList()
-private fun GetSavedTripInfoContentState.hasError(): Boolean = this is GetSavedTripInfoContentError
