@@ -1,0 +1,10 @@
+package com.minhhnn18898.letstravel.tripinfo.ui
+
+
+interface GetSavedTripInfoContentState
+
+class GetSavedTripInfoContentLoading: GetSavedTripInfoContentState
+
+class GetSavedTripInfoContentResult(val listTripItem: List<TripInfoItemDisplay>): GetSavedTripInfoContentState
+
+class GetSavedTripInfoContentError: GetSavedTripInfoContentState

@@ -51,6 +51,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.baseuicomponent.RoundedPolygonShape
+import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentError
+import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentLoading
+import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentResult
+import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentState
+import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.ui.theme.typography
 
 @Composable
@@ -81,7 +88,7 @@ fun TripListingScreen(
 
                 if (contentState.hasResult()) {
                     val items = contentState.getResult()
-                    val hasUserTrip = items.any { it is HomeScreenViewModel.UserTripItem }
+                    val hasUserTrip = items.any { it is UserTripItemDisplay }
 
                     if (hasUserTrip) {
                         ContentListTripItem(modifier = modifier, listUserTripItem = items, onClickCreateNew)
@@ -112,7 +119,7 @@ private fun ContentLoadingView(modifier: Modifier) {
 @Composable
 private fun ContentListTripItem(
     modifier: Modifier,
-    listUserTripItem: List<HomeScreenViewModel.TripItemDisplay>,
+    listUserTripItem: List<TripInfoItemDisplay>,
     onClickCreateNew: () -> Unit,
 ) {
     LazyColumn(
@@ -121,10 +128,10 @@ private fun ContentListTripItem(
     ) {
         items(listUserTripItem) { itemDisplay ->
             
-            if(itemDisplay is HomeScreenViewModel.UserTripItem) {
+            if(itemDisplay is UserTripItemDisplay) {
                 TripItemView(modifier = Modifier, itemDisplay = itemDisplay)
             }
-            else if(itemDisplay is HomeScreenViewModel.CreateNewTripItem) {
+            else if(itemDisplay is CreateNewTripItemDisplay) {
                 TripItemCreateNewView(modifier = Modifier, onClick = onClickCreateNew)
             }
         }
@@ -134,7 +141,7 @@ private fun ContentListTripItem(
 @Composable
 private fun TripItemView(
     modifier: Modifier,
-    itemDisplay: HomeScreenViewModel.UserTripItem
+    itemDisplay: UserTripItemDisplay
 ) {
     val hexagon = remember {
         RoundedPolygon(
@@ -380,7 +387,7 @@ data class SectionCtaData (
     val onClick: () -> Unit
 )
 
-private fun HomeScreenViewModel.ContentState.isContentLoading(): Boolean = this is HomeScreenViewModel.ContentLoading
-private fun HomeScreenViewModel.ContentState.hasResult(): Boolean = this is HomeScreenViewModel.ContentResult
-private fun HomeScreenViewModel.ContentState.getResult(): List<HomeScreenViewModel.TripItemDisplay> = (this as? HomeScreenViewModel.ContentResult)?.listTripItem ?: emptyList()
-private fun HomeScreenViewModel.ContentState.hasError(): Boolean = this is HomeScreenViewModel.ContentError
+private fun GetSavedTripInfoContentState.isContentLoading(): Boolean = this is GetSavedTripInfoContentLoading
+private fun GetSavedTripInfoContentState.hasResult(): Boolean = this is GetSavedTripInfoContentResult
+private fun GetSavedTripInfoContentState.getResult(): List<TripInfoItemDisplay> = (this as? GetSavedTripInfoContentResult)?.listTripItem ?: emptyList()
+private fun GetSavedTripInfoContentState.hasError(): Boolean = this is GetSavedTripInfoContentError
