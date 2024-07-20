@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TripInfoDao {
@@ -20,5 +21,5 @@ interface TripInfoDao {
     suspend fun delete(tripInfo: TripInfo)
 
     @Query("SELECT * FROM trip_info ORDER BY trip_id DESC")
-    suspend fun getAll(): List<TripInfo>
+    fun getAll(): Flow<List<TripInfo>>
 }

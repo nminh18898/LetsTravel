@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListTripInfoUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class TripListingViewModel(
@@ -26,18 +27,22 @@ class TripListingViewModel(
     private fun loadListTripInfo() {
         viewModelScope.launch {
             getListTripInfoUseCase.execute(Unit)?.collect {
-                contentState = when(it) {
-                    is Result.Loading -> ContentLoading()
-                    is Result.Success -> {
-                        val data = mutableListOf<TripItemDisplay>()
-                        val userTrips = it.data.map { tripInfo -> tripInfo.toTripItemDisplay() }
-                        data.addAll(userTrips.take(2))
-                        data.add(CreateNewTripItem)
-                        ContentResult(data)
-                    }
-                    is Result.Error -> ContentError()
+                when(it) {
+                    is Result.Loading -> contentState = ContentLoading()
+                    is Result.Success -> handleResultLoadListTripInfo(it.data)
+                    is Result.Error -> contentState = ContentError()
                 }
             }
+        }
+    }
+
+    private suspend fun handleResultLoadListTripInfo(flowData: Flow<List<TripInfo>>) {
+        flowData.collect { item ->
+            val data = mutableListOf<TripItemDisplay>()
+            val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay() }
+            data.addAll(userTrips.take(2))
+            data.add(CreateNewTripItem)
+            contentState = ContentResult(data)
         }
     }
 

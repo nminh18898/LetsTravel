@@ -3,6 +3,7 @@ package com.minhhnn18898.letstravel.tripinfo.data.repo
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class TripInfoRepository(
@@ -20,8 +21,8 @@ class TripInfoRepository(
         DefaultCoverElement.COVER_DEFAULT_THEME_NATURE
     )
 
-    suspend fun getAllTrips(): List<TripInfo> = withContext(ioDispatcher) {
-        return@withContext tripInfoDao.getAll()
+    fun getAllTrips(): Flow<List<TripInfo>> {
+        return tripInfoDao.getAll()
     }
 
     fun getListDefaultCoverElements(): List<DefaultCoverElement> = defaultCoverIdList

@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
-class GetListTripInfoUseCase(private val repository: TripInfoRepository): AsyncUseCase<Unit, Flow<Result<List<TripInfo>>>>() {
+class GetListTripInfoUseCase(private val repository: TripInfoRepository): AsyncUseCase<Unit, Flow<Result<Flow<List<TripInfo>>>>>() {
 
-    override suspend fun run(params: Unit): Flow<Result<List<TripInfo>>> = flow {
+    override suspend fun run(params: Unit): Flow<Result<Flow<List<TripInfo>>>> = flow {
         emit(Result.Loading)
         val result = repository.getAllTrips()
         emit(Result.Success(result))
