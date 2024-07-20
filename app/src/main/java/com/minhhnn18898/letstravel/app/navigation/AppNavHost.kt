@@ -33,6 +33,9 @@ fun AppNavHost(
             EditTripScreen(
                 onComposedTopBarActions = {
                     onScreenDisplay.invoke(it)
+                },
+                navigateUp = {
+                    navController.navigateUp()
                 }
             )
         }

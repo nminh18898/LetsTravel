@@ -1,5 +1,6 @@
 package com.minhhnn18898.letstravel.tripinfo.ui
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
@@ -31,19 +32,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
 import com.minhhnn18898.letstravel.baseuicomponent.InputTextRow
+import com.minhhnn18898.letstravel.baseuicomponent.ProgressDialog
+import com.minhhnn18898.letstravel.baseuicomponent.TopMessageBar
+import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType
 import com.minhhnn18898.letstravel.ui.theme.typography
+import com.minhhnn18898.letstravel.utils.StringUtils
 
 @Composable
 fun EditTripScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditTripViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -53,7 +63,7 @@ fun EditTripScreen(
                 actions = {
                     IconButton(
                         onClick = {
-
+                            viewModel.onSaveClick()
                         },
                         enabled = viewModel.allowSaveContent
                     ) {
@@ -66,6 +76,17 @@ fun EditTripScreen(
                 }
             )
         )
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.eventTriggerer.collect { event ->
+                if(event == EditTripViewModel.Event.CloseScreen) {
+                    navigateUp.invoke()
+                }
+            }
+        }
     }
 
     Column(
@@ -98,9 +119,16 @@ fun EditTripScreen(
             }
         )
     }
+
+    AnimatedVisibility(viewModel.onShowSaveLoadingState) {
+        ProgressDialog()
+    }
+
+    TopMessageBar(
+        shown = viewModel.errorType.isShow(),
+        text = getMessageError(LocalContext.current, viewModel.errorType)
+    )
 }
-
-
 
 @Composable
 fun DefaultCoverCollectionGrid(
@@ -170,4 +198,16 @@ fun DefaultCoverCollectionCard(
             }
         }
     }
+}
+
+private fun getMessageError(context: Context, errorType: ErrorType): String {
+    if(errorType == ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO) {
+        return StringUtils.getString(context, R.string.error_can_not_create_trip)
+    }
+
+    return ""
+}
+
+private fun ErrorType.isShow(): Boolean {
+    return this != ErrorType.ERROR_MESSAGE_NONE
 }

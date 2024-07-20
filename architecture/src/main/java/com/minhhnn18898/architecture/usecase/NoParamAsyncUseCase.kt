@@ -1,4 +1,4 @@
-package com.minhhnn18898.architecture
+package com.minhhnn18898.architecture.usecase
 
 abstract class NoParamAsyncUseCase<R> {
     suspend fun execute(): R? {

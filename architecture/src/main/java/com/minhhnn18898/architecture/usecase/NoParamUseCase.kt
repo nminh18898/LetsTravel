@@ -1,4 +1,4 @@
-package com.minhhnn18898.architecture
+package com.minhhnn18898.architecture.usecase
 
 abstract class NoParamUseCase<R> {
     fun execute(): R? {

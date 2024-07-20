@@ -1,8 +1,14 @@
 package com.minhhnn18898.letstravel.tripinfo.data.repo
 
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
-class TripInfoRepository(private val tripListingDao: TripInfoDao) {
+class TripInfoRepository(
+    private val tripInfoDao: TripInfoDao,
+    private val ioDispatcher: CoroutineDispatcher
+) {
 
 
     private val defaultCoverIdList = listOf(
@@ -19,4 +25,15 @@ class TripInfoRepository(private val tripListingDao: TripInfoDao) {
     }
 
     fun getListDefaultCoverElements(): List<DefaultCoverElement> = defaultCoverIdList
+
+    suspend fun insertTripInfo(tripInfo: TripInfo) {
+        withContext(ioDispatcher) {
+            val resultCode = tripInfoDao.insert(tripInfo)
+            if(resultCode == -1L) {
+                throw ExceptionInsertTripInfo()
+            }
+        }
+    }
+
+    class ExceptionInsertTripInfo: Exception()
 }

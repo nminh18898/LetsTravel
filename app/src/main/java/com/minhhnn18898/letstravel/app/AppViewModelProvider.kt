@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.minhhnn18898.letstravel.tripdetail.editflightinfo.EditFlightInfoViewModel
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel
+import com.minhhnn18898.letstravel.tripinfo.usecase.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListDefaultCoverUseCase
 
 /**
@@ -16,7 +17,8 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             val getListDefaultCoverUseCase = GetListDefaultCoverUseCase(letsTravelApplication().container.tripInfoRepository)
-            EditTripViewModel(getListDefaultCoverUseCase)
+            val createTripInfoUseCase = CreateTripInfoUseCase(letsTravelApplication().container.tripInfoRepository)
+            EditTripViewModel(getListDefaultCoverUseCase, createTripInfoUseCase)
         }
 
         initializer {

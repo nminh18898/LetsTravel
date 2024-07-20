@@ -13,8 +13,8 @@ data class TripInfo(
     @ColumnInfo("trip_id")
     val tripId: Int,
     val title: String,
-    @ColumnInfo("cover_url")
-    val coverUrl: String = "",
+    @ColumnInfo("default_cover_id")
+    val defaultCoverId: Int,
 )
 
 data class TripAndFlightInfo(
