@@ -8,7 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.minhhnn18898.letstravel.tripdetail.editflightinfo.EditFlightInfoViewModel
 import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel
-import com.minhhnn18898.letstravel.tripinfo.ui.TripListingViewModel
+import com.minhhnn18898.letstravel.homescreen.HomeScreenViewModel
 import com.minhhnn18898.letstravel.tripinfo.usecase.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListDefaultCoverUseCase
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListTripInfoUseCase
@@ -32,7 +32,7 @@ object AppViewModelProvider {
 
         initializer {
             val getListTripInfoUseCase = GetListTripInfoUseCase(letsTravelApplication().container.tripInfoRepository)
-            TripListingViewModel(getListTripInfoUseCase, defaultCoverResourceProvider)
+            HomeScreenViewModel(getListTripInfoUseCase, defaultCoverResourceProvider)
         }
     }
 }

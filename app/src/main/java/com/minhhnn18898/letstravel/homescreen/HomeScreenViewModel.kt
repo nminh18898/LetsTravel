@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripinfo.ui
+package com.minhhnn18898.letstravel.homescreen
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.getValue
@@ -8,11 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListTripInfoUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class TripListingViewModel(
+class HomeScreenViewModel(
     private val getListTripInfoUseCase: GetListTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider
 ): ViewModel() {

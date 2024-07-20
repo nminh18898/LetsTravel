@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.minhhnn18898.letstravel.baseuicomponent.ClearTopBarActions
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripScreen
-import com.minhhnn18898.letstravel.tripinfo.ui.TripListingScreen
+import com.minhhnn18898.letstravel.homescreen.TripListingScreen
 
 @Composable
 fun AppNavHost(
