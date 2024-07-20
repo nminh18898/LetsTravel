@@ -24,6 +24,9 @@ fun AppNavHost(
             TripListingScreen(
                 onClickEmptyView = {
                     navController.navigate(AppScreen.EditTripInfo.name)
+                },
+                onClickCreateNew = {
+                    navController.navigate(AppScreen.EditTripInfo.name)
                 }
             )
             ClearTopBarActions(onScreenDisplay)

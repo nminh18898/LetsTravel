@@ -28,7 +28,13 @@ class TripListingViewModel(
             getListTripInfoUseCase.execute(Unit)?.collect {
                 contentState = when(it) {
                     is Result.Loading -> ContentLoading()
-                    is Result.Success -> ContentResult(it.data.map { tripInfo -> tripInfo.toTripItemDisplay() })
+                    is Result.Success -> {
+                        val data = mutableListOf<TripItemDisplay>()
+                        val userTrips = it.data.map { tripInfo -> tripInfo.toTripItemDisplay() }
+                        data.addAll(userTrips.take(2))
+                        data.add(CreateNewTripItem)
+                        ContentResult(data)
+                    }
                     is Result.Error -> ContentError()
                 }
             }
@@ -43,9 +49,13 @@ class TripListingViewModel(
 
     class ContentError: ContentState
 
-    data class TripItemDisplay(val tripName: String, @DrawableRes val defaultCoverRes: Int)
+    interface TripItemDisplay
 
-    private fun TripInfo.toTripItemDisplay(): TripItemDisplay {
-        return TripItemDisplay(this.title, defaultCoverResourceProvider.getCoverResource(this.defaultCoverId))
+    data class UserTripItem(val tripName: String, @DrawableRes val defaultCoverRes: Int): TripItemDisplay
+
+    data object CreateNewTripItem: TripItemDisplay
+
+    private fun TripInfo.toTripItemDisplay(): UserTripItem {
+        return UserTripItem(this.title, defaultCoverResourceProvider.getCoverResource(this.defaultCoverId))
     }
 }

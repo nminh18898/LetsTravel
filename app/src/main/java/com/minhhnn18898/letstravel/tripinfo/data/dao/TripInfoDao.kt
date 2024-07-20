@@ -19,6 +19,6 @@ interface TripInfoDao {
     @Delete
     suspend fun delete(tripInfo: TripInfo)
 
-    @Query("SELECT * FROM trip_info")
+    @Query("SELECT * FROM trip_info ORDER BY trip_id DESC")
     suspend fun getAll(): List<TripInfo>
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +56,7 @@ import com.minhhnn18898.letstravel.ui.theme.typography
 @Composable
 fun TripListingScreen(
     onClickEmptyView: () -> Unit,
+    onClickCreateNew: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TripListingViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -67,11 +71,12 @@ fun TripListingScreen(
 
                 if (contentState.hasResult()) {
                     val items = contentState.getResult()
+                    val hasUserTrip = items.any { it is TripListingViewModel.UserTripItem }
 
-                    if (items.isEmpty()) {
-                        EmptyTripView(onClick = onClickEmptyView)
+                    if (hasUserTrip) {
+                        ContentListTripItem(modifier = modifier, listUserTripItem = items, onClickCreateNew)
                     } else {
-                        ContentListTripItem(modifier = modifier, listTripItemDisplay = items)
+                        EmptyTripView(onClick = onClickEmptyView)
                     }
                 }
             }
@@ -97,11 +102,21 @@ private fun ContentLoadingView(modifier: Modifier) {
 @Composable
 private fun ContentListTripItem(
     modifier: Modifier,
-    listTripItemDisplay: List<TripListingViewModel.TripItemDisplay>
+    listUserTripItem: List<TripListingViewModel.TripItemDisplay>,
+    onClickCreateNew: () -> Unit,
 ) {
-    LazyColumn(modifier = modifier.padding(start = 16.dp, end = 16.dp)) {
-        items(listTripItemDisplay) { itemDisplay ->
-            TripItemView(modifier = Modifier, itemDisplay = itemDisplay)
+    LazyColumn(
+        modifier = modifier.padding(start = 16.dp, end = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(listUserTripItem) { itemDisplay ->
+            
+            if(itemDisplay is TripListingViewModel.UserTripItem) {
+                TripItemView(modifier = Modifier, itemDisplay = itemDisplay)
+            }
+            else if(itemDisplay is TripListingViewModel.CreateNewTripItem) {
+                TripItemCreateNewView(modifier = Modifier, onClick = onClickCreateNew)
+            }
         }
     }
 }
@@ -109,7 +124,7 @@ private fun ContentListTripItem(
 @Composable
 private fun TripItemView(
     modifier: Modifier,
-    itemDisplay: TripListingViewModel.TripItemDisplay
+    itemDisplay: TripListingViewModel.UserTripItem
 ) {
     val hexagon = remember {
         RoundedPolygon(
@@ -208,6 +223,39 @@ private fun TripItemView(
             )
         }
     }
+}
+
+@Composable
+private fun TripItemCreateNewView(
+    modifier: Modifier,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .padding(start = 8.dp, top = 8.dp)
+            .clickable {
+                onClick.invoke()
+            },
+        verticalAlignment = Alignment.CenterVertically) {
+
+        Icon(
+            modifier = Modifier.size(32.dp),
+            imageVector = Icons.Filled.Add,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.tertiary
+        )
+
+
+        Text(
+            modifier = Modifier.padding(start = 4.dp),
+            text = stringResource(id = R.string.create_new_trip),
+            style = typography.bodyMedium,
+            color = MaterialTheme.colorScheme.tertiary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+
 }
 
 @Composable

@@ -9,7 +9,7 @@ import com.minhhnn18898.letstravel.data.model.FlightInfo
 
 @Entity(tableName = "trip_info")
 data class TripInfo(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo("trip_id")
     val tripId: Int,
     val title: String,
