@@ -19,7 +19,7 @@
     <string name="flight_info">Flight info</string>
     <string name="from">From</string>
     <string name="to">To</string>
-    <string name="your_trips">Your trips</string>
+    <string name="saved_trips">Saved trips</string>
     <string name="create_your_first_trip">"Create your first trip"</string>
     <string name="trip_info">Trip info</string>
     <string name="back">Back</string>
@@ -27,4 +27,5 @@
     <string name="choose_cover">Choose cover</string>
     <string name="error_can_not_create_trip">Can not create trip info. Please try again.</string>
     <string name="create_new_trip">Create new trip</string>
+    <string name="show_all">Show all</string>
 </resources>

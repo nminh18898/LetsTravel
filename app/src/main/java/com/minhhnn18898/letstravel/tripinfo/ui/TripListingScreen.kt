@@ -64,7 +64,17 @@ fun TripListingScreen(
         modifier = modifier
     ) {
         viewModel.contentState.let { contentState ->
-            TripListingScreenSection(icon = R.drawable.your_trips_24, title = R.string.your_trips) {
+            TripListingScreenSection(
+                icon = R.drawable.your_trips_24,
+                title = R.string.saved_trips,
+                sectionCtaData = SectionCtaData(
+                    icon = R.drawable.chevron_right_24,
+                    title = R.string.show_all,
+                    onClick = {
+
+                    }
+                )
+            ) {
                 if (contentState.isContentLoading()) {
                     ContentLoadingView(modifier)
                 }
@@ -263,25 +273,59 @@ private fun TripListingScreenSection(
     @DrawableRes icon: Int,
     @StringRes title: Int,
     modifier: Modifier = Modifier,
+    sectionCtaData: SectionCtaData? = null,
     content: @Composable () -> Unit
 ) {
     Column(modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)) {
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.primary
-            )
+            horizontalArrangement  =  Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
 
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = stringResource(title),
-                style = typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-                maxLines = 1
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = stringResource(title),
+                    style = typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1
+                )
+            }
+
+            if(sectionCtaData != null) {
+                Row(
+                    modifier = Modifier.clickable {
+                        sectionCtaData.onClick
+                    },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        modifier = Modifier,
+                        text = stringResource(sectionCtaData.title),
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        maxLines = 1
+                    )
+
+                    Icon(
+                        modifier = Modifier
+                            .size(20.dp),
+                        painter = painterResource(sectionCtaData.icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
         }
 
         content()
@@ -328,8 +372,13 @@ private fun EmptyTripView(
             )
         }
     }
-
 }
+
+data class SectionCtaData (
+    @DrawableRes val icon: Int,
+    @StringRes val title: Int,
+    val onClick: () -> Unit
+)
 
 private fun TripListingViewModel.ContentState.isContentLoading(): Boolean = this is TripListingViewModel.ContentLoading
 private fun TripListingViewModel.ContentState.hasResult(): Boolean = this is TripListingViewModel.ContentResult
