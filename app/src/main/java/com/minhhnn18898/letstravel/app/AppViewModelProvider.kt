@@ -6,23 +6,33 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.minhhnn18898.letstravel.tripdetail.editflightinfo.EditFlightInfoViewModel
+import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel
+import com.minhhnn18898.letstravel.tripinfo.ui.TripListingViewModel
 import com.minhhnn18898.letstravel.tripinfo.usecase.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListDefaultCoverUseCase
+import com.minhhnn18898.letstravel.tripinfo.usecase.GetListTripInfoUseCase
 
 /**
  * Provides Factory to create instance of ViewModel for the entire app
  */
 object AppViewModelProvider {
     val Factory = viewModelFactory {
+        val defaultCoverResourceProvider = CoverDefaultResourceProvider()
+
         initializer {
             val getListDefaultCoverUseCase = GetListDefaultCoverUseCase(letsTravelApplication().container.tripInfoRepository)
             val createTripInfoUseCase = CreateTripInfoUseCase(letsTravelApplication().container.tripInfoRepository)
-            EditTripViewModel(getListDefaultCoverUseCase, createTripInfoUseCase)
+            EditTripViewModel(getListDefaultCoverUseCase, createTripInfoUseCase, defaultCoverResourceProvider)
         }
 
         initializer {
             EditFlightInfoViewModel()
+        }
+
+        initializer {
+            val getListTripInfoUseCase = GetListTripInfoUseCase(letsTravelApplication().container.tripInfoRepository)
+            TripListingViewModel(getListTripInfoUseCase, defaultCoverResourceProvider)
         }
     }
 }

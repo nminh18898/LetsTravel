@@ -8,8 +8,6 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.tripinfo.data.repo.DefaultCoverElement
 import com.minhhnn18898.letstravel.tripinfo.usecase.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListDefaultCoverUseCase
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class EditTripViewModel(
     private val getListDefaultCoverUseCase: GetListDefaultCoverUseCase,
-    private val createTripInfoUseCase: CreateTripInfoUseCase
+    private val createTripInfoUseCase: CreateTripInfoUseCase,
+    private val defaultCoverResourceProvider: CoverDefaultResourceProvider
 ): ViewModel() {
 
     var tripTitle by mutableStateOf("")
@@ -31,14 +30,6 @@ class EditTripViewModel(
     var allowSaveContent by mutableStateOf(false)
         private set
 
-    private val defaultCoverList = mapOf(
-        DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER to R.drawable.trip_cover_default_1,
-        DefaultCoverElement.COVER_DEFAULT_THEME_LONG_TRIP to R.drawable.trip_cover_default_2,
-        DefaultCoverElement.COVER_DEFAULT_THEME_AROUND_THE_WORLD to R.drawable.trip_cover_default_3,
-        DefaultCoverElement.COVER_DEFAULT_THEME_NIGHT_DRIVE to R.drawable.trip_cover_default_4,
-        DefaultCoverElement.COVER_DEFAULT_THEME_SEA to R.drawable.trip_cover_default_5,
-        DefaultCoverElement.COVER_DEFAULT_THEME_NATURE to R.drawable.trip_cover_default_6
-    )
 
     var onShowSaveLoadingState by mutableStateOf(false)
         private set
@@ -74,7 +65,7 @@ class EditTripViewModel(
 
     private fun initDefaultCoverList() {
         val list: List<DefaultCoverUI> = getListDefaultCoverUseCase.execute(Unit)?.map { coverElement ->
-            val uiRes = defaultCoverList[coverElement] ?: 0
+            val uiRes = defaultCoverResourceProvider.getDefaultCoverList()[coverElement] ?: 0
             DefaultCoverUI(coverElement.type, isSelected = false, uiRes)
         } ?: emptyList()
 

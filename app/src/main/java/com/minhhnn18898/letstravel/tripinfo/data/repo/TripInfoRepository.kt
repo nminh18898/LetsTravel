@@ -20,8 +20,8 @@ class TripInfoRepository(
         DefaultCoverElement.COVER_DEFAULT_THEME_NATURE
     )
 
-    fun getAllTrips() {
-
+    suspend fun getAllTrips(): List<TripInfo> = withContext(ioDispatcher) {
+        return@withContext tripInfoDao.getAll()
     }
 
     fun getListDefaultCoverElements(): List<DefaultCoverElement> = defaultCoverIdList
