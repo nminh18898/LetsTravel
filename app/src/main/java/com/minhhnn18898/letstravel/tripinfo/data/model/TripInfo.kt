@@ -11,7 +11,7 @@ import com.minhhnn18898.letstravel.data.model.FlightInfo
 data class TripInfo(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("trip_id")
-    val tripId: Int,
+    val tripId: Long,
     val title: String,
     @ColumnInfo("default_cover_id")
     val defaultCoverId: Int,

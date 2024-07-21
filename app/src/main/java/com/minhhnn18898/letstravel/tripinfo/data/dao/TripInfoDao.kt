@@ -22,4 +22,7 @@ interface TripInfoDao {
 
     @Query("SELECT * FROM trip_info ORDER BY trip_id DESC")
     fun getAll(): Flow<List<TripInfo>>
+
+    @Query("SELECT * FROM trip_info WHERE trip_id=:id")
+    fun getTripInfo(id: Long): Flow<TripInfo>
 }

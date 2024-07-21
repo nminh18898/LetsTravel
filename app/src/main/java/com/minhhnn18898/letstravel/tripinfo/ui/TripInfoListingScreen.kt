@@ -37,7 +37,7 @@ import com.minhhnn18898.letstravel.ui.theme.typography
 fun TripInfoListingScreen(
     modifier: Modifier = Modifier,
     onClickEmptyView: () -> Unit,
-    onClickTripItem: () -> Unit,
+    onClickTripItem: (Long) -> Unit,
     onClickCreateNew: () -> Unit,
     viewModel: TripInfoListingViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -80,7 +80,7 @@ fun TripInfoListingScreen(
 private fun ContentListTripItem(
     modifier: Modifier,
     listUserTripItem: List<TripInfoItemDisplay>,
-    onClickTripItem: () -> Unit,
+    onClickTripItem: (Long) -> Unit,
     onClickCreateNew: () -> Unit,
 ) {
     LazyVerticalGrid(
@@ -109,14 +109,14 @@ private fun ContentListTripItem(
 private fun TripItemView(
     modifier: Modifier,
     itemDisplay: UserTripItemDisplay,
-    onClick: () -> Unit
+    onClick: (Long) -> Unit
 ) {
     Column(
         modifier = modifier
             .padding(horizontal = 8.dp)
             .background(MaterialTheme.colorScheme.inverseOnSurface)
             .clickable {
-                onClick.invoke()
+                onClick.invoke(itemDisplay.tripId)
             },
         horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -131,7 +131,7 @@ private fun TripItemView(
         )
 
         Text(
-            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp),
+            modifier = Modifier.padding(top = 12.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
             text = itemDisplay.tripName,
             style = typography.titleSmall,
             color = MaterialTheme.colorScheme.primary,
@@ -171,7 +171,7 @@ private fun TripItemCreateNewView(
         }
 
         Text(
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 12.dp, start = 8.dp, end = 8.dp),
             text = stringResource(id = R.string.create_new_trip),
             style = typography.bodySmall,
             color = MaterialTheme.colorScheme.tertiary,

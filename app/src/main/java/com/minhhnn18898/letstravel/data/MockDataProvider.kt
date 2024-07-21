@@ -1,14 +1,15 @@
 package com.minhhnn18898.letstravel.data
 
-import com.minhhnn18898.letstravel.tripdetail.AirportDisplayInfo
-import com.minhhnn18898.letstravel.tripdetail.FlightDisplayInfo
-import com.minhhnn18898.letstravel.tripdetail.HotelDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.ui.AirportDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.ui.FlightDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.ui.HotelDisplayInfo
 
 object MockDataProvider {
 
     fun provideFlightInfo(): List<FlightDisplayInfo> {
         return mutableListOf<FlightDisplayInfo>().apply {
-            add(FlightDisplayInfo(
+            add(
+                FlightDisplayInfo(
                 flightNumber = "VN 939",
                 departAirport = AirportDisplayInfo("Ho Chi Minh", "SGN", "Tan Son Nhat"),
                 destinationAirport = AirportDisplayInfo("Chiang Mai", "CNX", "Chiang Mai"),
@@ -17,9 +18,11 @@ object MockDataProvider {
                 arrivalTime =  "10:00, 20 May 2024",
                 duration = "02:00",
                 price = "1.200.000"
-            ))
+            )
+            )
 
-            add(FlightDisplayInfo(
+            add(
+                FlightDisplayInfo(
                 flightNumber = "TG 557",
                 departAirport =  AirportDisplayInfo("Chiang Mai", "CNX", "Chiang Mai"),
                 destinationAirport = AirportDisplayInfo("Bangkok", "BKK", "Suvarnabhumi"),
@@ -28,9 +31,11 @@ object MockDataProvider {
                 arrivalTime =  "21:10, 23 May 2024",
                 duration = "1:10",
                 price = "900.000"
-            ))
+            )
+            )
 
-            add(FlightDisplayInfo(
+            add(
+                FlightDisplayInfo(
                 flightNumber = "TG 557",
                 departAirport =  AirportDisplayInfo("Bangkok ", "BKK", "Suvarnabhumi"),
                 destinationAirport = AirportDisplayInfo("Ho Chi Minh ", "SGN", "Tan Son Nhat"),
@@ -39,13 +44,15 @@ object MockDataProvider {
                 arrivalTime =  "23:25, 25 May 2024",
                 duration = "2:25",
                 price = "1357.400"
-            ))
+            )
+            )
         }
     }
 
     fun provideHotelInfo(): List<HotelDisplayInfo> {
         return mutableListOf<HotelDisplayInfo>().apply {
-            add(HotelDisplayInfo(
+            add(
+                HotelDisplayInfo(
                 hotelName = "Travelodge Nimman",
                 address = "Chiang Mai, Thailand",
                 checkInDate = "20 May, 2024",
@@ -53,9 +60,11 @@ object MockDataProvider {
                 duration = "3 nights",
                 price = "2.400.000"
 
-            ))
+            )
+            )
 
-            add(HotelDisplayInfo(
+            add(
+                HotelDisplayInfo(
                 hotelName = "Amber Inn",
                 address = "Pratunam, Bangkok, Thailand",
                 checkInDate = "23 May, 2024",
@@ -63,7 +72,8 @@ object MockDataProvider {
                 duration = "2 nights",
                 price = "1.600.000"
 
-            ))
+            )
+            )
         }
     }
 }

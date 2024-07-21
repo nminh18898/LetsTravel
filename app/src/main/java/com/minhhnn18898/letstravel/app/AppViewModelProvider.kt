@@ -2,12 +2,14 @@ package com.minhhnn18898.letstravel.app
 
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.minhhnn18898.letstravel.homescreen.HomeScreenViewModel
-import com.minhhnn18898.letstravel.tripdetail.TripDetailScreenViewModel
 import com.minhhnn18898.letstravel.tripdetail.editflightinfo.EditFlightInfoViewModel
+import com.minhhnn18898.letstravel.tripdetail.ui.TripDetailScreenViewModel
+import com.minhhnn18898.letstravel.tripdetail.usecase.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoListingViewModel
@@ -43,7 +45,9 @@ object AppViewModelProvider {
         }
 
         initializer {
-            TripDetailScreenViewModel()
+            val saveStateHandle = createSavedStateHandle()
+            val getTripInfoUseCase = GetTripInfoUseCase(letsTravelApplication().container.tripInfoRepository)
+            TripDetailScreenViewModel(savedStateHandle = saveStateHandle, defaultCoverResourceProvider, getTripInfoUseCase)
         }
     }
 }

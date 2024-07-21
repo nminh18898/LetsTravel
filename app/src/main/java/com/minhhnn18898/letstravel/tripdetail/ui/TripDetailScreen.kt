@@ -1,9 +1,14 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.minhhnn18898.letstravel.tripdetail
+package com.minhhnn18898.letstravel.tripdetail.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,19 +27,28 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
+import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
 import com.minhhnn18898.letstravel.data.MockDataProvider
+import com.minhhnn18898.letstravel.tripdetail.FlightDetailBodyPager
+import com.minhhnn18898.letstravel.tripdetail.HotelDetailBodyPager
+import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.ui.theme.typography
 
 @Composable
@@ -46,7 +60,7 @@ fun TripDetailScreen(
         Modifier
             .verticalScroll(rememberScrollState())
     ) {
-        TripDetailHeader(modifier, headerText = "Demo Header")
+        TripDetailHeader(modifier, viewModel.tripInfoContentState)
         DetailSection(
             icon = R.drawable.flight_takeoff_24,
             title = R.string.flights,
@@ -72,9 +86,60 @@ fun TripDetailScreen(
 @Composable
 private fun TripDetailHeader(
     modifier: Modifier = Modifier,
-    headerText: String = "") {
+    tripInfoState: UiState<UserTripItemDisplay, UiState.UndefinedError>) {
+
+    if(tripInfoState is UiState.Loading) {
+        TripDetailHeaderLoading()
+    }
+
+    if(tripInfoState is UiState.Error) {
+        DefaultErrorView(modifier = modifier)
+    }
+
+    if(tripInfoState is UiState.Success) {
+        TripDetailHeaderContent(tripInfoItemDisplay = tripInfoState.data, modifier = modifier)
+    }
+}
+
+@Composable
+private fun TripDetailHeaderLoading() {
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        // `infiniteRepeatable` repeats the specified duration-based `AnimationSpec` infinitely.
+        animationSpec = infiniteRepeatable(
+            // The `keyframes` animates the value by specifying multiple timestamps.
+            animation = keyframes {
+                // One iteration is 1000 milliseconds.
+                durationMillis = 1000
+                // 0.7f at the middle of an iteration.
+                0.7f at 500
+            },
+            // When the value finishes animating from 0f to 1f, it repeats by reversing the
+            // animation direction.
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+
+    Box(
+        modifier = Modifier
+            .height(180.dp)
+            .fillMaxWidth()
+            .background(Color.LightGray.copy(alpha = alpha))
+    )
+}
+
+@Composable
+private fun TripDetailHeaderContent(
+    tripInfoItemDisplay: UserTripItemDisplay,
+    modifier: Modifier = Modifier) {
+
     val shape =  RoundedCornerShape(8.dp)
     val height = 180.dp
+
     Box(
         modifier = modifier
             .height(height)
@@ -82,7 +147,7 @@ private fun TripDetailHeader(
             .background(White, shape = shape),
     ) {
         Image(
-            painter = painterResource(R.drawable.default_cover_trip_detail_illus),
+            painter = painterResource(tripInfoItemDisplay.defaultCoverRes),
             contentDescription = stringResource(id = R.string.trip_detail_header_cover_content_desc),
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -91,16 +156,22 @@ private fun TripDetailHeader(
         )
 
         Text(
-            text = headerText,
-            style = MaterialTheme.typography.titleLarge,
+            text = tripInfoItemDisplay.tripName,
+            style = MaterialTheme.typography.headlineMedium,
             maxLines = 1,
+            fontFamily = FontFamily.Cursive,
+            fontWeight = FontWeight.Bold,
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(16.dp),
-            overflow = TextOverflow.Ellipsis,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .padding(horizontal = 24.dp, vertical = 4.dp)
         )
-
     }
 }
 

@@ -13,6 +13,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.minhhnn18898.letstravel.R
 
 interface AppScreenDestination {
@@ -56,6 +58,12 @@ object SavedTripsListingFullDestination: AppScreenDestination {
 object TripDetailDestination: AppScreenDestination {
     override val title: Int = R.string.trip_detail
     override val route: String = AppScreenDestination.TRIP_DETAIL_SCREEN_ROUTE
+
+    const val tripIdArg = "trip_id"
+    val routeWithArgs = "$route/{$tripIdArg}"
+    val arguments = listOf(
+        navArgument(tripIdArg) { type = NavType.LongType }
+    )
 }
 
 data class AppBarActionsState(

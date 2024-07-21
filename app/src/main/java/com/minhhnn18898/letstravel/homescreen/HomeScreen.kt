@@ -62,7 +62,7 @@ fun HomeScreen(
     onClickEmptyView: () -> Unit,
     onClickCreateNew: () -> Unit,
     onClickShowAllSavedTrips: () -> Unit,
-    onClickTripItem: () -> Unit,
+    onClickTripItem: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -111,7 +111,7 @@ fun HomeScreen(
 private fun ContentListTripItem(
     modifier: Modifier,
     listUserTripItem: List<TripInfoItemDisplay>,
-    onClickTripItem: () -> Unit,
+    onClickTripItem: (Long) -> Unit,
     onClickCreateNew: () -> Unit,
 ) {
     LazyColumn(
@@ -134,7 +134,7 @@ private fun ContentListTripItem(
 private fun TripItemView(
     modifier: Modifier,
     itemDisplay: UserTripItemDisplay,
-    onClick: () -> Unit
+    onClick: (Long) -> Unit
 ) {
     val hexagon = remember {
         RoundedPolygon(
@@ -162,7 +162,7 @@ private fun TripItemView(
             .fillMaxWidth()
             .height(thumbSize.dp)
             .clickable {
-                onClick.invoke()
+                onClick.invoke(itemDisplay.tripId)
             }
     ) {
         val (thumbConstraint, titleConstraint) = createRefs()
@@ -228,7 +228,7 @@ private fun TripItemView(
 
             Text(
                 modifier = Modifier
-                    .padding(start = titleTextMargin.dp),
+                    .padding(start = titleTextMargin.dp, end = 36.dp),
                 text = itemDisplay.tripName,
                 style = typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,

@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.letstravel.tripdetail.ui.HotelDisplayInfo
 import com.minhhnn18898.letstravel.ui.theme.typography
 
 private val defaultPageItemSize = object : PageSize {

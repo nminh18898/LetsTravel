@@ -25,6 +25,10 @@ class TripInfoRepository(
         return tripInfoDao.getAll()
     }
 
+    fun getTrip(id: Long): Flow<TripInfo> {
+        return tripInfoDao.getTripInfo(id)
+    }
+
     fun getListDefaultCoverElements(): List<DefaultCoverElement> = defaultCoverIdList
 
     suspend fun insertTripInfo(tripInfo: TripInfo) {

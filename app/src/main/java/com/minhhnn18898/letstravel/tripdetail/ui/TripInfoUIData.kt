@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripdetail
+package com.minhhnn18898.letstravel.tripdetail.ui
 
 data class FlightDisplayInfo(
     val flightNumber: String,

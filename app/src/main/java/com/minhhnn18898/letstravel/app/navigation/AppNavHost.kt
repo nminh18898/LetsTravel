@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.minhhnn18898.letstravel.baseuicomponent.ClearTopBarActions
 import com.minhhnn18898.letstravel.homescreen.HomeScreen
-import com.minhhnn18898.letstravel.tripdetail.TripDetailScreen
+import com.minhhnn18898.letstravel.tripdetail.ui.TripDetailScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoListingScreen
 
@@ -33,8 +33,8 @@ fun AppNavHost(
                 onClickShowAllSavedTrips = {
                     navController.navigate(SavedTripsListingFullDestination.route)
                 },
-                onClickTripItem = {
-                    navController.navigate(TripDetailDestination.route)
+                onClickTripItem = { tripId ->
+                    navController.navigateToTripDetailScreen(tripId)
                 }
             )
             ClearTopBarActions(onScreenDisplay)
@@ -59,17 +59,24 @@ fun AppNavHost(
                 onClickCreateNew = {
                     navController.navigate(EditTripInfoDestination.route)
                 },
-                onClickTripItem = {
-                    navController.navigate(TripDetailDestination.route)
+                onClickTripItem = { tripId ->
+                    navController.navigateToTripDetailScreen(tripId)
                 }
             )
             ClearTopBarActions(onScreenDisplay)
         }
 
-        composable(route = TripDetailDestination.route) {
+        composable(
+            route = TripDetailDestination.routeWithArgs,
+            arguments = TripDetailDestination.arguments
+        ) {
             TripDetailScreen()
             ClearTopBarActions(onScreenDisplay)
         }
     }
+}
+
+private fun NavHostController.navigateToTripDetailScreen(tripId: Long) {
+    this.navigate("${TripDetailDestination.route}/$tripId")
 }
 
