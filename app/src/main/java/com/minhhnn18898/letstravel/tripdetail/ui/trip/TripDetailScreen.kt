@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.minhhnn18898.letstravel.tripdetail.ui
+package com.minhhnn18898.letstravel.tripdetail.ui.trip
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -45,9 +45,9 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
-import com.minhhnn18898.letstravel.data.MockDataProvider
-import com.minhhnn18898.letstravel.tripdetail.FlightDetailBodyPager
-import com.minhhnn18898.letstravel.tripdetail.HotelDetailBodyPager
+import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
+import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBodyPager
+import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.ui.theme.typography
 

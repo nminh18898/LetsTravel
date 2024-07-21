@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripdetail.ui
+package com.minhhnn18898.letstravel.tripdetail.ui.trip
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

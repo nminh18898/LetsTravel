@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.minhhnn18898.letstravel.tripdetail.editflightinfo
+package com.minhhnn18898.letstravel.tripdetail.ui.edit
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.MutableState

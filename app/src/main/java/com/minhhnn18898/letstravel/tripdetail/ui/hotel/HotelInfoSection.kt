@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.minhhnn18898.letstravel.tripdetail
+package com.minhhnn18898.letstravel.tripdetail.ui.hotel
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.tripdetail.ui.HotelDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.ui.trip.HotelDisplayInfo
 import com.minhhnn18898.letstravel.ui.theme.typography
 
 private val defaultPageItemSize = object : PageSize {

@@ -1,15 +1,15 @@
-package com.minhhnn18898.letstravel.data.database
+package com.minhhnn18898.letstravel.app.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.minhhnn18898.letstravel.data.dao.AirportInfoDao
-import com.minhhnn18898.letstravel.data.dao.FlightInfoDao
-import com.minhhnn18898.letstravel.data.dao.FlightWithAirportInfoMappingDao
-import com.minhhnn18898.letstravel.data.model.AirportInfo
-import com.minhhnn18898.letstravel.data.model.FlightInfo
-import com.minhhnn18898.letstravel.data.model.FlightWithAirportInfoMapping
+import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
+import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
+import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightWithAirportInfoMappingDao
+import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfoMapping
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 

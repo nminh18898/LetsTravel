@@ -1,8 +1,8 @@
-package com.minhhnn18898.letstravel.data
+package com.minhhnn18898.letstravel.tripdetail.data
 
-import com.minhhnn18898.letstravel.tripdetail.ui.AirportDisplayInfo
-import com.minhhnn18898.letstravel.tripdetail.ui.FlightDisplayInfo
-import com.minhhnn18898.letstravel.tripdetail.ui.HotelDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.ui.trip.AirportDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.ui.trip.FlightDisplayInfo
+import com.minhhnn18898.letstravel.tripdetail.ui.trip.HotelDisplayInfo
 
 object MockDataProvider {
 

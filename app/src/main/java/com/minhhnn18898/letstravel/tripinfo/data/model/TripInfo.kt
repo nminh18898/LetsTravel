@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.minhhnn18898.letstravel.data.model.FlightInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 
 @Entity(tableName = "trip_info")
 data class TripInfo(

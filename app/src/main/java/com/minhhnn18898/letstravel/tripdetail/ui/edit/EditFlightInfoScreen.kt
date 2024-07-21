@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripdetail.editflightinfo
+package com.minhhnn18898.letstravel.tripdetail.ui.edit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

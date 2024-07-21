@@ -1,11 +1,11 @@
-package com.minhhnn18898.letstravel.data.dao
+package com.minhhnn18898.letstravel.tripdetail.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.minhhnn18898.letstravel.data.model.FlightInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 
 @Dao
 interface FlightInfoDao {
