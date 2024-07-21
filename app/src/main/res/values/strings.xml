@@ -28,4 +28,5 @@
     <string name="error_can_not_create_trip">Can not create trip info. Please try again.</string>
     <string name="create_new_trip">Create new trip</string>
     <string name="show_all">Show all</string>
+    <string name="trip_detail">Trip detail</string>
 </resources>

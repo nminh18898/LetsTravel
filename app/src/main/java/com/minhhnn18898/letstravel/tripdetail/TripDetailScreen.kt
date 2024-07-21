@@ -31,12 +31,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.data.MockDataProvider
 import com.minhhnn18898.letstravel.ui.theme.typography
 
 @Composable
-fun TripDetailScreen(modifier: Modifier = Modifier) {
+fun TripDetailScreen(
+    modifier: Modifier = Modifier,
+    viewModel: TripDetailScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -127,11 +132,4 @@ private fun DetailSection(
 
         content()
     }
-}
-
-
-
-@Composable
-private fun EmptySection() {
-
 }

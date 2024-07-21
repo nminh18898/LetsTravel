@@ -19,7 +19,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
 import com.minhhnn18898.letstravel.app.navigation.AppNavHost
-import com.minhhnn18898.letstravel.app.navigation.AppScreen
+import com.minhhnn18898.letstravel.app.navigation.AppScreenDestination
+import com.minhhnn18898.letstravel.app.navigation.HomeScreenDestination
 import com.minhhnn18898.letstravel.app.navigation.MainAppBar
 import com.minhhnn18898.letstravel.ui.theme.LetsTravelTheme
 
@@ -42,7 +43,7 @@ fun MainApp(
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = AppScreen.valueOf(backStackEntry?.destination?.route ?: AppScreen.Home.name)
+    val currentScreen = AppScreenDestination.getAppScreenDestination(backStackEntry?.destination?.route ?: HomeScreenDestination.route)
 
     var appBarActionsState by remember { mutableStateOf(AppBarActionsState()) }
 
@@ -68,9 +69,4 @@ fun MainApp(
             modifier = modifier.padding(innerPadding)
         )
     }
-}
-
-@Composable
-private fun EmptySection() {
-
 }

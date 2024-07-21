@@ -37,6 +37,7 @@ import com.minhhnn18898.letstravel.ui.theme.typography
 fun TripInfoListingScreen(
     modifier: Modifier = Modifier,
     onClickEmptyView: () -> Unit,
+    onClickTripItem: () -> Unit,
     onClickCreateNew: () -> Unit,
     viewModel: TripInfoListingViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -62,7 +63,8 @@ fun TripInfoListingScreen(
                     ContentListTripItem(
                         modifier = modifier.padding(horizontal = 16.dp),
                         listUserTripItem = items,
-                        onClickCreateNew = onClickCreateNew
+                        onClickCreateNew = onClickCreateNew,
+                        onClickTripItem = onClickTripItem
                     )
                 } else {
                     EmptySavedTripView(onClick = onClickEmptyView)
@@ -78,6 +80,7 @@ fun TripInfoListingScreen(
 private fun ContentListTripItem(
     modifier: Modifier,
     listUserTripItem: List<TripInfoItemDisplay>,
+    onClickTripItem: () -> Unit,
     onClickCreateNew: () -> Unit,
 ) {
     LazyVerticalGrid(
@@ -88,7 +91,10 @@ private fun ContentListTripItem(
     ) {
         items(listUserTripItem) { itemDisplay ->
             if (itemDisplay is UserTripItemDisplay) {
-                TripItemView(modifier = Modifier, itemDisplay = itemDisplay)
+                TripItemView(
+                    modifier = Modifier,
+                    itemDisplay = itemDisplay,
+                    onClick = onClickTripItem)
             } else if (itemDisplay is CreateNewTripItemDisplay) {
                 TripItemCreateNewView(
                     modifier = modifier,
@@ -102,12 +108,16 @@ private fun ContentListTripItem(
 @Composable
 private fun TripItemView(
     modifier: Modifier,
-    itemDisplay: UserTripItemDisplay
+    itemDisplay: UserTripItemDisplay,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .padding(horizontal = 8.dp)
-            .background(MaterialTheme.colorScheme.inverseOnSurface),
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .clickable {
+                onClick.invoke()
+            },
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         Image(

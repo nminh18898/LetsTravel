@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.minhhnn18898.letstravel.homescreen.HomeScreenViewModel
+import com.minhhnn18898.letstravel.tripdetail.TripDetailScreenViewModel
 import com.minhhnn18898.letstravel.tripdetail.editflightinfo.EditFlightInfoViewModel
 import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel
@@ -39,6 +40,10 @@ object AppViewModelProvider {
         initializer {
             val getListTripInfoUseCase = GetListTripInfoUseCase(letsTravelApplication().container.tripInfoRepository)
             TripInfoListingViewModel(getListTripInfoUseCase, defaultCoverResourceProvider)
+        }
+
+        initializer {
+            TripDetailScreenViewModel()
         }
     }
 }

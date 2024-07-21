@@ -15,10 +15,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.minhhnn18898.letstravel.R
 
-enum class AppScreen(@StringRes val title: Int) {
-    Home(title = R.string.app_name),
-    EditTripInfo(title = R.string.trip_info),
-    SavedTripListingFull(title = R.string.saved_trips)
+interface AppScreenDestination {
+    @get:StringRes
+    val title: Int
+    val route: String
+
+    companion object {
+        const val HOME_SCREEN_ROUTE = "home_screen_route"
+        const val EDIT_TRIP_SCREEN_ROUTE = "edit_trip_screen_route"
+        const val SAVED_TRIPS_LISTING_SCREEN_ROUTE = "saved_trips_listing_screen_route"
+        const val TRIP_DETAIL_SCREEN_ROUTE = "trip_detail_screen_route"
+
+        fun getAppScreenDestination(route: String): AppScreenDestination {
+            return when(route) {
+                HOME_SCREEN_ROUTE -> HomeScreenDestination
+                EDIT_TRIP_SCREEN_ROUTE -> EditTripInfoDestination
+                SAVED_TRIPS_LISTING_SCREEN_ROUTE -> SavedTripsListingFullDestination
+                TRIP_DETAIL_SCREEN_ROUTE -> TripDetailDestination
+                else -> HomeScreenDestination
+            }
+        }
+    }
+}
+
+object HomeScreenDestination: AppScreenDestination {
+    override val title: Int =  R.string.app_name
+    override val route: String = AppScreenDestination.HOME_SCREEN_ROUTE
+}
+
+object EditTripInfoDestination: AppScreenDestination {
+    override val title: Int =  R.string.trip_info
+    override val route: String = AppScreenDestination.EDIT_TRIP_SCREEN_ROUTE
+}
+
+object SavedTripsListingFullDestination: AppScreenDestination {
+    override val title: Int = R.string.saved_trips
+    override val route: String = AppScreenDestination.SAVED_TRIPS_LISTING_SCREEN_ROUTE
+}
+
+object TripDetailDestination: AppScreenDestination {
+    override val title: Int = R.string.trip_detail
+    override val route: String = AppScreenDestination.TRIP_DETAIL_SCREEN_ROUTE
 }
 
 data class AppBarActionsState(
@@ -28,7 +65,7 @@ data class AppBarActionsState(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppBar(
-    currentScreen: AppScreen,
+    currentScreen: AppScreenDestination,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     actions: @Composable (RowScope.() -> Unit),

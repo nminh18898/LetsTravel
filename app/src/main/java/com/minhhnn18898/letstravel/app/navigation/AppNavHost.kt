@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.minhhnn18898.letstravel.baseuicomponent.ClearTopBarActions
 import com.minhhnn18898.letstravel.homescreen.HomeScreen
+import com.minhhnn18898.letstravel.tripdetail.TripDetailScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoListingScreen
 
@@ -18,25 +19,28 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = AppScreen.Home.name,
+        startDestination = HomeScreenDestination.route,
         modifier = modifier
     ) {
-        composable(route = AppScreen.Home.name) {
+        composable(route = HomeScreenDestination.route) {
             HomeScreen(
                 onClickEmptyView = {
-                    navController.navigate(AppScreen.EditTripInfo.name)
+                    navController.navigate(EditTripInfoDestination.route)
                 },
                 onClickCreateNew = {
-                    navController.navigate(AppScreen.EditTripInfo.name)
+                    navController.navigate(EditTripInfoDestination.route)
                 },
                 onClickShowAllSavedTrips = {
-                    navController.navigate(AppScreen.SavedTripListingFull.name)
+                    navController.navigate(SavedTripsListingFullDestination.route)
+                },
+                onClickTripItem = {
+                    navController.navigate(TripDetailDestination.route)
                 }
             )
             ClearTopBarActions(onScreenDisplay)
         }
 
-        composable(route = AppScreen.EditTripInfo.name) {
+        composable(route = EditTripInfoDestination.route) {
             EditTripScreen(
                 onComposedTopBarActions = {
                     onScreenDisplay.invoke(it)
@@ -47,15 +51,23 @@ fun AppNavHost(
             )
         }
 
-        composable(route = AppScreen.SavedTripListingFull.name) {
+        composable(route = SavedTripsListingFullDestination.route) {
             TripInfoListingScreen(
                 onClickEmptyView = {
-                    navController.navigate(AppScreen.EditTripInfo.name)
+                    navController.navigate(EditTripInfoDestination.route)
                 },
                 onClickCreateNew = {
-                    navController.navigate(AppScreen.EditTripInfo.name)
+                    navController.navigate(EditTripInfoDestination.route)
+                },
+                onClickTripItem = {
+                    navController.navigate(TripDetailDestination.route)
                 }
             )
+            ClearTopBarActions(onScreenDisplay)
+        }
+
+        composable(route = TripDetailDestination.route) {
+            TripDetailScreen()
             ClearTopBarActions(onScreenDisplay)
         }
     }

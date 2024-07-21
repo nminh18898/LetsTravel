@@ -62,6 +62,7 @@ fun HomeScreen(
     onClickEmptyView: () -> Unit,
     onClickCreateNew: () -> Unit,
     onClickShowAllSavedTrips: () -> Unit,
+    onClickTripItem: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -91,7 +92,12 @@ fun HomeScreen(
                     val hasUserTrip = items.any { it is UserTripItemDisplay }
 
                     if (hasUserTrip) {
-                        ContentListTripItem(modifier = modifier, listUserTripItem = items, onClickCreateNew)
+                        ContentListTripItem(
+                            modifier = modifier,
+                            listUserTripItem = items,
+                            onClickTripItem = onClickTripItem,
+                            onClickCreateNew = onClickCreateNew
+                        )
                     } else {
                         EmptySavedTripView(onClick = onClickEmptyView)
                     }
@@ -105,6 +111,7 @@ fun HomeScreen(
 private fun ContentListTripItem(
     modifier: Modifier,
     listUserTripItem: List<TripInfoItemDisplay>,
+    onClickTripItem: () -> Unit,
     onClickCreateNew: () -> Unit,
 ) {
     LazyColumn(
@@ -114,7 +121,7 @@ private fun ContentListTripItem(
         items(listUserTripItem) { itemDisplay ->
             
             if(itemDisplay is UserTripItemDisplay) {
-                TripItemView(modifier = Modifier, itemDisplay = itemDisplay)
+                TripItemView(modifier = Modifier, itemDisplay = itemDisplay, onClick = onClickTripItem)
             }
             else if(itemDisplay is CreateNewTripItemDisplay) {
                 TripItemCreateNewView(modifier = Modifier, onClick = onClickCreateNew)
@@ -126,7 +133,8 @@ private fun ContentListTripItem(
 @Composable
 private fun TripItemView(
     modifier: Modifier,
-    itemDisplay: UserTripItemDisplay
+    itemDisplay: UserTripItemDisplay,
+    onClick: () -> Unit
 ) {
     val hexagon = remember {
         RoundedPolygon(
@@ -152,7 +160,11 @@ private fun TripItemView(
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            .height(thumbSize.dp)) {
+            .height(thumbSize.dp)
+            .clickable {
+                onClick.invoke()
+            }
+    ) {
         val (thumbConstraint, titleConstraint) = createRefs()
 
         Box(
