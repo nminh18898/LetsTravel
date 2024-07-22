@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.letstravel.app.navigation.AppScreenDestination.Companion.tripIdArg
 
 interface AppScreenDestination {
     @get:StringRes
@@ -23,10 +24,13 @@ interface AppScreenDestination {
     val route: String
 
     companion object {
+        const val tripIdArg = "trip_id"
+
         const val HOME_SCREEN_ROUTE = "home_screen_route"
         const val EDIT_TRIP_SCREEN_ROUTE = "edit_trip_screen_route"
         const val SAVED_TRIPS_LISTING_SCREEN_ROUTE = "saved_trips_listing_screen_route"
         const val TRIP_DETAIL_SCREEN_ROUTE = "trip_detail_screen_route"
+        const val EDIT_FLIGHT_INFO_SCREEN_ROUTE = "edit_flight_info_screen_route"
 
         fun getAppScreenDestination(route: String): AppScreenDestination {
             return when(route) {
@@ -34,6 +38,7 @@ interface AppScreenDestination {
                 EDIT_TRIP_SCREEN_ROUTE -> EditTripInfoDestination
                 SAVED_TRIPS_LISTING_SCREEN_ROUTE -> SavedTripsListingFullDestination
                 TRIP_DETAIL_SCREEN_ROUTE -> TripDetailDestination
+                EDIT_FLIGHT_INFO_SCREEN_ROUTE -> EditFlightInfoDestination
                 else -> HomeScreenDestination
             }
         }
@@ -59,8 +64,17 @@ object TripDetailDestination: AppScreenDestination {
     override val title: Int = R.string.trip_detail
     override val route: String = AppScreenDestination.TRIP_DETAIL_SCREEN_ROUTE
 
-    const val tripIdArg = "trip_id"
     val routeWithArgs = "$route/{$tripIdArg}"
+    val arguments = listOf(
+        navArgument(tripIdArg) { type = NavType.LongType }
+    )
+}
+
+object EditFlightInfoDestination: AppScreenDestination {
+    override val title: Int get() = R.string.flight_info
+    override val route: String = AppScreenDestination.EDIT_FLIGHT_INFO_SCREEN_ROUTE
+
+    val routeWithArgs = "${route}/{$tripIdArg}"
     val arguments = listOf(
         navArgument(tripIdArg) { type = NavType.LongType }
     )

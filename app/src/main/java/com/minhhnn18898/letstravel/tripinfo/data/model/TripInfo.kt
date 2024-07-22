@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfoModel
 
 @Entity(tableName = "trip_info")
 data class TripInfo(
@@ -21,7 +21,7 @@ data class TripAndFlightInfo(
     @Embedded val tripInfo: TripInfo,
     @Relation(
         parentColumn = "trip_id",
-        entityColumn = "flight_id"
+        entityColumn = "trip_id"
     )
-    val flightInfo: FlightInfo
+    val flightInfo: FlightInfoModel
 )

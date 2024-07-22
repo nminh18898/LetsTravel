@@ -30,7 +30,6 @@ class EditTripViewModel(
     var allowSaveContent by mutableStateOf(false)
         private set
 
-
     var onShowSaveLoadingState by mutableStateOf(false)
         private set
 

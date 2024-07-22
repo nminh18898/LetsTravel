@@ -32,12 +32,12 @@ fun TopMessageBar(shown: Boolean, text: String) {
     ) {
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.tertiary,
+            color = MaterialTheme.colorScheme.error,
             shadowElevation = 4.dp
         ) {
             Text(
                 text = text,
-                color = MaterialTheme.colorScheme.onTertiary,
+                color = MaterialTheme.colorScheme.onError,
                 modifier = Modifier.padding(16.dp)
             )
         }

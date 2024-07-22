@@ -7,8 +7,10 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.minhhnn18898.letstravel.homescreen.HomeScreenViewModel
-import com.minhhnn18898.letstravel.tripdetail.ui.edit.EditFlightInfoViewModel
+import com.minhhnn18898.letstravel.tripdetail.ui.flight.EditFlightInfoViewModel
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.TripDetailScreenViewModel
+import com.minhhnn18898.letstravel.tripdetail.usecase.CreateNewFlightInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.usecase.GetFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.usecase.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel
@@ -31,7 +33,9 @@ object AppViewModelProvider {
         }
 
         initializer {
-            EditFlightInfoViewModel()
+            val saveStateHandle = createSavedStateHandle()
+            val createNewFlightInfoUseCase = CreateNewFlightInfoUseCase(letsTravelApplication().container.tripDetailRepository)
+            EditFlightInfoViewModel(saveStateHandle, createNewFlightInfoUseCase)
         }
 
         initializer {
@@ -47,7 +51,8 @@ object AppViewModelProvider {
         initializer {
             val saveStateHandle = createSavedStateHandle()
             val getTripInfoUseCase = GetTripInfoUseCase(letsTravelApplication().container.tripInfoRepository)
-            TripDetailScreenViewModel(savedStateHandle = saveStateHandle, defaultCoverResourceProvider, getTripInfoUseCase)
+            val getFlightInfoUseCase = GetFlightInfoUseCase(letsTravelApplication().container.tripDetailRepository)
+            TripDetailScreenViewModel(savedStateHandle = saveStateHandle, defaultCoverResourceProvider, getTripInfoUseCase, getFlightInfoUseCase)
         }
     }
 }

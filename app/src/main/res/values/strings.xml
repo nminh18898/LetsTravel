@@ -29,4 +29,11 @@
     <string name="create_new_trip">Create new trip</string>
     <string name="show_all">Show all</string>
     <string name="trip_detail">Trip detail</string>
+    <string name="add_your_flights">Add your flights</string>
+    <string name="edit_flight_info">Edit flight info</string>
+    <string name="departure_time">Departure time</string>
+    <string name="arrival_time">Arrival time</string>
+    <string name="add_new_flight">Add new flight</string>
+    <string name="can_not_load_info">Can not load info</string>
+    <string name="error_flight_time_is_invalid">Flight time is invalid.</string>
 </resources>

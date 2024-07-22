@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.minhhnn18898.letstravel.baseuicomponent.ClearTopBarActions
 import com.minhhnn18898.letstravel.homescreen.HomeScreen
+import com.minhhnn18898.letstravel.tripdetail.ui.flight.EditFlightInfoScreen
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.TripDetailScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoListingScreen
@@ -70,13 +71,32 @@ fun AppNavHost(
             route = TripDetailDestination.routeWithArgs,
             arguments = TripDetailDestination.arguments
         ) {
-            TripDetailScreen()
+            TripDetailScreen(onNavigateEditFlightScreen = {
+                navController.navigateToEditFlightScreen(it)
+            })
             ClearTopBarActions(onScreenDisplay)
+        }
+
+        composable(
+            route = EditFlightInfoDestination.routeWithArgs,
+            arguments = EditFlightInfoDestination.arguments
+        ) {
+            EditFlightInfoScreen(
+                onComposedTopBarActions = {
+                    onScreenDisplay.invoke(it)
+                },
+                navigateUp = {
+                    navController.navigateUp()
+                })
         }
     }
 }
 
 private fun NavHostController.navigateToTripDetailScreen(tripId: Long) {
     this.navigate("${TripDetailDestination.route}/$tripId")
+}
+
+private fun NavHostController.navigateToEditFlightScreen(tripId: Long) {
+    this.navigate("${EditFlightInfoDestination.route}/$tripId")
 }
 

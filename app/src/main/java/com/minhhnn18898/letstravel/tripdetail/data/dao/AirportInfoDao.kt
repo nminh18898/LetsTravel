@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AirportInfoDao {
@@ -19,6 +20,12 @@ interface AirportInfoDao {
     @Delete
     suspend fun delete(airportInfo: AirportInfo)
 
+    @Query("SELECT * FROM airport_info WHERE airport_code=:code")
+    fun get(code: String): Flow<AirportInfo>
+
+    @Query("SELECT * FROM airport_info WHERE airport_code IN (:codes)")
+    fun getList(codes: List<String>): Flow<AirportInfo>
+
     @Query("SELECT * FROM airport_info")
-    suspend fun getAll(): List<AirportInfo>
+    fun getAll(): Flow<List<AirportInfo>>
 }

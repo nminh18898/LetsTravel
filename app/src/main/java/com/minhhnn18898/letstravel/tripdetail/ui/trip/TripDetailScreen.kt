@@ -46,7 +46,7 @@ import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
 import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
-import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBodyPager
+import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.ui.theme.typography
@@ -54,6 +54,7 @@ import com.minhhnn18898.letstravel.ui.theme.typography
 @Composable
 fun TripDetailScreen(
     modifier: Modifier = Modifier,
+    onNavigateEditFlightScreen: (Long) -> Unit,
     viewModel: TripDetailScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     Column(
@@ -61,15 +62,23 @@ fun TripDetailScreen(
             .verticalScroll(rememberScrollState())
     ) {
         TripDetailHeader(modifier, viewModel.tripInfoContentState)
+
+        // Flight Info
         DetailSection(
             icon = R.drawable.flight_takeoff_24,
             title = R.string.flights,
             modifier = modifier) {
-                FlightDetailBodyPager(
-                    flightDisplayInfo = MockDataProvider.provideFlightInfo(),
-                    modifier = modifier
-                )
+
+            FlightDetailBody(
+                viewModel.flightInfoContentState,
+                modifier = modifier,
+                onNavigateToCreateFlightInfoScreen = {
+                    onNavigateEditFlightScreen.invoke(viewModel.tripId)
+                }
+            )
         }
+
+        // Hotel info
         DetailSection(
             icon = R.drawable.hotel_24,
             title = R.string.hotels,

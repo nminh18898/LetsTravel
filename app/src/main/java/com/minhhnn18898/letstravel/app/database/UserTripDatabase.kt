@@ -6,18 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
-import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightWithAirportInfoMappingDao
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
-import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
-import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfoMapping
+import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfoModel
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 
 @Database(entities = [
         AirportInfo::class,
-        FlightInfo::class,
+        FlightInfoModel::class,
         TripInfo::class,
-        FlightWithAirportInfoMapping::class
     ],
         version = 1,
         exportSchema = false)
@@ -28,8 +25,6 @@ abstract class UserTripDatabase : RoomDatabase() {
     abstract fun flightInfoDao(): FlightInfoDao
 
     abstract fun airportInfoDao(): AirportInfoDao
-
-    abstract fun flightWithAirportInfoMappingDao(): FlightWithAirportInfoMappingDao
 
     companion object {
         @Volatile

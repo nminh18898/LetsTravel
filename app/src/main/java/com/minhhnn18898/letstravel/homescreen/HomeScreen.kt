@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.baseuicomponent.BasicLoadingView
+import com.minhhnn18898.letstravel.baseuicomponent.CreateNewDataSimpleButton
 import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
 import com.minhhnn18898.letstravel.baseuicomponent.RoundedPolygonShape
 import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
@@ -244,32 +243,11 @@ private fun TripItemCreateNewView(
     modifier: Modifier,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .padding(start = 8.dp, top = 8.dp)
-            .clickable {
-                onClick.invoke()
-            },
-        verticalAlignment = Alignment.CenterVertically) {
-
-        Icon(
-            modifier = Modifier.size(32.dp),
-            imageVector = Icons.Filled.Add,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.tertiary
-        )
-
-
-        Text(
-            modifier = Modifier.padding(start = 4.dp),
-            text = stringResource(id = R.string.create_new_trip),
-            style = typography.bodyMedium,
-            color = MaterialTheme.colorScheme.tertiary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-
+    CreateNewDataSimpleButton(
+        text = stringResource(id = R.string.create_new_trip),
+        modifier = modifier,
+        onClick = onClick
+    )
 }
 
 @Composable

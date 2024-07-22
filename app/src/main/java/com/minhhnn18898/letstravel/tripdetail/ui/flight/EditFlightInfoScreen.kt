@@ -1,5 +1,9 @@
-package com.minhhnn18898.letstravel.tripdetail.ui.edit
+package com.minhhnn18898.letstravel.tripdetail.ui.flight
 
+import android.content.Context
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,14 +15,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,33 +30,77 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.letstravel.app.AppViewModelProvider
+import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
 import com.minhhnn18898.letstravel.baseuicomponent.InputTextRow
+import com.minhhnn18898.letstravel.baseuicomponent.ProgressDialog
+import com.minhhnn18898.letstravel.baseuicomponent.TopMessageBar
 import com.minhhnn18898.letstravel.ui.theme.typography
 import com.minhhnn18898.letstravel.utils.DateTimeUtils
+import com.minhhnn18898.letstravel.utils.StringUtils
 
 @Composable
 fun EditFlightInfoScreen(
+    onComposedTopBarActions: (AppBarActionsState) -> Unit,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditFlightInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+
+    LaunchedEffect(key1 = true) {
+        onComposedTopBarActions(
+            AppBarActionsState(
+                actions = {
+                    IconButton(
+                        onClick = {
+                            viewModel.onSaveClick()
+                        },
+                        enabled = viewModel.allowSaveContent
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.save_as_24),
+                            contentDescription = "",
+                            tint = if(viewModel.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
+                        )
+                    }
+                }
+            )
+        )
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.eventTriggerer.collect { event ->
+                if(event == EditFlightInfoViewModel.Event.CloseScreen) {
+                    navigateUp.invoke()
+                }
+            }
+        }
+    }
+
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
         val defaultModifier = Modifier.padding(horizontal = 16.dp)
 
         SectionHeader(
-            iconRes = R.drawable.flight_takeoff_24,
+            iconRes = R.drawable.travel_24,
             label = stringResource(id = R.string.flight_info),
             modifier = defaultModifier
         )
@@ -63,6 +110,15 @@ fun EditFlightInfoScreen(
             viewModel = viewModel
         )
     }
+
+    AnimatedVisibility(viewModel.onShowSaveLoadingState) {
+        ProgressDialog()
+    }
+
+    TopMessageBar(
+        shown = viewModel.errorType.isShow(),
+        text = getMessageError(LocalContext.current, viewModel.errorType)
+    )
 }
 
 @Composable
@@ -74,7 +130,7 @@ fun EditFlightInfo(
 
         InputTextRow(
             iconRes = R.drawable.airplane_ticket_24,
-            label = stringResource(id = R.string.flight_number),
+            label = "${stringResource(id = R.string.flight_number)} ${StringUtils.getRequiredFieldIndicator()}",
             inputText = viewModel.flightNumber,
             onTextChanged = {
                 viewModel.onFlightNumberUpdated(it)
@@ -99,14 +155,19 @@ fun EditFlightInfo(
             })
 
         Spacer(modifier = Modifier.height(12.dp))
-        InputFlightDateTimeRow(
-            date = viewModel.flightDate,
-            onDateSelected = {
-                viewModel.onFlightDateUpdated(it)
+        InputFlightDateTimeSection(
+            dateFrom = viewModel.getFlightDate(EditFlightInfoViewModel.ItineraryType.DEPARTURE),
+            onDateFromSelected = {
+                viewModel.onFlightDateUpdated(EditFlightInfoViewModel.ItineraryType.DEPARTURE, it)
             },
             timeFrom = viewModel.getFlightTime(EditFlightInfoViewModel.ItineraryType.DEPARTURE),
             onTimeFromSelected = {
                 viewModel.onFlightTimeUpdated(EditFlightInfoViewModel.ItineraryType.DEPARTURE, it)
+            },
+
+            dateTo = viewModel.getFlightDate(EditFlightInfoViewModel.ItineraryType.ARRIVAL),
+            onDateToSelected = {
+                viewModel.onFlightDateUpdated(EditFlightInfoViewModel.ItineraryType.ARRIVAL, it)
             },
             timeTo = viewModel.getFlightTime(EditFlightInfoViewModel.ItineraryType.ARRIVAL),
             onTimeToSelected = {
@@ -174,7 +235,7 @@ fun EditAirportInfo(
 
             InputTextRow(
                 iconRes = R.drawable.pin_24,
-                label = stringResource(id = R.string.airport_code),
+                label = "${stringResource(id = R.string.airport_code)} ${StringUtils.getRequiredFieldIndicator()}",
                 inputText = airportCode,
                 onTextChanged = onAirportCodeUpdated
             )
@@ -229,47 +290,88 @@ fun SectionHeader(
 }
 
 @Composable
-fun InputFlightDateTimeRow(
-    date: Long?,
-    onDateSelected: (Long?) -> Unit,
+fun InputFlightDateTimeSection(
+    dateFrom: Long?,
+    onDateFromSelected: (Long?) -> Unit,
     timeFrom: Pair<Int, Int>,
     onTimeFromSelected: (Pair<Int, Int>) -> Unit,
+    dateTo: Long?,
+    onDateToSelected: (Long?) -> Unit,
     timeTo: Pair<Int, Int>,
     onTimeToSelected: (Pair<Int, Int>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        DatePickerWithDialog(
-            date = date,
-            onDateSelected = onDateSelected
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        InputFlightTime(
+            iconRes = R.drawable.flight_takeoff_24,
+            titleRes = R.string.departure_time,
+            date = dateFrom,
+            onDateSelected = onDateFromSelected,
+            time = timeFrom,
+            onTimeSelected = onTimeFromSelected
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        InputFlightTime(timeFrom, onTimeFromSelected, timeTo, onTimeToSelected)
+
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        InputFlightTime(
+            iconRes = R.drawable.flight_land_24,
+            titleRes = R.string.arrival_time,
+            date = dateTo,
+            onDateSelected = onDateToSelected,
+            time = timeTo,
+            onTimeSelected = onTimeToSelected
+        )
     }
 }
 
 @Composable
 fun InputFlightTime(
-    timeFrom: Pair<Int, Int>,
-    onTimeFromSelected: (Pair<Int, Int>) -> Unit,
-    timeTo: Pair<Int, Int>,
-    onTimeToSelected: (Pair<Int, Int>) -> Unit,
+    @DrawableRes iconRes: Int,
+    @StringRes titleRes: Int,
+    date: Long?,
+    onDateSelected: (Long?) -> Unit,
+    time: Pair<Int, Int>,
+    onTimeSelected: (Pair<Int, Int>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically) {
-        TimePickerWithDialog(timeFrom, onTimeFromSelected)
-        Icon(
-            modifier = Modifier
-                .size(32.dp)
-                .padding(horizontal = 4.dp),
-            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.primary
-        )
-        TimePickerWithDialog(timeTo, onTimeToSelected)
-    }
+    Column(modifier = modifier) {
 
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(id = iconRes),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.tertiary
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text =  "${stringResource(id = titleRes)} ${StringUtils.getRequiredFieldIndicator()}",
+                style = typography.bodyMedium,
+                color = MaterialTheme.colorScheme.tertiary,
+                maxLines = 1
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            DatePickerWithDialog(
+                date = date,
+                onDateSelected = onDateSelected
+            )
+            TimePickerWithDialog(time, onTimeSelected)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -393,7 +495,6 @@ fun TimePickerWithDialog(
             ) {
                 Column(
                     modifier = Modifier
-                        //.background(color = MaterialTheme.colorScheme.surface)
                         .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -427,4 +528,16 @@ fun TimePickerWithDialog(
             }
         }
     }
+}
+
+private fun getMessageError(context: Context, errorType: EditFlightInfoViewModel.ErrorType): String {
+    return when(errorType) {
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_create_trip)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_flight_time_is_invalid)
+        else -> ""
+    }
+}
+
+private fun EditFlightInfoViewModel.ErrorType.isShow(): Boolean {
+    return this != EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_NONE
 }

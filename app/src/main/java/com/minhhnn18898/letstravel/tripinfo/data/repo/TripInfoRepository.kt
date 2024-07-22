@@ -11,7 +11,6 @@ class TripInfoRepository(
     private val ioDispatcher: CoroutineDispatcher
 ) {
 
-
     private val defaultCoverIdList = listOf(
         DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER,
         DefaultCoverElement.COVER_DEFAULT_THEME_LONG_TRIP,
