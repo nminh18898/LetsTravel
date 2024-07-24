@@ -43,9 +43,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
-import com.minhhnn18898.letstravel.baseuicomponent.InputTextRow
-import com.minhhnn18898.letstravel.baseuicomponent.ProgressDialog
-import com.minhhnn18898.letstravel.baseuicomponent.TopMessageBar
+import com.minhhnn18898.ui_components.base_components.InputTextRow
+import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.letstravel.utils.StringUtils

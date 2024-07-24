@@ -42,10 +42,10 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
-import com.minhhnn18898.letstravel.baseuicomponent.BasicLoadingView
-import com.minhhnn18898.letstravel.baseuicomponent.CreateNewDataSimpleButton
-import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
-import com.minhhnn18898.letstravel.baseuicomponent.RoundedPolygonShape
+import com.minhhnn18898.ui_components.base_components.BasicLoadingView
+import com.minhhnn18898.ui_components.base_components.CreateNewDataSimpleButton
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
+import com.minhhnn18898.ui_components.base_components.RoundedPolygonShape
 import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.EmptySavedTripView
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoItemDisplay

@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.baseuicomponent.DefaultEmptyView
+import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 
 @Composable
 fun EmptySavedTripView(

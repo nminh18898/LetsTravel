@@ -44,7 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
-import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager

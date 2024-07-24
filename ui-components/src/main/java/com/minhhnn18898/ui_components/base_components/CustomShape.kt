@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.baseuicomponent
+package com.minhhnn18898.ui_components.base_components
 
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
