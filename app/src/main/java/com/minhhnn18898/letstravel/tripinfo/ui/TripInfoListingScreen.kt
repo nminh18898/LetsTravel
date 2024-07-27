@@ -31,7 +31,7 @@ import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.baseuicomponent.BasicLoadingView
 import com.minhhnn18898.letstravel.baseuicomponent.DefaultErrorView
-import com.minhhnn18898.letstravel.ui.theme.typography
+import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
 fun TripInfoListingScreen(

@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.ui.theme.typography
+import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
 fun DefaultEmptyView(

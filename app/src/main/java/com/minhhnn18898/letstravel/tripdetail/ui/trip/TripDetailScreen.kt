@@ -49,7 +49,7 @@ import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
-import com.minhhnn18898.letstravel.ui.theme.typography
+import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
 fun TripDetailScreen(

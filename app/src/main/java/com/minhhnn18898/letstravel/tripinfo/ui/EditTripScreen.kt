@@ -47,7 +47,7 @@ import com.minhhnn18898.letstravel.baseuicomponent.InputTextRow
 import com.minhhnn18898.letstravel.baseuicomponent.ProgressDialog
 import com.minhhnn18898.letstravel.baseuicomponent.TopMessageBar
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType
-import com.minhhnn18898.letstravel.ui.theme.typography
+import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.letstravel.utils.StringUtils
 
 @Composable

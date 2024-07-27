@@ -48,7 +48,7 @@ import com.minhhnn18898.letstravel.baseuicomponent.CreateNewDataSimpleButton
 import com.minhhnn18898.letstravel.baseuicomponent.DefaultEmptyView
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.AirportDisplayInfo
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.FlightDisplayInfo
-import com.minhhnn18898.letstravel.ui.theme.typography
+import com.minhhnn18898.ui_components.theme.typography
 
 private val defaultPageItemSize = object : PageSize {
     override fun Density.calculateMainAxisPageSize(

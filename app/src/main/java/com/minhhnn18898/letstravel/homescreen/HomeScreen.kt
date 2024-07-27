@@ -54,7 +54,7 @@ import com.minhhnn18898.letstravel.tripinfo.ui.getResult
 import com.minhhnn18898.letstravel.tripinfo.ui.hasError
 import com.minhhnn18898.letstravel.tripinfo.ui.hasResult
 import com.minhhnn18898.letstravel.tripinfo.ui.isContentLoading
-import com.minhhnn18898.letstravel.ui.theme.typography
+import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
 fun HomeScreen(

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
     alias(libs.plugins.compose.compiler)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -67,7 +68,13 @@ dependencies {
     implementation(libs.androidx.graphics.shapes.android)
     ksp(libs.androidx.room.compiler)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore)
+
     implementation(project(":architecture"))
+    implementation(project(":signin"))
+    implementation(project(":ui-components"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

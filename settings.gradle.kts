@@ -22,3 +22,5 @@ dependencyResolutionManagement {
 rootProject.name = "Let's Travel"
 include(":app")
 include(":architecture")
+include(":signin")
+include(":ui-components")

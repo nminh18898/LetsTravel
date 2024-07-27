@@ -22,7 +22,7 @@ import com.minhhnn18898.letstravel.app.navigation.AppNavHost
 import com.minhhnn18898.letstravel.app.navigation.AppScreenDestination
 import com.minhhnn18898.letstravel.app.navigation.HomeScreenDestination
 import com.minhhnn18898.letstravel.app.navigation.MainAppBar
-import com.minhhnn18898.letstravel.ui.theme.LetsTravelTheme
+import com.minhhnn18898.ui_components.theme.LetsTravelTheme
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
