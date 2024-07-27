@@ -16,10 +16,13 @@ import com.minhhnn18898.letstravel.tripinfo.ui.GetSavedTripInfoContentState
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.toTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListTripInfoUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeScreenViewModel(
+@HiltViewModel
+class HomeScreenViewModel @Inject constructor(
     private val getListTripInfoUseCase: GetListTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider
 ): ViewModel() {

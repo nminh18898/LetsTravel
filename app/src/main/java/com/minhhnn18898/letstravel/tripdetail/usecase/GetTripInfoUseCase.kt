@@ -7,8 +7,9 @@ import com.minhhnn18898.letstravel.tripinfo.data.repo.TripInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class GetTripInfoUseCase(private val repository: TripInfoRepository): AsyncUseCase<GetTripInfoUseCase.Param, Flow<Result<Flow<TripInfo>>>>() {
+class GetTripInfoUseCase @Inject constructor(private val repository: TripInfoRepository): AsyncUseCase<GetTripInfoUseCase.Param, Flow<Result<Flow<TripInfo>>>>() {
 
     override suspend fun run(params: Param): Flow<Result<Flow<TripInfo>>> = flow {
         emit(Result.Loading)

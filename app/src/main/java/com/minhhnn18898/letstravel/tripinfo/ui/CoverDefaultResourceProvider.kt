@@ -3,8 +3,9 @@ package com.minhhnn18898.letstravel.tripinfo.ui
 import androidx.annotation.DrawableRes
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripinfo.data.repo.DefaultCoverElement
+import javax.inject.Inject
 
-class CoverDefaultResourceProvider {
+class CoverDefaultResourceProvider @Inject constructor() {
 
     private val defaultCoverList = mapOf(
         DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER to R.drawable.trip_cover_default_1,

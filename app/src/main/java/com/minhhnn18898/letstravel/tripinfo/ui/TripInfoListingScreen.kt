@@ -26,8 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.minhhnn18898.letstravel.app.AppViewModelProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
@@ -39,7 +38,7 @@ fun TripInfoListingScreen(
     onClickEmptyView: () -> Unit,
     onClickTripItem: (Long) -> Unit,
     onClickCreateNew: () -> Unit,
-    viewModel: TripInfoListingViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: TripInfoListingViewModel = hiltViewModel()
 ) {
 
     Column(

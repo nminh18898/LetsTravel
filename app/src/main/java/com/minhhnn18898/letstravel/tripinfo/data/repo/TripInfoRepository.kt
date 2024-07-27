@@ -1,13 +1,16 @@
 package com.minhhnn18898.letstravel.tripinfo.data.repo
 
+import com.minhhnn18898.letstravel.app.di.IODispatcher
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class TripInfoRepository(
+class TripInfoRepository @Inject constructor(
     private val tripInfoDao: TripInfoDao,
+    @IODispatcher
     private val ioDispatcher: CoroutineDispatcher
 ) {
 

@@ -39,9 +39,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.EmptySavedTripView
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoItemDisplay
@@ -66,7 +65,7 @@ fun HomeScreen(
     onClickTripItem: (Long) -> Unit,
     onClickCreateAccount: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     Column(
         modifier = modifier

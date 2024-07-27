@@ -8,8 +8,9 @@ import com.minhhnn18898.letstravel.tripdetail.data.repo.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class CreateNewFlightInfoUseCase(private val repository: TripDetailRepository): AsyncUseCase<CreateNewFlightInfoUseCase.Param, Flow<Result<Unit>>>() {
+class CreateNewFlightInfoUseCase @Inject constructor(private val repository: TripDetailRepository): AsyncUseCase<CreateNewFlightInfoUseCase.Param, Flow<Result<Unit>>>() {
 
     class Param(
         val tripId: Long,

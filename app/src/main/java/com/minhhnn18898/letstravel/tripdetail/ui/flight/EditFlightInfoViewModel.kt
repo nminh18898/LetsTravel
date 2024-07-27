@@ -17,12 +17,15 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.CreateNewFlightInfoUseCase
 import com.minhhnn18898.letstravel.utils.DateTimeUtils
 import com.minhhnn18898.letstravel.utils.isNotBlankOrEmpty
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EditFlightInfoViewModel(
+@HiltViewModel
+class EditFlightInfoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val createNewFlightInfoUseCase: CreateNewFlightInfoUseCase,
     private val dateTimelineUtils: DateTimeUtils = DateTimeUtils()

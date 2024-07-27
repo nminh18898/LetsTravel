@@ -42,12 +42,11 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
+import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.utils.DateTimeUtils
 import com.minhhnn18898.letstravel.utils.StringUtils
 import com.minhhnn18898.ui_components.base_components.InputTextRow
@@ -61,7 +60,7 @@ fun EditFlightInfoScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EditFlightInfoViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+    viewModel: EditFlightInfoViewModel = hiltViewModel()) {
 
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(

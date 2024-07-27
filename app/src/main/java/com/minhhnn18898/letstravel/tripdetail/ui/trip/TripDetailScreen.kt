@@ -40,10 +40,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager
@@ -56,7 +55,7 @@ import com.minhhnn18898.core.R.string as CommonStringRes
 fun TripDetailScreen(
     modifier: Modifier = Modifier,
     onNavigateEditFlightScreen: (Long) -> Unit,
-    viewModel: TripDetailScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
     Column(
         Modifier

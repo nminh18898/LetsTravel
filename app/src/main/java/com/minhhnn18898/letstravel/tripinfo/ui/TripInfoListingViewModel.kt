@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListTripInfoUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TripInfoListingViewModel(
+@HiltViewModel
+class TripInfoListingViewModel @Inject constructor(
     private val getListTripInfoUseCase: GetListTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider
 ): ViewModel() {

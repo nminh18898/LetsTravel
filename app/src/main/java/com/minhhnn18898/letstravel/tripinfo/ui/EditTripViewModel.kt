@@ -10,12 +10,15 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.usecase.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListDefaultCoverUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EditTripViewModel(
+@HiltViewModel
+class EditTripViewModel @Inject constructor(
     private val getListDefaultCoverUseCase: GetListDefaultCoverUseCase,
     private val createTripInfoUseCase: CreateTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider

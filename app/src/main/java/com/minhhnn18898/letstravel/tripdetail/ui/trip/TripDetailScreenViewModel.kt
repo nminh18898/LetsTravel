@@ -18,10 +18,13 @@ import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.toTripItemDisplay
 import com.minhhnn18898.letstravel.utils.DateTimeUtils
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TripDetailScreenViewModel(
+@HiltViewModel
+class TripDetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val defaultResourceProvider: CoverDefaultResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,

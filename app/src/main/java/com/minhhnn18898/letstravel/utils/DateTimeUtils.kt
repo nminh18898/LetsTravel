@@ -8,12 +8,13 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.TimeZone
+import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 
 @Suppress("unused")
-class DateTimeUtils {
+class DateTimeUtils @Inject constructor() {
 
     fun convertMillisToLocalDate(millis: Long): LocalDate {
         return Instant

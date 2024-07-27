@@ -1,5 +1,6 @@
 package com.minhhnn18898.letstravel.tripdetail.data.repo
 
+import com.minhhnn18898.letstravel.app.di.IODispatcher
 import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
@@ -11,8 +12,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class TripDetailRepository(
+class TripDetailRepository @Inject constructor(
+    @IODispatcher
     private val ioDispatcher: CoroutineDispatcher,
     private val airportInfoDao: AirportInfoDao,
     private val flightInfoDao: FlightInfoDao,
