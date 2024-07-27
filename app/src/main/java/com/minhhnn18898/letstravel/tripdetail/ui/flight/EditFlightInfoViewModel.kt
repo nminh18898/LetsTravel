@@ -10,13 +10,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.letstravel.app.navigation.AppScreenDestination
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.CreateNewFlightInfoUseCase
-import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType
-import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.Event
 import com.minhhnn18898.letstravel.utils.DateTimeUtils
 import com.minhhnn18898.letstravel.utils.isNotBlankOrEmpty
 import kotlinx.coroutines.channels.Channel
@@ -30,7 +28,7 @@ class EditFlightInfoViewModel(
     private val dateTimelineUtils: DateTimeUtils = DateTimeUtils()
 ): ViewModel() {
 
-    private var tripId: Long = savedStateHandle.get<Long>(AppScreenDestination.tripIdArg) ?: -1
+    private var tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
     var flightNumber by mutableStateOf("")
         private set

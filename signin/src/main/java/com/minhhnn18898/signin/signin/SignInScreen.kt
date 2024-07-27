@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.minhhnn18898.signin.R
 import com.minhhnn18898.signin.base.EmailField
 import com.minhhnn18898.signin.base.PasswordTextField
 import com.minhhnn18898.signin.dependency_provider.SignInViewModelProvider
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun SignInScreen(
@@ -56,7 +56,7 @@ fun SignInButton(
             .fillMaxWidth()
     ) {
         Text(
-            text = stringResource(id = R.string.sign_in),
+            text = stringResource(id = CommonStringRes.sign_in),
         )
     }
 }
@@ -72,7 +72,7 @@ fun CreateNewAccountButton(
         contentAlignment = Alignment.BottomStart
     ) {
         CreateNewDefaultButton(
-            text = stringResource(id = R.string.create_new_account),
+            text = stringResource(id = CommonStringRes.create_new_account),
             modifier = Modifier,
             onClick = onClick)
     }

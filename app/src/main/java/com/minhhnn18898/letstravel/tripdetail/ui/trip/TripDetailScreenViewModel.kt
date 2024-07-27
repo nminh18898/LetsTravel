@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.letstravel.app.navigation.AppScreenDestination
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.GetFlightInfoUseCase
@@ -29,7 +29,7 @@ class TripDetailScreenViewModel(
     private val dateTimeUtils: DateTimeUtils = DateTimeUtils()
 ): ViewModel() {
 
-    val tripId = savedStateHandle.get<Long>(AppScreenDestination.tripIdArg) ?: -1
+    val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
     var tripInfoContentState: UiState<UserTripItemDisplay, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set

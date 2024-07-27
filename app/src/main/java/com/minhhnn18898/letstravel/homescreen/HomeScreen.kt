@@ -56,6 +56,7 @@ import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.RoundedPolygonShape
 import com.minhhnn18898.ui_components.theme.typography
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun HomeScreen(
@@ -72,10 +73,10 @@ fun HomeScreen(
         viewModel.contentState.let { contentState ->
             TripListingScreenSection(
                 icon = R.drawable.your_trips_24,
-                title = R.string.saved_trips,
+                title = CommonStringRes.saved_trips,
                 sectionCtaData = SectionCtaData(
                     icon = R.drawable.chevron_right_24,
-                    title = R.string.show_all,
+                    title = CommonStringRes.show_all,
                     onClick = onClickShowAllSavedTrips
                 )
             ) {
@@ -107,7 +108,7 @@ fun HomeScreen(
 
         TripListingScreenSection(
             icon = R.drawable.travel_explore_24,
-            title = R.string.explore,
+            title = CommonStringRes.explore,
             modifier = modifier
         ) {
             SignInScreen(modifier = modifier)
@@ -253,7 +254,7 @@ private fun TripItemCreateNewView(
     onClick: () -> Unit
 ) {
     CreateNewDefaultButton(
-        text = stringResource(id = R.string.create_new_trip),
+        text = stringResource(id = CommonStringRes.create_new_trip),
         modifier = modifier,
         onClick = onClick
     )

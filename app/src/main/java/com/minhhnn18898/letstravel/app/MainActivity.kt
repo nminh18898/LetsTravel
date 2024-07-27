@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
+import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
+import com.minhhnn18898.app_navigation.destination.AppScreenDestination
+import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
+import com.minhhnn18898.app_navigation.topappbar.MainAppBar
 import com.minhhnn18898.letstravel.app.navigation.AppNavHost
-import com.minhhnn18898.letstravel.app.navigation.AppScreenDestination
-import com.minhhnn18898.letstravel.app.navigation.HomeScreenDestination
-import com.minhhnn18898.letstravel.app.navigation.MainAppBar
 import com.minhhnn18898.ui_components.theme.LetsTravelTheme
 
 class MainActivity : ComponentActivity() {

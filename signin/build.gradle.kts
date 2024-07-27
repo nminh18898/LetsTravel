@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(project(":ui-components"))
+    implementation(project(":app_navigation"))
+    implementation(project(":core"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

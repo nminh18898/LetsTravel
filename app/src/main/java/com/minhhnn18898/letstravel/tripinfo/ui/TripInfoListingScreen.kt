@@ -27,11 +27,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
 import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun TripInfoListingScreen(
@@ -172,7 +172,7 @@ private fun TripItemCreateNewView(
 
         Text(
             modifier = Modifier.padding(top = 12.dp, start = 8.dp, end = 8.dp),
-            text = stringResource(id = R.string.create_new_trip),
+            text = stringResource(id = CommonStringRes.create_new_trip),
             style = typography.bodySmall,
             color = MaterialTheme.colorScheme.tertiary,
             maxLines = 1,

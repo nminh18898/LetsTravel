@@ -44,11 +44,12 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
-import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.AirportDisplayInfo
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.FlightDisplayInfo
+import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.theme.typography
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 private val defaultPageItemSize = object : PageSize {
     override fun Density.calculateMainAxisPageSize(
@@ -75,7 +76,7 @@ fun FlightDetailBody(
 
         if(isEmpty) {
             DefaultEmptyView(
-                text = stringResource(id = R.string.add_your_flights),
+                text = stringResource(id = CommonStringRes.add_your_flights),
                 modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth(),
@@ -90,7 +91,7 @@ fun FlightDetailBody(
             Spacer(modifier = Modifier.height(8.dp))
 
             CreateNewDefaultButton(
-                text = stringResource(id = R.string.add_new_flight),
+                text = stringResource(id = CommonStringRes.add_new_flight),
                 modifier = modifier,
                 onClick = onNavigateToCreateFlightInfoScreen
             )
@@ -115,7 +116,7 @@ private fun ErrorTextView(modifier: Modifier) {
         Spacer(modifier = Modifier.width(4.dp))
 
         Text(
-            text = stringResource(id = R.string.can_not_load_info),
+            text = stringResource(id = CommonStringRes.can_not_load_info),
             style = typography.bodySmall,
             color = MaterialTheme.colorScheme.tertiary,
             maxLines = 1,
@@ -219,14 +220,14 @@ fun FlightAdditionalInfo(
             flightNumberDesc = "$flightNumberDesc - ${flightDisplayInfo.operatedAirlines}"
         }
         FlightAdditionalInfoRow(
-            title = stringResource(id = R.string.flight_number),
+            title = stringResource(id = CommonStringRes.flight_number),
             description = flightNumberDesc
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         FlightAdditionalInfoRow(
-            title = stringResource(id = R.string.prices),
+            title = stringResource(id = CommonStringRes.prices),
             description = flightDisplayInfo.price
         )
     }

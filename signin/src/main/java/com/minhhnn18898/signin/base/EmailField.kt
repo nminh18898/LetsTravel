@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.minhhnn18898.signin.R
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun EmailField(
@@ -22,7 +23,7 @@ fun EmailField(
         modifier = modifier.fillMaxWidth(),
         value = value,
         onValueChange = { onNewValue(it) },
-        label = { Text(stringResource(R.string.email)) },
+        label = { Text(stringResource(CommonStringRes.email)) },
         leadingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.mail_24),

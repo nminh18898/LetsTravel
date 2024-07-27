@@ -42,13 +42,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
-import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
+import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
+import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType
+import com.minhhnn18898.letstravel.utils.StringUtils
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
-import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType
 import com.minhhnn18898.ui_components.theme.typography
-import com.minhhnn18898.letstravel.utils.StringUtils
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun EditTripScreen(
@@ -97,7 +98,7 @@ fun EditTripScreen(
 
         InputTextRow(
             iconRes = R.drawable.trip_24,
-            label = stringResource(id = R.string.trip_name),
+            label = stringResource(id = CommonStringRes.trip_name),
             inputText = viewModel.tripTitle,
             onTextChanged = {
                 viewModel.onTripTitleUpdated(it)
@@ -106,7 +107,7 @@ fun EditTripScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text =  stringResource(id = R.string.choose_cover),
+            text =  stringResource(id = CommonStringRes.choose_cover),
             style = typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1
@@ -202,7 +203,7 @@ fun DefaultCoverCollectionCard(
 
 private fun getMessageError(context: Context, errorType: ErrorType): String {
     if(errorType == ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO) {
-        return StringUtils.getString(context, R.string.error_can_not_create_trip)
+        return StringUtils.getString(context, CommonStringRes.error_can_not_create_trip)
     }
 
     return ""

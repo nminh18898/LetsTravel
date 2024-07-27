@@ -47,13 +47,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
-import com.minhhnn18898.letstravel.app.navigation.AppBarActionsState
+import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
+import com.minhhnn18898.letstravel.utils.DateTimeUtils
+import com.minhhnn18898.letstravel.utils.StringUtils
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
-import com.minhhnn18898.letstravel.utils.DateTimeUtils
-import com.minhhnn18898.letstravel.utils.StringUtils
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun EditFlightInfoScreen(
@@ -101,7 +102,7 @@ fun EditFlightInfoScreen(
 
         SectionHeader(
             iconRes = R.drawable.travel_24,
-            label = stringResource(id = R.string.flight_info),
+            label = stringResource(id = CommonStringRes.flight_info),
             modifier = defaultModifier
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -130,7 +131,7 @@ fun EditFlightInfo(
 
         InputTextRow(
             iconRes = R.drawable.airplane_ticket_24,
-            label = "${stringResource(id = R.string.flight_number)} ${StringUtils.getRequiredFieldIndicator()}",
+            label = "${stringResource(id = CommonStringRes.flight_number)} ${StringUtils.getRequiredFieldIndicator()}",
             inputText = viewModel.flightNumber,
             onTextChanged = {
                 viewModel.onFlightNumberUpdated(it)
@@ -139,7 +140,7 @@ fun EditFlightInfo(
         Spacer(modifier = Modifier.height(8.dp))
         InputTextRow(
             iconRes = R.drawable.airlines_24,
-            label = stringResource(id = R.string.airlines),
+            label = stringResource(id = CommonStringRes.airlines),
             inputText = viewModel.operatedAirlines,
             onTextChanged = {
                 viewModel.onAirlinesUpdated(it)
@@ -148,7 +149,7 @@ fun EditFlightInfo(
         Spacer(modifier = Modifier.height(8.dp))
         InputTextRow(
             iconRes = R.drawable.payments_24,
-            label = stringResource(id = R.string.prices),
+            label = stringResource(id = CommonStringRes.prices),
             inputText = viewModel.prices,
             onTextChanged = {
                 viewModel.onPricesUpdated(it)
@@ -178,7 +179,7 @@ fun EditFlightInfo(
         Spacer(modifier = Modifier.height(8.dp))
         val departureType = EditFlightInfoViewModel.ItineraryType.DEPARTURE
         EditAirportInfo(
-            label = stringResource(id = R.string.from),
+            label = stringResource(id = CommonStringRes.from),
             airportCode = viewModel.getAirportCode(departureType),
             onAirportCodeUpdated = {
                 viewModel.onAirportCodeUpdated(departureType, it)
@@ -196,7 +197,7 @@ fun EditFlightInfo(
         Spacer(modifier = Modifier.height(8.dp))
         val arrivalType = EditFlightInfoViewModel.ItineraryType.ARRIVAL
         EditAirportInfo(
-            label = stringResource(id = R.string.to),
+            label = stringResource(id = CommonStringRes.to),
             airportCode = viewModel.getAirportCode(arrivalType),
             onAirportCodeUpdated = {
                 viewModel.onAirportCodeUpdated(arrivalType, it)
@@ -235,7 +236,7 @@ fun EditAirportInfo(
 
             InputTextRow(
                 iconRes = R.drawable.pin_24,
-                label = "${stringResource(id = R.string.airport_code)} ${StringUtils.getRequiredFieldIndicator()}",
+                label = "${stringResource(id = CommonStringRes.airport_code)} ${StringUtils.getRequiredFieldIndicator()}",
                 inputText = airportCode,
                 onTextChanged = onAirportCodeUpdated
             )
@@ -243,7 +244,7 @@ fun EditAirportInfo(
             Spacer(modifier = Modifier.height(8.dp))
             InputTextRow(
                 iconRes = R.drawable.id_card_24,
-                label = stringResource(id = R.string.airport_name),
+                label = stringResource(id = CommonStringRes.airport_name),
                 inputText = airportName,
                 onTextChanged = onAirportNameUpdated
             )
@@ -251,7 +252,7 @@ fun EditAirportInfo(
             Spacer(modifier = Modifier.height(8.dp))
             InputTextRow(
                 iconRes = R.drawable.apartment_24,
-                label = stringResource(id = R.string.city),
+                label = stringResource(id = CommonStringRes.city),
                 inputText = city,
                 onTextChanged = onCityUpdated
             )
@@ -307,7 +308,7 @@ fun InputFlightDateTimeSection(
     ) {
         InputFlightTime(
             iconRes = R.drawable.flight_takeoff_24,
-            titleRes = R.string.departure_time,
+            titleRes = CommonStringRes.departure_time,
             date = dateFrom,
             onDateSelected = onDateFromSelected,
             time = timeFrom,
@@ -318,7 +319,7 @@ fun InputFlightDateTimeSection(
         
         InputFlightTime(
             iconRes = R.drawable.flight_land_24,
-            titleRes = R.string.arrival_time,
+            titleRes = CommonStringRes.arrival_time,
             date = dateTo,
             onDateSelected = onDateToSelected,
             time = timeTo,
@@ -391,7 +392,7 @@ fun DatePickerWithDialog(
 
     val dateToString = millisToLocalDate?.let {
         DateTimeUtils().dateToString(millisToLocalDate)
-    } ?: stringResource(id = R.string.choose_date)
+    } ?: stringResource(id = CommonStringRes.choose_date)
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -426,7 +427,7 @@ fun DatePickerWithDialog(
                         onDateSelected.invoke(state.selectedDateMillis)
                     }
                 ) {
-                    Text(text = stringResource(id = R.string.confirm))
+                    Text(text = stringResource(id = CommonStringRes.confirm))
                 }
             },
             dismissButton = {
@@ -434,7 +435,7 @@ fun DatePickerWithDialog(
                     onClick = { showDialog = false }
                 ) {
                     Text(
-                        text = stringResource(id = R.string.cancel),
+                        text = stringResource(id = CommonStringRes.cancel),
                         color = MaterialTheme.colorScheme.secondary
                     )
                 }
@@ -510,7 +511,7 @@ fun TimePickerWithDialog(
 
                         TextButton(onClick = { showDialog = false }) {
                             Text(
-                                text = stringResource(id = R.string.cancel),
+                                text = stringResource(id = CommonStringRes.cancel),
                                 color = MaterialTheme.colorScheme.secondary
                             )
                         }
@@ -521,7 +522,7 @@ fun TimePickerWithDialog(
                             showDialog = false
                             onTimeSelected.invoke(Pair(timeState.hour, timeState.minute))
                         }) {
-                            Text(text = stringResource(id = R.string.confirm))
+                            Text(text = stringResource(id = CommonStringRes.confirm))
                         }
                     }
                 }
@@ -532,8 +533,8 @@ fun TimePickerWithDialog(
 
 private fun getMessageError(context: Context, errorType: EditFlightInfoViewModel.ErrorType): String {
     return when(errorType) {
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_create_trip)
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_flight_time_is_invalid)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, CommonStringRes.error_can_not_create_trip)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, CommonStringRes.error_flight_time_is_invalid)
         else -> ""
     }
 }

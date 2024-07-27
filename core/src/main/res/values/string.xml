@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Let\'s Travel</string>
+    <string name="trip_detail_header_cover_content_desc">Trip cover</string>
+    <string name="flights">Flights</string>
+    <string name="hotels">Hotels</string>
+    <string name="prices">Prices</string>
+    <string name="flight_number">Flight number</string>
+    <string name="address">Address</string>
+    <string name="choose_date">Choose date</string>
+    <string name="choose_time">Choose time</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="airport_code">Airport code</string>
+    <string name="airport_name">Airport name</string>
+    <string name="city">City</string>
+    <string name="departure_flight">Departure flight</string>
+    <string name="arrival_flight">Return flight</string>
+    <string name="airlines">Airlines</string>
+    <string name="flight_info">Flight info</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="saved_trips">Saved trips</string>
+    <string name="create_your_first_trip">"Create your first trip"</string>
+    <string name="trip_info">Trip info</string>
+    <string name="back">Back</string>
+    <string name="trip_name">Trip name</string>
+    <string name="choose_cover">Choose cover</string>
+    <string name="error_can_not_create_trip">Can not create trip info. Please try again.</string>
+    <string name="create_new_trip">Create new trip</string>
+    <string name="show_all">Show all</string>
+    <string name="trip_detail">Trip detail</string>
+    <string name="add_your_flights">Add your flights</string>
+    <string name="edit_flight_info">Edit flight info</string>
+    <string name="departure_time">Departure time</string>
+    <string name="arrival_time">Arrival time</string>
+    <string name="add_new_flight">Add new flight</string>
+    <string name="can_not_load_info">Can not load info</string>
+    <string name="error_flight_time_is_invalid">Flight time is invalid.</string>
+    <string name="explore">Explore</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="create_new_account">Create new account</string>
+</resources>

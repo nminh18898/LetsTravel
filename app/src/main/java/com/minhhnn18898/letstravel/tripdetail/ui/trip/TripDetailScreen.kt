@@ -44,12 +44,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
-import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun TripDetailScreen(
@@ -66,7 +67,7 @@ fun TripDetailScreen(
         // Flight Info
         DetailSection(
             icon = R.drawable.flight_takeoff_24,
-            title = R.string.flights,
+            title = CommonStringRes.flights,
             modifier = modifier) {
 
             FlightDetailBody(
@@ -81,7 +82,7 @@ fun TripDetailScreen(
         // Hotel info
         DetailSection(
             icon = R.drawable.hotel_24,
-            title = R.string.hotels,
+            title = CommonStringRes.hotels,
             modifier = modifier) {
                 HotelDetailBodyPager(
                     hotelDisplayInfo = MockDataProvider.provideHotelInfo(),
@@ -157,7 +158,7 @@ private fun TripDetailHeaderContent(
     ) {
         Image(
             painter = painterResource(tripInfoItemDisplay.defaultCoverRes),
-            contentDescription = stringResource(id = R.string.trip_detail_header_cover_content_desc),
+            contentDescription = stringResource(id = CommonStringRes.trip_detail_header_cover_content_desc),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()

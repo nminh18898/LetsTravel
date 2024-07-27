@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.minhhnn18898.signin.R
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun PasswordTextField(
@@ -34,7 +35,7 @@ fun PasswordTextField(
             onNewValue(it)
         },
         label = {
-            Text(text = stringResource(id = R.string.password))
+            Text(text = stringResource(id = CommonStringRes.password))
         },
         singleLine = true,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),

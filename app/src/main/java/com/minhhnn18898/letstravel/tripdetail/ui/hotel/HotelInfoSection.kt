@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.HotelDisplayInfo
 import com.minhhnn18898.ui_components.theme.typography
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 private val defaultPageItemSize = object : PageSize {
     override fun Density.calculateMainAxisPageSize(
@@ -186,14 +187,14 @@ fun HotelAdditionalInfo(
 ) {
     Column(modifier = modifier) {
         HotelAdditionalInfoRow(
-            title = stringResource(id = R.string.address),
+            title = stringResource(id = CommonStringRes.address),
             description = hotelDisplayInfo.address
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         HotelAdditionalInfoRow(
-            title = stringResource(id = R.string.prices),
+            title = stringResource(id = CommonStringRes.prices),
             description = hotelDisplayInfo.price
         )
     }
