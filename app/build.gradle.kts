@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.firestore)
 
+    implementation(libs.androidx.startup.runtime)
+
     implementation(project(":architecture"))
     implementation(project(":signin"))
     implementation(project(":ui-components"))

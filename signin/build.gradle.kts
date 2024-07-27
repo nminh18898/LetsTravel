@@ -30,6 +30,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -57,6 +58,8 @@ dependencies {
     implementation(project(":ui-components"))
     implementation(project(":app_navigation"))
     implementation(project(":core"))
+    implementation(project(":architecture"))
+    implementation(libs.androidx.startup.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
