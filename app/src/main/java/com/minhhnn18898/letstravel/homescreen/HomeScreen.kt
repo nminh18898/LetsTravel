@@ -42,10 +42,6 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.app.AppViewModelProvider
-import com.minhhnn18898.ui_components.base_components.BasicLoadingView
-import com.minhhnn18898.ui_components.base_components.CreateNewDataSimpleButton
-import com.minhhnn18898.ui_components.base_components.DefaultErrorView
-import com.minhhnn18898.ui_components.base_components.RoundedPolygonShape
 import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.EmptySavedTripView
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoItemDisplay
@@ -54,6 +50,11 @@ import com.minhhnn18898.letstravel.tripinfo.ui.getResult
 import com.minhhnn18898.letstravel.tripinfo.ui.hasError
 import com.minhhnn18898.letstravel.tripinfo.ui.hasResult
 import com.minhhnn18898.letstravel.tripinfo.ui.isContentLoading
+import com.minhhnn18898.signin.signin.SignInScreen
+import com.minhhnn18898.ui_components.base_components.BasicLoadingView
+import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
+import com.minhhnn18898.ui_components.base_components.RoundedPolygonShape
 import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
@@ -102,6 +103,14 @@ fun HomeScreen(
                     }
                 }
             }
+        }
+
+        TripListingScreenSection(
+            icon = R.drawable.travel_explore_24,
+            title = R.string.explore,
+            modifier = modifier
+        ) {
+            SignInScreen(modifier = modifier)
         }
     }
 }
@@ -243,7 +252,7 @@ private fun TripItemCreateNewView(
     modifier: Modifier,
     onClick: () -> Unit
 ) {
-    CreateNewDataSimpleButton(
+    CreateNewDefaultButton(
         text = stringResource(id = R.string.create_new_trip),
         modifier = modifier,
         onClick = onClick

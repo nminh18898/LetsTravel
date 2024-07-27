@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
-fun CreateNewDataSimpleButton(
+fun CreateNewDefaultButton(
     text: String,
     modifier: Modifier,
     onClick: () -> Unit

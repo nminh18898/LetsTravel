@@ -50,6 +50,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
+
+    implementation(project(":ui-components"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
