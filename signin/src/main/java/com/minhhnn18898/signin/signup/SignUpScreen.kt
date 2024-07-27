@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.minhhnn18898.signin.base.EmailField
 import com.minhhnn18898.signin.base.PasswordTextField
+import com.minhhnn18898.signin.base.RepeatPasswordTextField
 import com.minhhnn18898.signin.dependency_provider.SignInViewModelProvider
 import com.minhhnn18898.core.R.string as CommonStringRes
 
@@ -26,13 +27,18 @@ fun SignUpScreen(
     val uiState by viewModel.uiState
 
     Column(
-        modifier = modifier.padding(horizontal = 16.dp)
+        modifier = modifier.padding(horizontal = 16.dp),
     ) {
         EmailField(value = uiState.email, onNewValue = viewModel::onEmailChange)
         Spacer(modifier = Modifier.height(8.dp))
-        PasswordTextField(value = uiState.password, onNewValue = viewModel::onPasswordChange)
+        PasswordTextField(
+            value = uiState.password,
+            onNewValue = viewModel::onPasswordChange)
         Spacer(modifier = Modifier.height(8.dp))
-        PasswordTextField(value = uiState.repeatPassword, onNewValue = viewModel::onRepeatPasswordChange)
+        RepeatPasswordTextField(
+            value = uiState.repeatPassword,
+            onNewValue = viewModel::onRepeatPasswordChange
+        )
         Spacer(modifier = Modifier.height(16.dp))
         SignUpButton(modifier = modifier, onClick = viewModel::onSignUpClick)
     }

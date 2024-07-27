@@ -1,5 +1,7 @@
 package com.minhhnn18898.signin.base
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -25,7 +27,9 @@ import com.minhhnn18898.core.R.string as CommonStringRes
 fun PasswordTextField(
     value: String,
     onNewValue: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    @DrawableRes iconRes: Int = R.drawable.lock_24,
+    @StringRes labelRes: Int = CommonStringRes.password,
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -35,16 +39,16 @@ fun PasswordTextField(
             onNewValue(it)
         },
         label = {
-            Text(text = stringResource(id = CommonStringRes.password))
+            Text(text = stringResource(id = labelRes))
         },
         singleLine = true,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
-            val iconRes = if (passwordVisible) R.drawable.visibility_off_24 else R.drawable.visibility_24
+            val visibilityIconRes = if (passwordVisible) R.drawable.visibility_off_24 else R.drawable.visibility_24
             IconButton(onClick = {passwordVisible = !passwordVisible}){
                 Icon(
-                    painter = painterResource(id = iconRes),
+                    painter = painterResource(id = visibilityIconRes),
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -52,11 +56,26 @@ fun PasswordTextField(
         },
         leadingIcon = {
             Icon(
-                painter = painterResource(id = R.drawable.lock_24),
+                painter = painterResource(id = iconRes),
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.primary
             )
         },
         modifier = modifier.fillMaxWidth()
+    )
+}
+
+@Composable
+fun RepeatPasswordTextField(
+    value: String,
+    onNewValue: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    PasswordTextField(
+        value = value,
+        onNewValue = onNewValue,
+        modifier = modifier,
+        iconRes = R.drawable.sync_lock_24,
+        labelRes = CommonStringRes.repeat_password
     )
 }

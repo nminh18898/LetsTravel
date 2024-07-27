@@ -64,6 +64,7 @@ fun HomeScreen(
     onClickCreateNew: () -> Unit,
     onClickShowAllSavedTrips: () -> Unit,
     onClickTripItem: (Long) -> Unit,
+    onClickCreateAccount: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -111,7 +112,10 @@ fun HomeScreen(
             title = CommonStringRes.explore,
             modifier = modifier
         ) {
-            SignInScreen(modifier = modifier)
+            SignInScreen(
+                modifier = modifier,
+                onClickCreateNewAccount = onClickCreateAccount
+            )
         }
     }
 }

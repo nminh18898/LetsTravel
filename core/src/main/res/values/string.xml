@@ -40,6 +40,7 @@
     <string name="explore">Explore</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
     <string name="create_new_account">Create new account</string>

@@ -24,6 +24,7 @@ import com.minhhnn18898.core.R.string as CommonStringRes
 @Composable
 fun SignInScreen(
     modifier: Modifier,
+    onClickCreateNewAccount: () -> Unit,
     viewModel: SignInViewModel = viewModel(factory = SignInViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState
@@ -33,15 +34,16 @@ fun SignInScreen(
     ) {
         EmailField(value = uiState.email, onNewValue = viewModel::onEmailChange)
         Spacer(modifier = Modifier.height(8.dp))
-        PasswordTextField(value = uiState.password, onNewValue = viewModel::onPasswordChange)
+        PasswordTextField(
+            value = uiState.password,
+            onNewValue = viewModel::onPasswordChange
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         SignInButton(modifier = modifier, onClick = viewModel::onSignInClick)
         Spacer(modifier = Modifier.height(8.dp))
-        CreateNewAccountButton(modifier = modifier, onClick = {
-
-        })
+        CreateNewAccountButton(modifier = modifier, onClick = onClickCreateNewAccount)
     }
 }
 

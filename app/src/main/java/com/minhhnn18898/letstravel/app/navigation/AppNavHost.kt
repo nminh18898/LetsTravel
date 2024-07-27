@@ -9,6 +9,7 @@ import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
+import com.minhhnn18898.app_navigation.destination.SignUpScreenDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
 import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
 import com.minhhnn18898.app_navigation.topappbar.ClearTopBarActions
@@ -17,6 +18,7 @@ import com.minhhnn18898.letstravel.tripdetail.ui.flight.EditFlightInfoScreen
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.TripDetailScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripScreen
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoListingScreen
+import com.minhhnn18898.signin.navigation.signUpScreenComposable
 
 @Composable
 fun AppNavHost(
@@ -42,6 +44,9 @@ fun AppNavHost(
                 },
                 onClickTripItem = { tripId ->
                     navController.navigateToTripDetailScreen(tripId)
+                },
+                onClickCreateAccount = {
+                    navController.navigate(SignUpScreenDestination.route)
                 }
             )
             ClearTopBarActions(onScreenDisplay)
@@ -95,6 +100,8 @@ fun AppNavHost(
                     navController.navigateUp()
                 })
         }
+
+        signUpScreenComposable()
     }
 }
 
