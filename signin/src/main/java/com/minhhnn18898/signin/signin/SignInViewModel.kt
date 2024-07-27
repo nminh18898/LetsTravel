@@ -3,8 +3,11 @@ package com.minhhnn18898.signin.signin
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SignInViewModel: ViewModel() {
+@HiltViewModel
+class SignInViewModel @Inject constructor(): ViewModel() {
 
     private lateinit var auth: FirebaseAuth
 

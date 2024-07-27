@@ -1,6 +1,7 @@
-package com.minhhnn18898.signin.repository
+package com.minhhnn18898.signin.data
 
-interface IAccountServiceRepository {
+interface AccountService {
     fun authenticate(email: String, password: String, onResult: (Throwable?) -> Unit)
     fun linkAccount(email: String, password: String, onResult: (Throwable?) -> Unit)
+    fun isValidLoggedIn(): Boolean
 }

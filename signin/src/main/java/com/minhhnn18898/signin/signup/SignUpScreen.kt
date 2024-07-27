@@ -12,17 +12,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.minhhnn18898.signin.base.EmailField
 import com.minhhnn18898.signin.base.PasswordTextField
 import com.minhhnn18898.signin.base.RepeatPasswordTextField
-import com.minhhnn18898.signin.dependency_provider.SignInViewModelProvider
 import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun SignUpScreen(
     modifier: Modifier,
-    viewModel: SignUpViewModel = viewModel(factory = SignInViewModelProvider.Factory)
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
 

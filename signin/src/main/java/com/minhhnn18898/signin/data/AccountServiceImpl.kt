@@ -1,10 +1,11 @@
-package com.minhhnn18898.signin.repository
+package com.minhhnn18898.signin.data
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.auth
+import javax.inject.Inject
 
-class AccountServiceRepository: IAccountServiceRepository {
+class AccountServiceImpl @Inject constructor(): AccountService {
     override fun authenticate(email: String, password: String, onResult: (Throwable?) -> Unit) {
         Firebase.auth
             .signInWithEmailAndPassword(email, password)
@@ -17,5 +18,9 @@ class AccountServiceRepository: IAccountServiceRepository {
         Firebase.auth.currentUser
             ?.linkWithCredential(credential)
             ?.addOnCompleteListener { onResult(it.exception) }
+    }
+
+    override fun isValidLoggedIn(): Boolean {
+        return Firebase.auth.currentUser != null
     }
 }

@@ -14,10 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.minhhnn18898.signin.base.EmailField
 import com.minhhnn18898.signin.base.PasswordTextField
-import com.minhhnn18898.signin.dependency_provider.SignInViewModelProvider
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.core.R.string as CommonStringRes
 
@@ -25,7 +24,7 @@ import com.minhhnn18898.core.R.string as CommonStringRes
 fun SignInScreen(
     modifier: Modifier,
     onClickCreateNewAccount: () -> Unit,
-    viewModel: SignInViewModel = viewModel(factory = SignInViewModelProvider.Factory)
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
 
