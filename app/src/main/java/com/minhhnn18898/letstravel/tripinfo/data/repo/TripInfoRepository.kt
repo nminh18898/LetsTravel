@@ -1,6 +1,6 @@
 package com.minhhnn18898.letstravel.tripinfo.data.repo
 
-import com.minhhnn18898.letstravel.app.di.IODispatcher
+import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import kotlinx.coroutines.CoroutineDispatcher

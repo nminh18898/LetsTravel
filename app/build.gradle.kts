@@ -81,11 +81,15 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    implementation(libs.coil.compose)
+
     implementation(project(":architecture"))
     implementation(project(":signin"))
     implementation(project(":ui-components"))
     implementation(project(":app_navigation"))
     implementation(project(":core"))
+    implementation(project(":discover"))
+    implementation(project(":firebase"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -12,11 +12,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
+import com.minhhnn18898.core.utils.DateTimeUtils
+import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.CreateNewFlightInfoUseCase
-import com.minhhnn18898.letstravel.utils.DateTimeUtils
-import com.minhhnn18898.letstravel.utils.isNotBlankOrEmpty
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -28,7 +28,7 @@ import javax.inject.Inject
 class EditFlightInfoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val createNewFlightInfoUseCase: CreateNewFlightInfoUseCase,
-    private val dateTimelineUtils: DateTimeUtils = DateTimeUtils()
+    private val dateTimeUtils: DateTimeUtils = DateTimeUtils()
 ): ViewModel() {
 
     private var tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -215,7 +215,7 @@ class EditFlightInfoViewModel @Inject constructor(
         val localDate = flightDate[type]?.value ?: 0L
         val timeHourMinutes = flightTime[type]?.value ?: Pair(0, 0)
 
-        return dateTimelineUtils.convertToLocalDateTimeMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
+        return dateTimeUtils.convertToLocalDateTimeMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
     }
 
     private fun Map<ItineraryType, MutableState<Pair<Int, Int>>>.getTimeString(key: ItineraryType): String {
@@ -223,7 +223,7 @@ class EditFlightInfoViewModel @Inject constructor(
     }
 
     private fun Pair<Int, Int>.toTimeString(): String {
-        return dateTimelineUtils.formatTime(this.first, this.second)
+        return dateTimeUtils.formatTime(this.first, this.second)
     }
 
     private fun Map<ItineraryType, MutableState<String>>.getStringValue(key: ItineraryType): String {

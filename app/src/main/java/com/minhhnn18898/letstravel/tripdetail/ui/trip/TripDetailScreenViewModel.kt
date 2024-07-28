@@ -17,7 +17,7 @@ import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.toTripItemDisplay
-import com.minhhnn18898.letstravel.utils.DateTimeUtils
+import com.minhhnn18898.core.utils.DateTimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -38,6 +38,7 @@ class TripDetailScreenViewModel @Inject constructor(
         private set
 
     var flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
+        private set
 
     init {
         loadTripInfo(tripId)

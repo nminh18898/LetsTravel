@@ -40,6 +40,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.minhhnn18898.discover.ui.DiscoverScreen
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.EmptySavedTripView
@@ -49,7 +50,6 @@ import com.minhhnn18898.letstravel.tripinfo.ui.getResult
 import com.minhhnn18898.letstravel.tripinfo.ui.hasError
 import com.minhhnn18898.letstravel.tripinfo.ui.hasResult
 import com.minhhnn18898.letstravel.tripinfo.ui.isContentLoading
-import com.minhhnn18898.signin.signin.SignInScreen
 import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
@@ -111,10 +111,7 @@ fun HomeScreen(
             title = CommonStringRes.explore,
             modifier = modifier
         ) {
-            SignInScreen(
-                modifier = modifier,
-                onClickCreateNewAccount = onClickCreateAccount
-            )
+            DiscoverScreen()
         }
     }
 }

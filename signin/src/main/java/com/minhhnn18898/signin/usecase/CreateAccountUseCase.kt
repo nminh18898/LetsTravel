@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 
-class CreateAccountUseCase @Inject constructor(private val accountService: AccountService): UseCase<CreateAccountUseCase.Params, Flow<Result<Flow<UserInfo>>>>() {
-    override fun run(params: Params): Flow<Result<Flow<UserInfo>>> = callbackFlow {
+class CreateAccountUseCase @Inject constructor(private val accountService: AccountService): UseCase<CreateAccountUseCase.Params, Flow<Result<UserInfo>>>() {
+    override fun run(params: Params): Flow<Result<UserInfo>> = callbackFlow {
         trySend(Result.Loading)
         accountService.createUserWithEmailAndPassword(params.email, params.password) {
 

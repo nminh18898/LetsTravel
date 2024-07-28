@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.utils
+package com.minhhnn18898.core.utils
 
 import java.time.Instant
 import java.time.LocalDate
@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
@@ -15,6 +16,8 @@ import kotlin.time.toDuration
 
 @Suppress("unused")
 class DateTimeUtils @Inject constructor() {
+
+    private val defaultFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
 
     fun convertMillisToLocalDate(millis: Long): LocalDate {
         return Instant
@@ -39,9 +42,13 @@ class DateTimeUtils @Inject constructor() {
 
 
     fun dateToString(date: LocalDate): String {
-        val dateFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
-        val localDate = convertMillisToLocalDateWithFormatter(date, dateFormatter)
-        return dateFormatter.format(localDate)
+        val localDate = convertMillisToLocalDateWithFormatter(date, defaultFormatter)
+        return defaultFormatter.format(localDate)
+    }
+
+    fun dateToString(date: Date): String {
+        val localDate = convertMillisToLocalDate(date.time)
+        return defaultFormatter.format(localDate)
     }
 
     fun formatTime(hour: Int, minute: Int): String {

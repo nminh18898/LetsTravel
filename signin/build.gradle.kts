@@ -65,6 +65,8 @@ dependencies {
     implementation(project(":app_navigation"))
     implementation(project(":core"))
     implementation(project(":architecture"))
+    implementation(project(":firebase"))
+
     implementation(libs.androidx.startup.runtime)
 
     testImplementation(libs.junit)

@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.utils
+package com.minhhnn18898.core.utils
 
 import android.content.Context
 import androidx.annotation.StringRes

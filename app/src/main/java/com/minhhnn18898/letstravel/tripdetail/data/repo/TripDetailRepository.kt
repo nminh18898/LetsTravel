@@ -1,6 +1,6 @@
 package com.minhhnn18898.letstravel.tripdetail.data.repo
 
-import com.minhhnn18898.letstravel.app.di.IODispatcher
+import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo

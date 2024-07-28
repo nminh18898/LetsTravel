@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.app.di
+package com.minhhnn18898.core.di
 
 import dagger.Module
 import dagger.Provides
