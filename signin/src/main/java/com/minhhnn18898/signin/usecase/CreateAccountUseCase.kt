@@ -2,12 +2,25 @@ package com.minhhnn18898.signin.usecase
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
+import com.minhhnn18898.signin.data.AccountService
 import com.minhhnn18898.signin.data.model.UserInfo
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
+import javax.inject.Inject
 
-class CreateAccountUseCase: UseCase<Unit, Flow<Result<Flow<UserInfo>>>>() {
-    override fun run(params: Unit): Flow<Result<Flow<UserInfo>>> = callbackFlow {
-        send(Result.Loading)
+class CreateAccountUseCase @Inject constructor(private val accountService: AccountService): UseCase<CreateAccountUseCase.Params, Flow<Result<Flow<UserInfo>>>>() {
+    override fun run(params: Params): Flow<Result<Flow<UserInfo>>> = callbackFlow {
+        trySend(Result.Loading)
+        accountService.createUserWithEmailAndPassword(params.email, params.password) {
+
+        }
+
+        awaitClose {  }
+    }.catch {
+
     }
+
+    data class Params(val email: String, val password: String)
 }

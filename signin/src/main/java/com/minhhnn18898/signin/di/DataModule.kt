@@ -5,16 +5,13 @@ import com.minhhnn18898.signin.data.AccountServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
-
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 abstract class DataModule {
 
     @Binds
-    abstract fun bindAccountService(
-        accountServiceRepositoryImpl: AccountServiceImpl
-    ): AccountService
+    abstract fun bindAccountService(accountServiceRepositoryImpl: AccountServiceImpl): AccountService
 
 }
