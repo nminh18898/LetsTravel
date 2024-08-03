@@ -19,6 +19,8 @@ class DateTimeUtils @Inject constructor() {
 
     private val defaultFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
 
+    private val dateMonthYearFormatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy", Locale.getDefault())
+
     fun convertMillisToLocalDate(millis: Long): LocalDate {
         return Instant
             .ofEpochMilli(millis)
@@ -46,9 +48,9 @@ class DateTimeUtils @Inject constructor() {
         return defaultFormatter.format(localDate)
     }
 
-    fun dateToString(date: Date): String {
+    fun dateToString(date: Date, formatter: DateTimeFormatter = dateMonthYearFormatter): String {
         val localDate = convertMillisToLocalDate(date.time)
-        return defaultFormatter.format(localDate)
+        return formatter.format(localDate)
     }
 
     fun formatTime(hour: Int, minute: Int): String {
