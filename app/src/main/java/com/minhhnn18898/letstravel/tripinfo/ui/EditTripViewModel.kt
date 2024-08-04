@@ -1,5 +1,6 @@
 package com.minhhnn18898.letstravel.tripinfo.ui
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +28,7 @@ class EditTripViewModel @Inject constructor(
     var tripTitle by mutableStateOf("")
         private set
 
-    var listCoverDefault by mutableStateOf(emptyList<DefaultCoverUI>())
+    var listCoverItems by mutableStateOf(emptyList<CoverUIElement>())
         private set
 
     var allowSaveContent by mutableStateOf(false)
@@ -51,16 +52,21 @@ class EditTripViewModel @Inject constructor(
         checkAllowSaveContent()
     }
 
-    fun onDefaultCoverSelected(coverId: Int) {
-        listCoverDefault = listCoverDefault.map {
-            it.copy(isSelected = it.coverId == coverId)
+    fun onCoverSelected(selectedItem: CoverUIElement) {
+        listCoverItems = listCoverItems.map {
+            when(it) {
+                is DefaultCoverUI -> it.copy(isSelected = it == selectedItem)
+                is CustomCoverPhoto -> it.copy(isSelected = it == selectedItem)
+                else -> it
+            }
         }
+
         checkAllowSaveContent()
     }
 
     private fun checkAllowSaveContent() {
         val isValidTitle = tripTitle.isNotBlank() && tripTitle.isNotEmpty()
-        val isValidCover = listCoverDefault.any { it.isSelected }
+        val isValidCover = listCoverItems.any { it.isSelected }
 
         allowSaveContent = isValidTitle && isValidCover
     }
@@ -71,26 +77,57 @@ class EditTripViewModel @Inject constructor(
             DefaultCoverUI(coverElement.type, isSelected = false, uiRes)
         } ?: emptyList()
 
-        listCoverDefault = list.toMutableStateList()
+        listCoverItems = list.toMutableStateList()
     }
 
     fun onSaveClick() {
         val tripName = tripTitle
-        val coverId = listCoverDefault.firstOrNull { it.isSelected }?.coverId ?: 0
+        val selectedItem = listCoverItems.firstOrNull { it.isSelected }
 
-        viewModelScope.launch {
-            createTripInfoUseCase.execute(CreateTripInfoUseCase.Param(tripName, coverId))?.collect {
-                onShowSaveLoadingState = it == Result.Loading
+        if(selectedItem == null) {
+            showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
+            return
+        }
 
-                when(it) {
-                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
-                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
-                    else -> {
-                        // do nothing
+        val params = when(selectedItem) {
+            is DefaultCoverUI -> CreateTripInfoUseCase.DefaultCoverParam(tripName, selectedItem.coverId)
+            is CustomCoverPhoto -> CreateTripInfoUseCase.CustomCoverParam(tripName, selectedItem.uri)
+            else -> null
+        }
+
+        if(params != null) {
+            viewModelScope.launch {
+                createTripInfoUseCase.execute(params)?.collect {
+                    onShowSaveLoadingState = it == Result.Loading
+
+                    when(it) {
+                        is Result.Success -> _eventChannel.send(Event.CloseScreen)
+                        is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
+                        else -> {
+                            // do nothing
+                        }
                     }
                 }
             }
         }
+    }
+
+    fun onNewPhotoPicked(uri: Uri?) {
+        if(uri == null) {
+            return
+        }
+
+        listCoverItems = listCoverItems.map {
+            when(it) {
+                is DefaultCoverUI -> it.copy(isSelected = false)
+                is CustomCoverPhoto -> it.copy(isSelected = false)
+                else -> it
+            }
+        }
+            .toMutableList()
+            .apply {
+                add(0, CustomCoverPhoto(uri, isSelected = true))
+            }
     }
 
     @Suppress("SameParameterValue")
@@ -110,6 +147,8 @@ class EditTripViewModel @Inject constructor(
     abstract class CoverUIElement(open val isSelected: Boolean = false)
 
     data class DefaultCoverUI(val coverId: Int, override val isSelected: Boolean, @DrawableRes val resId: Int): CoverUIElement(isSelected)
+
+    data class CustomCoverPhoto(val uri: Uri, override val isSelected: Boolean): CoverUIElement(isSelected)
 
     sealed class Event {
         data object CloseScreen: Event()

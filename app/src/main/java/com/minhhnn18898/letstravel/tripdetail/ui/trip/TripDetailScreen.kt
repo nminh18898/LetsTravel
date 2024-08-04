@@ -30,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
@@ -41,15 +40,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager
+import com.minhhnn18898.letstravel.tripinfo.ui.UserTripCustomCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.ui.UserTripDefaultCoverDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
+import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun TripDetailScreen(
@@ -155,20 +158,32 @@ private fun TripDetailHeaderContent(
             .fillMaxWidth()
             .background(White, shape = shape),
     ) {
-        Image(
-            painter = painterResource(tripInfoItemDisplay.defaultCoverRes),
-            contentDescription = stringResource(id = CommonStringRes.trip_detail_header_cover_content_desc),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(shape)
-        )
+
+        val coverDisplay = tripInfoItemDisplay.coverDisplay
+        if(coverDisplay is UserTripDefaultCoverDisplay) {
+            Image(
+                painter = painterResource(coverDisplay.defaultCoverRes),
+                contentDescription = stringResource(id = CommonStringRes.trip_detail_header_cover_content_desc),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        } else if(coverDisplay is UserTripCustomCoverDisplay) {
+            AsyncImage(
+                model = coverDisplay.coverPath,
+                contentDescription = stringResource(id = CommonStringRes.trip_detail_header_cover_content_desc),
+                contentScale = ContentScale.Crop,
+                error = painterResource(id =CommonDrawableRes.empty_image_bg),
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        }
 
         Text(
             text = tripInfoItemDisplay.tripName,
             style = MaterialTheme.typography.headlineMedium,
             maxLines = 1,
-            fontFamily = FontFamily.Cursive,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             overflow = TextOverflow.Ellipsis,
             color = MaterialTheme.colorScheme.primary,

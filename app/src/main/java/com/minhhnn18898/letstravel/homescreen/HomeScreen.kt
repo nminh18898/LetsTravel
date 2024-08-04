@@ -1,5 +1,6 @@
 package com.minhhnn18898.letstravel.homescreen
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
@@ -40,11 +41,13 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.minhhnn18898.discover.ui.DiscoverScreen
-import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripinfo.ui.CreateNewTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.EmptySavedTripView
 import com.minhhnn18898.letstravel.tripinfo.ui.TripInfoItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.ui.UserTripCustomCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.ui.UserTripDefaultCoverDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.getResult
 import com.minhhnn18898.letstravel.tripinfo.ui.hasError
@@ -56,6 +59,7 @@ import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.RoundedPolygonShape
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
+import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun HomeScreen(
@@ -72,10 +76,10 @@ fun HomeScreen(
     ) {
         viewModel.contentState.let { contentState ->
             TripListingScreenSection(
-                icon = R.drawable.your_trips_24,
+                icon = com.minhhnn18898.letstravel.R.drawable.your_trips_24,
                 title = CommonStringRes.saved_trips,
                 sectionCtaData = SectionCtaData(
-                    icon = R.drawable.chevron_right_24,
+                    icon = com.minhhnn18898.letstravel.R.drawable.chevron_right_24,
                     title = CommonStringRes.show_all,
                     onClick = onClickShowAllSavedTrips
                 )
@@ -107,7 +111,7 @@ fun HomeScreen(
         }
 
         TripListingScreenSection(
-            icon = R.drawable.travel_explore_24,
+            icon = com.minhhnn18898.letstravel.R.drawable.travel_explore_24,
             title = CommonStringRes.explore,
             modifier = modifier
         ) {
@@ -192,17 +196,35 @@ private fun TripItemView(
                     border = BorderStroke(4.dp, MaterialTheme.colorScheme.surfaceContainerLowest)
                 )
         ) {
-            Image(
-                painter = painterResource(itemDisplay.defaultCoverRes),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .graphicsLayer {
-                        this.shape = thumbClip
-                        this.clip = true
-                    }
-                    .size(thumbSize.dp)
-            )
+            val coverDisplay = itemDisplay.coverDisplay
+            if(coverDisplay is UserTripDefaultCoverDisplay) {
+                Image(
+                    painter = painterResource(coverDisplay.defaultCoverRes),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .graphicsLayer {
+                            this.shape = thumbClip
+                            this.clip = true
+                        }
+                        .size(thumbSize.dp)
+                )
+            }
+            else if(coverDisplay is UserTripCustomCoverDisplay) {
+                AsyncImage(
+                    model = Uri.parse(coverDisplay.coverPath),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(id = CommonDrawableRes.empty_image_bg),
+                    placeholder = painterResource(id = CommonDrawableRes.image_placeholder),
+                    modifier = Modifier
+                        .graphicsLayer {
+                            this.shape = thumbClip
+                            this.clip = true
+                        }
+                        .size(thumbSize.dp)
+                )
+            }
         }
 
         Box(

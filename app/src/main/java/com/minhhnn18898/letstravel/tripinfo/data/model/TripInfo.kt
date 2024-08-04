@@ -1,11 +1,8 @@
 package com.minhhnn18898.letstravel.tripinfo.data.model
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Relation
-import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfoModel
 
 @Entity(tableName = "trip_info")
 data class TripInfo(
@@ -13,15 +10,15 @@ data class TripInfo(
     @ColumnInfo("trip_id")
     val tripId: Long,
     val title: String,
+    @ColumnInfo("cover_type")
+    val coverType: Int,
     @ColumnInfo("default_cover_id")
     val defaultCoverId: Int,
-)
-
-data class TripAndFlightInfo(
-    @Embedded val tripInfo: TripInfo,
-    @Relation(
-        parentColumn = "trip_id",
-        entityColumn = "trip_id"
-    )
-    val flightInfo: FlightInfoModel
-)
+    @ColumnInfo("custom_cover_path")
+    val customCoverPath: String
+) {
+    companion object {
+        const val TRIP_COVER_TYPE_DEFAULT = 1
+        const val TRIP_COVER_TYPE_CUSTOM = 2
+    }
+}

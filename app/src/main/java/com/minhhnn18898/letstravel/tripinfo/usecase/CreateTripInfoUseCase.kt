@@ -1,7 +1,9 @@
 package com.minhhnn18898.letstravel.tripinfo.usecase
 
+import android.net.Uri
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
+import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionInsertTripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.repo.TripInfoRepository
 import kotlinx.coroutines.flow.Flow
@@ -12,13 +14,39 @@ import javax.inject.Inject
 
 class CreateTripInfoUseCase @Inject constructor(private val repository: TripInfoRepository): UseCase<CreateTripInfoUseCase.Param, Flow<Result<Unit>>>() {
 
-    data class Param(val tripName: String, val coverId: Int)
+    abstract class Param(open val tripName: String)
+
+    data class DefaultCoverParam(override val tripName: String, val coverId: Int): Param(tripName)
+
+    data class CustomCoverParam(override val tripName: String, val uri: Uri): Param(tripName)
 
     override fun run(params: Param):  Flow<Result<Unit>> = flow {
         emit(Result.Loading)
-        repository.insertTripInfo(TripInfo(0, params.tripName, params.coverId))
+        repository.insertTripInfo(createTripInfo(params))
         emit(Result.Success(Unit))
     }.catch {
         emit(Result.Error(it))
+    }
+
+    private fun createTripInfo(param: Param): TripInfo {
+        return when(param) {
+            is DefaultCoverParam -> TripInfo(
+                tripId = 0,
+                title = param.tripName,
+                coverType = TripInfo.TRIP_COVER_TYPE_DEFAULT,
+                defaultCoverId = param.coverId,
+                customCoverPath = ""
+            )
+
+            is CustomCoverParam -> TripInfo(
+                tripId = 0,
+                title = param.tripName,
+                coverType = TripInfo.TRIP_COVER_TYPE_CUSTOM,
+                defaultCoverId = 0,
+                customCoverPath = param.uri.toString()
+            )
+
+            else -> throw ExceptionInsertTripInfo()
+        }
     }
 }

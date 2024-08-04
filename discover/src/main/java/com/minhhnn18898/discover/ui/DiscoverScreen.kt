@@ -53,6 +53,7 @@ import com.minhhnn18898.discover.R
 import com.minhhnn18898.ui_components.theme.typography
 import kotlinx.coroutines.launch
 import com.minhhnn18898.core.R.string as CommonStringRes
+import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun DiscoverScreen(
@@ -139,7 +140,9 @@ fun ArticlesPager(
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(16f / 9f),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = CommonDrawableRes.image_placeholder),
+                        error = painterResource(id = CommonDrawableRes.empty_image_bg)
                     )
                 }
 

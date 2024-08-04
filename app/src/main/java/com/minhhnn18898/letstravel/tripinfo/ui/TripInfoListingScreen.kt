@@ -27,10 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
+import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun TripInfoListingScreen(
@@ -119,15 +121,29 @@ private fun TripItemView(
             },
         horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Image(
-            painter = painterResource(itemDisplay.defaultCoverRes),
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .width(150.dp)
-                .height(100.dp)
-                .padding(top = 8.dp)
-        )
+        val coverDisplay = itemDisplay.coverDisplay
+        if(coverDisplay is UserTripDefaultCoverDisplay) {
+            Image(
+                painter = painterResource(coverDisplay.defaultCoverRes),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(100.dp)
+                    .padding(top = 8.dp)
+            )
+        } else if(coverDisplay is UserTripCustomCoverDisplay) {
+            AsyncImage(
+                model = coverDisplay.coverPath,
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = CommonDrawableRes.empty_image_bg),
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(100.dp)
+                    .padding(top = 8.dp)
+            )
+        }
 
         Text(
             modifier = Modifier.padding(top = 12.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),

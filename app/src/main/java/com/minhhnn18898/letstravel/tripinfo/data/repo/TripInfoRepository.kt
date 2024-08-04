@@ -2,6 +2,7 @@ package com.minhhnn18898.letstravel.tripinfo.data.repo
 
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
+import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionInsertTripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -41,6 +42,4 @@ class TripInfoRepository @Inject constructor(
             }
         }
     }
-
-    class ExceptionInsertTripInfo: Exception()
 }

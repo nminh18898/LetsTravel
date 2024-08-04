@@ -1,6 +1,10 @@
 package com.minhhnn18898.letstravel.tripinfo.ui
 
 import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
@@ -40,15 +44,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType
-import com.minhhnn18898.core.utils.StringUtils
+import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
+import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun EditTripScreen(
@@ -111,13 +118,37 @@ fun EditTripScreen(
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         DefaultCoverCollectionGrid(
-            listCoverDefault = viewModel.listCoverDefault,
+            listCoverDefault = viewModel.listCoverItems,
             onItemClick = {
-                viewModel.onDefaultCoverSelected(it)
+                viewModel.onCoverSelected(it)
             }
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        val context = LocalContext.current
+        val imagePicker = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = { uri ->
+                uri?.let {
+                    val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    context.contentResolver.takePersistableUriPermission(uri, flag)
+                    viewModel.onNewPhotoPicked(uri)
+                }
+            }
+        )
+
+        CreateNewDefaultButton(text = stringResource(id = com.minhhnn18898.core.R.string.pick_your_photo), modifier = modifier) {
+            imagePicker.launch(
+                PickVisualMediaRequest(
+                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                )
+            )
+        }
     }
 
     AnimatedVisibility(viewModel.onShowSaveLoadingState) {
@@ -132,8 +163,8 @@ fun EditTripScreen(
 
 @Composable
 fun DefaultCoverCollectionGrid(
-    listCoverDefault: List<EditTripViewModel.DefaultCoverUI>,
-    onItemClick: (Int) -> Unit,
+    listCoverDefault: List<EditTripViewModel.CoverUIElement>,
+    onItemClick: (EditTripViewModel.CoverUIElement) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyHorizontalGrid(
@@ -150,24 +181,34 @@ fun DefaultCoverCollectionGrid(
 
 @Composable
 fun DefaultCoverCollectionCard(
-    coverUIElement: EditTripViewModel.DefaultCoverUI,
-    onClick: (Int) -> Unit,
+    coverUIElement: EditTripViewModel.CoverUIElement,
+    onClick: (EditTripViewModel.CoverUIElement) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
         onClick = {
-            onClick.invoke(coverUIElement.coverId)
+            onClick.invoke(coverUIElement)
         },
         modifier = modifier
             .height(100.dp)
             .width(200.dp)
     ) {
-        Image(
-            painter = painterResource(coverUIElement.resId),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-        )
+        if(coverUIElement is EditTripViewModel.DefaultCoverUI) {
+            Image(
+                painter = painterResource(coverUIElement.resId),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+            )
+        }
+        else if(coverUIElement is EditTripViewModel.CustomCoverPhoto) {
+            AsyncImage(
+                model = coverUIElement.uri,
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = CommonDrawableRes.empty_image_bg)
+            )
+        }
 
         val isShowChecked = coverUIElement.isSelected
 

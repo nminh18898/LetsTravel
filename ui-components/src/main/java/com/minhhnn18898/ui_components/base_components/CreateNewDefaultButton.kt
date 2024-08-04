@@ -19,7 +19,7 @@ import com.minhhnn18898.ui_components.theme.typography
 @Composable
 fun CreateNewDefaultButton(
     text: String,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
 
