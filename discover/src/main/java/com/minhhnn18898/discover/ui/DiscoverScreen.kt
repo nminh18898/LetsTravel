@@ -2,14 +2,18 @@
 
 package com.minhhnn18898.discover.ui
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -40,6 +45,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -50,6 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.discover.R
+import com.minhhnn18898.ui_components.base_components.DefaultCtaButton
 import com.minhhnn18898.ui_components.theme.typography
 import kotlinx.coroutines.launch
 import com.minhhnn18898.core.R.string as CommonStringRes
@@ -57,15 +64,87 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun DiscoverScreen(
+    onNavigateToSignInScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DiscoverViewModel = hiltViewModel()
 ) {
-    ExploreArticlesSection(
-        articlesContentState = viewModel.articlesContentState,
-        modifier = modifier
-    )
+    if(viewModel.verifiedUserState) {
+        ExploreArticlesSection(
+            articlesContentState = viewModel.articlesContentState,
+            modifier = modifier
+        )
+    }
+    else {
+        RequireSignInPromptForm(
+            onClickSignIn = onNavigateToSignInScreen,
+            modifier = modifier
+        )
+    }
 }
 
+private val promptUserSignInPhotoThumb = listOf(
+    R.drawable.explore_section_promt_photo_1,
+    R.drawable.explore_section_promt_photo_2,
+    R.drawable.explore_section_promt_photo_3
+)
+
+@Composable
+private fun RequireSignInPromptForm(
+    onClickSignIn: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(horizontal = 16.dp)) {
+        Text(
+            text = stringResource(id = R.string.prompt_user_log_in_to_explore_articles),
+            style = typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        RequireSignInPromptSuggestThumb(modifier)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        DefaultCtaButton(
+            text = stringResource(id = CommonStringRes.sign_in),
+            iconRes = R.drawable.login_24,
+            onClick = onClickSignIn,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun RequireSignInPromptSuggestThumb(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy((-32).dp)
+        ) {
+            promptUserSignInPhotoThumb.forEach {
+                RequireSignInPromptSuggestThumbElement(it)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RequireSignInPromptSuggestThumbElement(
+    @DrawableRes drawable: Int
+) {
+    Image(
+        painter = painterResource(drawable),
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .size(120.dp)
+            .border(2.dp, MaterialTheme.colorScheme.surfaceContainer, CircleShape)
+            .clip(CircleShape)
+    )
+}
 
 @Composable
 fun ExploreArticlesSection(

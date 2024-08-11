@@ -67,7 +67,7 @@ fun HomeScreen(
     onClickCreateNew: () -> Unit,
     onClickShowAllSavedTrips: () -> Unit,
     onClickTripItem: (Long) -> Unit,
-    onClickCreateAccount: () -> Unit,
+    onNavigateToSignInScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
@@ -115,7 +115,10 @@ fun HomeScreen(
             title = CommonStringRes.explore,
             modifier = modifier
         ) {
-            DiscoverScreen()
+            DiscoverScreen(
+                onNavigateToSignInScreen = onNavigateToSignInScreen,
+                modifier = modifier
+            )
         }
     }
 }

@@ -10,6 +10,8 @@ import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.discover.data.model.Article
 import com.minhhnn18898.discover.usecase.GetListArticlesDiscovery
+import com.minhhnn18898.signin.usecase.CheckValidSignedInUserUseCase
+import com.minhhnn18898.signin.usecase.GetAuthStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -18,13 +20,32 @@ import javax.inject.Inject
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
     private val getListArticlesDiscovery: GetListArticlesDiscovery,
-    private val dateTimeUtils: DateTimeUtils = DateTimeUtils()
+    private val dateTimeUtils: DateTimeUtils,
+    private val checkValidSignedInUserUseCase: CheckValidSignedInUserUseCase,
+    private val getAuthStateUseCase: GetAuthStateUseCase
 ): ViewModel() {
+
+    var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute(Unit) ?: false)
 
     var articlesContentState: UiState<List<ArticleDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set
 
     init {
+       observeAuthState()
+    }
+
+    private fun observeAuthState() {
+        viewModelScope.launch {
+            getAuthStateUseCase.execute(Unit)?.collect {
+                verifiedUserState = it
+                if(verifiedUserState) {
+                    onUserAuthCheckSuccess()
+                }
+            }
+        }
+    }
+
+    private fun onUserAuthCheckSuccess() {
         loadDiscoveryArticles()
     }
 

@@ -7,6 +7,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class AuthInitializer : Initializer<FirebaseAuth> {
+    private val ENABLE_EMULATOR_DEBUG = false
+
     // The host '10.0.2.2' is a special IP address to let the
     // Android emulator connect to 'localhost'.
     private val AUTH_EMULATOR_HOST = "10.0.2.2"
@@ -15,7 +17,7 @@ class AuthInitializer : Initializer<FirebaseAuth> {
     override fun create(context: Context): FirebaseAuth {
         val firebaseAuth = Firebase.auth
         // Use emulators only in debug builds
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && ENABLE_EMULATOR_DEBUG) {
             firebaseAuth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
         }
         return firebaseAuth

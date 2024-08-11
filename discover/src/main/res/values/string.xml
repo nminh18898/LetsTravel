@@ -2,4 +2,5 @@
 <resources>
     <string name="empty_view_title">Oops!</string>
     <string name="empty_view_description">We didn\'t find anything for you at the moment.</string>
+    <string name="prompt_user_log_in_to_explore_articles">Log in to your account to explore new travel destinations around the world.</string>
 </resources>

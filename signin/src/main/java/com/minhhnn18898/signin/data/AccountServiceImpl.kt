@@ -2,12 +2,16 @@ package com.minhhnn18898.signin.data
 
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.minhhnn18898.signin.data.model.AccountApiResult
 import com.minhhnn18898.signin.data.model.ExceptionCreateAccount
 import com.minhhnn18898.signin.data.model.ExceptionLogIn
 import com.minhhnn18898.signin.data.model.UserInfo
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class AccountServiceImpl @Inject constructor(): AccountService {
@@ -47,6 +51,18 @@ class AccountServiceImpl @Inject constructor(): AccountService {
 
     override fun isValidLoggedIn(): Boolean {
         return Firebase.auth.currentUser != null
+    }
+
+    override fun getAuthState(): Flow<Boolean> = callbackFlow {
+        val authListener = AuthStateListener {
+            val isValid = it.currentUser != null
+            trySend(isValid)
+        }
+        Firebase.auth.addAuthStateListener(authListener)
+
+        awaitClose {
+            Firebase.auth.removeAuthStateListener(authListener)
+        }
     }
 }
 

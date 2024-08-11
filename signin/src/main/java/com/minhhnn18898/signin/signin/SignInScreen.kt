@@ -22,7 +22,7 @@ import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun SignInScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onClickCreateNewAccount: () -> Unit,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
