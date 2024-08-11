@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="error_can_not_create_account">Can not create account. Please try again.</string>
+    <string name="error_can_not_sign_in">Can not sign in. Please try again.</string>
 </resources>

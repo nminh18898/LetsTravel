@@ -19,6 +19,9 @@ fun NavGraphBuilder.signInFeatureComposable(
             modifier = modifier,
             onClickCreateNewAccount = {
                 navigationController.navigate(SignUpScreenDestination.route)
+            },
+            navigateUp = {
+                navigationController.navigateUp()
             }
         )
     }
