@@ -44,7 +44,7 @@ fun TripInfoListingScreen(
 ) {
 
     Column(
-        modifier = modifier
+        modifier = modifier.padding(vertical = 16.dp)
     ) {
         viewModel.contentState.let { contentState ->
 

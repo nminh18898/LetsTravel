@@ -99,7 +99,7 @@ fun EditTripScreen(
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
     ) {
 
         InputTextRow(
@@ -142,7 +142,7 @@ fun EditTripScreen(
             }
         )
 
-        CreateNewDefaultButton(text = stringResource(id = com.minhhnn18898.core.R.string.pick_your_photo), modifier = modifier) {
+        CreateNewDefaultButton(text = stringResource(id = com.minhhnn18898.core.R.string.pick_your_photo)) {
             imagePicker.launch(
                 PickVisualMediaRequest(
                     ActivityResultContracts.PickVisualMedia.ImageOnly

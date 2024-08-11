@@ -6,6 +6,17 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.tripIdArg
 import com.minhhnn18898.core.R.string as CommonStringRes
 
+val listAllDestinations = mutableListOf(
+    HomeScreenDestination,
+    EditTripInfoDestination,
+    SavedTripsListingFullDestination,
+    TripDetailDestination,
+    EditFlightInfoDestination,
+
+    SignInScreenDestination,
+    SignUpScreenDestination
+)
+
 object HomeScreenDestination: AppScreenDestination {
     override val title: Int =  CommonStringRes.app_name
     override val route: String = MainAppRoute.HOME_SCREEN_ROUTE
@@ -29,6 +40,10 @@ object TripDetailDestination: AppScreenDestination {
     val arguments = listOf(
         navArgument(tripIdArg) { type = NavType.LongType }
     )
+
+    override fun getAllRoutes(): List<String> {
+        return mutableListOf(route, routeWithArgs)
+    }
 }
 
 object EditFlightInfoDestination: AppScreenDestination {
@@ -39,4 +54,8 @@ object EditFlightInfoDestination: AppScreenDestination {
     val arguments = listOf(
         navArgument(tripIdArg) { type = NavType.LongType }
     )
+
+    override fun getAllRoutes(): List<String> {
+        return mutableListOf(route, routeWithArgs)
+    }
 }

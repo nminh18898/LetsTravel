@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import com.minhhnn18898.app_navigation.destination.AppScreenDestination
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
 import com.minhhnn18898.core.R
+import com.minhhnn18898.ui_components.theme.typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -36,7 +37,8 @@ fun MainAppBar(
         title = {
             Text(
                 color = MaterialTheme.colorScheme.primary,
-                text = stringResource(currentScreen.title)
+                text = stringResource(currentScreen.title),
+                style = typography.titleMedium,
             )
         },
         modifier = modifier,
