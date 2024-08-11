@@ -43,6 +43,7 @@
     <string name="repeat_password">Repeat password</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
+    <string name="sign_out">Sign out</string>
     <string name="create_new_account">Create new account</string>
     <string name="read_more">Read more</string>
     <string name="of">of</string>

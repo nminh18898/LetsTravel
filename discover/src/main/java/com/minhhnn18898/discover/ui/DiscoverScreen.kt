@@ -108,7 +108,7 @@ private fun RequireSignInPromptForm(
 
         DefaultCtaButton(
             text = stringResource(id = CommonStringRes.sign_in),
-            iconRes = R.drawable.login_24,
+            iconRes = CommonDrawableRes.login_24,
             onClick = onClickSignIn,
             modifier = modifier
         )

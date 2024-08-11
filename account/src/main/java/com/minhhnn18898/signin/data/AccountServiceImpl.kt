@@ -64,6 +64,21 @@ class AccountServiceImpl @Inject constructor(): AccountService {
             Firebase.auth.removeAuthStateListener(authListener)
         }
     }
+
+    override fun getAuthUserInfo(): Flow<UserInfo?> = callbackFlow {
+        val authListener = AuthStateListener {
+            trySend(it.currentUser?.toUserInfo())
+        }
+        Firebase.auth.addAuthStateListener(authListener)
+
+        awaitClose {
+            Firebase.auth.removeAuthStateListener(authListener)
+        }
+    }
+
+    override fun signOut() {
+        Firebase.auth.signOut()
+    }
 }
 
 private fun FirebaseUser.toUserInfo(): UserInfo {

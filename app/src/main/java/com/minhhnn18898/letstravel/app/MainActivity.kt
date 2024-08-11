@@ -21,14 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.app_navigation.destination.AppScreenDestination
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
+import com.minhhnn18898.app_navigation.destination.SignInScreenDestination
 import com.minhhnn18898.letstravel.app.appbar.AppDrawer
-import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
-import com.minhhnn18898.letstravel.app.appbar.MainAppBar
 import com.minhhnn18898.letstravel.app.appbar.AppNavHost
+import com.minhhnn18898.letstravel.app.appbar.MainAppBar
 import com.minhhnn18898.ui_components.theme.LetsTravelTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -59,7 +61,12 @@ fun MainApp(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            AppDrawer()
+            AppDrawer(
+                onNavigateToSignInScreen = {
+                    navController.navigate(SignInScreenDestination.route)
+                    scope.launch { drawerState.close() }
+                }
+            )
         },
     ){
         Scaffold(
