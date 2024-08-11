@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
+import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.core.utils.StringUtils

@@ -1,18 +1,18 @@
-package com.minhhnn18898.letstravel.app.navigation
+package com.minhhnn18898.letstravel.app.appbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
+import com.minhhnn18898.app_navigation.appbarstate.ClearTopBarActions
 import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.SignInScreenDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
-import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
-import com.minhhnn18898.app_navigation.topappbar.ClearTopBarActions
 import com.minhhnn18898.letstravel.homescreen.HomeScreen
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.EditFlightInfoScreen
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.TripDetailScreen

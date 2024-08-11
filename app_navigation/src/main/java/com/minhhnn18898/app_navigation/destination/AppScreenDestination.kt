@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.app_navigation.destination.route.SignInFeatureRoute
 
-
 interface AppScreenDestination {
     @get:StringRes
     val title: Int

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.minhhnn18898.ui_components.theme
 
 import androidx.compose.ui.graphics.Color

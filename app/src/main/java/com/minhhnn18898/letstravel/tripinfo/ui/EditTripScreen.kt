@@ -45,7 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
-import com.minhhnn18898.app_navigation.topappbar.AppBarActionsState
+import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripinfo.ui.EditTripViewModel.ErrorType

@@ -84,7 +84,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(project(":architecture"))
-    implementation(project(":signin"))
+    implementation(project(":account"))
     implementation(project(":ui-components"))
     implementation(project(":app_navigation"))
     implementation(project(":core"))

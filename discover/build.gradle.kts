@@ -70,7 +70,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":architecture"))
     implementation(project(":firebase"))
-    implementation(project(":signin"))
+    implementation(project(":account"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

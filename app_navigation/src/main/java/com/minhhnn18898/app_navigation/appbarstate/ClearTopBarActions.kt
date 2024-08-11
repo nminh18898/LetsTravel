@@ -1,4 +1,4 @@
-package com.minhhnn18898.app_navigation.topappbar
+package com.minhhnn18898.app_navigation.appbarstate
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
