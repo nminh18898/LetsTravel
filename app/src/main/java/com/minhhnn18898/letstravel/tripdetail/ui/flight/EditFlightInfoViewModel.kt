@@ -14,7 +14,7 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.CreateNewFlightInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -203,8 +203,8 @@ class EditFlightInfoViewModel @Inject constructor(
         }
     }
 
-    private fun extractAirportInfoFromInput(type: ItineraryType): AirportInfo {
-        return AirportInfo(
+    private fun extractAirportInfoFromInput(type: ItineraryType): AirportInfoModel {
+        return AirportInfoModel(
             airportCodes.getStringValue(type),
             airportCities.getStringValue(type),
             airportNames.getStringValue(type)

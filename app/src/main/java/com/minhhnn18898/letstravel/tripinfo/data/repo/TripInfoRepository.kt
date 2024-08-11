@@ -3,7 +3,7 @@ package com.minhhnn18898.letstravel.tripinfo.data.repo
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionInsertTripInfo
-import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -24,19 +24,19 @@ class TripInfoRepository @Inject constructor(
         DefaultCoverElement.COVER_DEFAULT_THEME_NATURE
     )
 
-    fun getAllTrips(): Flow<List<TripInfo>> {
+    fun getAllTrips(): Flow<List<TripInfoModel>> {
         return tripInfoDao.getAll()
     }
 
-    fun getTrip(id: Long): Flow<TripInfo> {
+    fun getTrip(id: Long): Flow<TripInfoModel> {
         return tripInfoDao.getTripInfo(id)
     }
 
     fun getListDefaultCoverElements(): List<DefaultCoverElement> = defaultCoverIdList
 
-    suspend fun insertTripInfo(tripInfo: TripInfo) {
+    suspend fun insertTripInfo(tripInfoModel: TripInfoModel) {
         withContext(ioDispatcher) {
-            val resultCode = tripInfoDao.insert(tripInfo)
+            val resultCode = tripInfoDao.insert(tripInfoModel)
             if(resultCode == -1L) {
                 throw ExceptionInsertTripInfo()
             }

@@ -128,6 +128,8 @@ class EditTripViewModel @Inject constructor(
             .apply {
                 add(0, CustomCoverPhoto(uri, isSelected = true))
             }
+
+        checkAllowSaveContent()
     }
 
     @Suppress("SameParameterValue")

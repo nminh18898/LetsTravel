@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity("airport_info")
-data class AirportInfo(
+data class AirportInfoModel(
     @PrimaryKey
     @ColumnInfo("airport_code")
     val code: String,

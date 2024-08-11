@@ -46,9 +46,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
-import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.core.utils.StringUtils
+import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
@@ -95,7 +95,9 @@ fun EditFlightInfoScreen(
     }
 
     Column(
-        modifier = modifier.verticalScroll(rememberScrollState())
+        modifier = modifier
+            .padding(vertical = 16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         val defaultModifier = Modifier.padding(horizontal = 16.dp)
 

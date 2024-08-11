@@ -4,7 +4,7 @@ import android.net.Uri
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
 import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionInsertTripInfo
-import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import com.minhhnn18898.letstravel.tripinfo.data.repo.TripInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -28,20 +28,20 @@ class CreateTripInfoUseCase @Inject constructor(private val repository: TripInfo
         emit(Result.Error(it))
     }
 
-    private fun createTripInfo(param: Param): TripInfo {
+    private fun createTripInfo(param: Param): TripInfoModel {
         return when(param) {
-            is DefaultCoverParam -> TripInfo(
+            is DefaultCoverParam -> TripInfoModel(
                 tripId = 0,
                 title = param.tripName,
-                coverType = TripInfo.TRIP_COVER_TYPE_DEFAULT,
+                coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
                 defaultCoverId = param.coverId,
                 customCoverPath = ""
             )
 
-            is CustomCoverParam -> TripInfo(
+            is CustomCoverParam -> TripInfoModel(
                 tripId = 0,
                 title = param.tripName,
-                coverType = TripInfo.TRIP_COVER_TYPE_CUSTOM,
+                coverType = TripInfoModel.TRIP_COVER_TYPE_CUSTOM,
                 defaultCoverId = 0,
                 customCoverPath = param.uri.toString()
             )

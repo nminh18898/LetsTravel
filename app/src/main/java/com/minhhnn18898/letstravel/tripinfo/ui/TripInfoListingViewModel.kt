@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import com.minhhnn18898.letstravel.tripinfo.usecase.GetListTripInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +38,7 @@ class TripInfoListingViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleResultLoadListTripInfo(flowData: Flow<List<TripInfo>>) {
+    private suspend fun handleResultLoadListTripInfo(flowData: Flow<List<TripInfoModel>>) {
         flowData.collect { item ->
             val data = mutableListOf<TripInfoItemDisplay>()
             val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }

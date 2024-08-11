@@ -28,8 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.HotelDisplayInfo
+import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 
@@ -39,6 +41,34 @@ private val defaultPageItemSize = object : PageSize {
         pageSpacing: Int
     ): Int {
         return (availableSpace  * 0.8f).toInt()
+    }
+}
+
+@Composable
+fun HotelDetailBody(
+    hotelInfoContentState: UiState<List<HotelDisplayInfo>, UiState.UndefinedError>,
+    onNavigateToCreateHotelInfoScreen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    if(hotelInfoContentState is UiState.Loading) {
+
+    } else if(hotelInfoContentState is UiState.Error) {
+
+    } else if(hotelInfoContentState is UiState.Success) {
+        val isEmpty = hotelInfoContentState.data.isEmpty()
+
+        if(isEmpty) {
+            DefaultEmptyView(
+                text = stringResource(id = CommonStringRes.add_your_hotels),
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth(),
+                onClick = onNavigateToCreateHotelInfoScreen
+            )
+        } else {
+           //
+        }
     }
 }
 

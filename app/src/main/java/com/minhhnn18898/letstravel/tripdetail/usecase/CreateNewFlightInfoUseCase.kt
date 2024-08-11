@@ -2,7 +2,7 @@ package com.minhhnn18898.letstravel.tripdetail.usecase
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
-import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 import com.minhhnn18898.letstravel.tripdetail.data.repo.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
@@ -15,8 +15,8 @@ class CreateNewFlightInfoUseCase @Inject constructor(private val repository: Tri
     class Param(
         val tripId: Long,
         val flightInfo: FlightInfo,
-        val departAirport: AirportInfo,
-        val destinationAirport: AirportInfo
+        val departAirport: AirportInfoModel,
+        val destinationAirport: AirportInfoModel
     )
 
     override fun run(params: Param):  Flow<Result<Unit>> = flow {

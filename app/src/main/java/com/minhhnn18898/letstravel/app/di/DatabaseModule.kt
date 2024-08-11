@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.minhhnn18898.letstravel.app.database.UserTripDatabase
 import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
+import com.minhhnn18898.letstravel.tripdetail.data.dao.HotelInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import dagger.Module
 import dagger.Provides
@@ -40,5 +41,10 @@ object DatabaseModule {
     @Provides
     fun provideFlightInfoDao(database: UserTripDatabase): FlightInfoDao {
         return database.flightInfoDao()
+    }
+
+    @Provides
+    fun provideHotelInfoDao(database: UserTripDatabase): HotelInfoDao {
+        return database.hotelInfoDao()
     }
 }

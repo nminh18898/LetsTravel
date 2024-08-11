@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "trip_info")
-data class TripInfo(
+data class TripInfoModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("trip_id")
     val tripId: Long,

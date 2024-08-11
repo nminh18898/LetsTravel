@@ -43,9 +43,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.tripdetail.data.MockDataProvider
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
-import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBodyPager
+import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBody
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripCustomCoverDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripDefaultCoverDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
@@ -86,9 +85,12 @@ fun TripDetailScreen(
             icon = R.drawable.hotel_24,
             title = CommonStringRes.hotels,
             modifier = modifier) {
-                HotelDetailBodyPager(
-                    hotelDisplayInfo = MockDataProvider.provideHotelInfo(),
-                    modifier = modifier
+                HotelDetailBody(
+                    hotelInfoContentState = viewModel.hotelInfoContentState,
+                    modifier = modifier,
+                    onNavigateToCreateHotelInfoScreen = {
+
+                    }
                 )
         }
         Spacer(Modifier.height(16.dp))

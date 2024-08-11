@@ -9,15 +9,17 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
+import com.minhhnn18898.core.utils.DateTimeUtils
+import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.GetFlightInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.usecase.GetHotelInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.usecase.GetTripInfoUseCase
-import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.ui.UserTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.ui.toTripItemDisplay
-import com.minhhnn18898.core.utils.DateTimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -29,7 +31,8 @@ class TripDetailScreenViewModel @Inject constructor(
     private val defaultResourceProvider: CoverDefaultResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,
     private val getFlightInfoUseCase: GetFlightInfoUseCase,
-    private val dateTimeUtils: DateTimeUtils = DateTimeUtils()
+    private val dateTimeUtils: DateTimeUtils = DateTimeUtils(),
+    private val getHotelInfoUseCase: GetHotelInfoUseCase
 ): ViewModel() {
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -40,9 +43,13 @@ class TripDetailScreenViewModel @Inject constructor(
     var flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set
 
+    var hotelInfoContentState: UiState<List<HotelDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
+        private set
+
     init {
         loadTripInfo(tripId)
         loadFlightInfo(tripId)
+        loadHotelInfo(tripId)
     }
 
     private fun loadTripInfo(tripId: Long) {
@@ -57,7 +64,7 @@ class TripDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo>) {
+    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfoModel>) {
         flowData.collect { item ->
             tripInfoContentState = UiState.Success(item.toTripItemDisplay(defaultResourceProvider))
         }
@@ -81,7 +88,7 @@ class TripDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private fun AirportInfo.toAirportDisplayInfo(): AirportDisplayInfo {
+    private fun AirportInfoModel.toAirportDisplayInfo(): AirportDisplayInfo {
         return AirportDisplayInfo(this.city, this.code, this.airportName)
     }
 
@@ -96,6 +103,28 @@ class TripDetailScreenViewModel @Inject constructor(
             calculateDuration(flightInfo.departureTime, flightInfo.arrivalTime),
             flightInfo.price.formatWithCommas()
         )
+    }
+
+    private fun loadHotelInfo(tripId: Long) {
+        viewModelScope.launch {
+            getHotelInfoUseCase.execute(GetHotelInfoUseCase.Param(tripId))?.collect {
+                when(it) {
+                    is Result.Loading -> hotelInfoContentState = UiState.Loading
+                    is Result.Success -> handleResultLoadHotelInfo(it.data)
+                    is Result.Error -> hotelInfoContentState = UiState.Error(UiState.UndefinedError)
+                }
+            }
+        }
+    }
+
+    private suspend fun handleResultLoadHotelInfo(flowData: Flow<List<HotelInfo>>) {
+        flowData.collect { item ->
+            hotelInfoContentState = UiState.Success(item.map { it.toHotelDisplayInfo() })
+        }
+    }
+
+    private fun HotelInfo.toHotelDisplayInfo(): HotelDisplayInfo {
+        return HotelDisplayInfo("","","","","","")
     }
 
     private fun Long.formatWithCommas(): String {

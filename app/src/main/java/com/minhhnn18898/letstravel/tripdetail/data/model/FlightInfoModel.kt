@@ -49,6 +49,6 @@ data class FlightInfo(
 
 data class FlightWithAirportInfo(
     val flightInfo: FlightInfo,
-    val departAirport: AirportInfo,
-    val destinationAirport: AirportInfo
+    val departAirport: AirportInfoModel,
+    val destinationAirport: AirportInfoModel
 )
