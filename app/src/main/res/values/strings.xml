@@ -4,6 +4,7 @@
     <string name="error_can_not_create_hotel_info">Can not create hotel info. Please try again</string>
     <string name="error_can_not_load_hotel_info">Can not load hotel info. Please try again</string>
     <string name="error_can_not_update_hotel_info">Can not update hotel info. Please try again</string>
+    <string name="error_can_not_delete_hotel_info">Can not delete hotel info. Please try again</string>
     <string name="error_hotel_stay_duration_is_invalid">Check-in and check-out date is invalid</string>
     <string name="error_can_not_create_flight_info">Can not create flight info. Please try again</string>
     <string name="error_flight_time_is_invalid">Flight time is invalid</string>

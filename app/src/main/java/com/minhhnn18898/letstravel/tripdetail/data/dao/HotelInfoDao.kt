@@ -1,7 +1,6 @@
 package com.minhhnn18898.letstravel.tripdetail.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,8 +16,8 @@ interface HotelInfoDao {
     @Update
     suspend fun update(hotelInfo: HotelInfoModel): Int
 
-    @Delete
-    suspend fun delete(hotelInfo: HotelInfoModel)
+    @Query("DELETE FROM hotel_info WHERE hotel_id = :hotelId")
+    suspend fun delete(hotelId: Long): Int
 
     @Query("SELECT * FROM hotel_info WHERE trip_id=:tripId")
     fun getHotels(tripId: Long): Flow<List<HotelInfoModel>>

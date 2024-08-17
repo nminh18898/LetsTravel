@@ -29,12 +29,14 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.DatePickerWithDialog
+import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
+import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun EditHotelInfoScreen(
@@ -48,6 +50,20 @@ fun EditHotelInfoScreen(
         onComposedTopBarActions(
             AppBarActionsState(
                 actions = {
+                    if(viewModel.canDeleteInfo) {
+                        IconButton(
+                            onClick = {
+                                viewModel.onDeleteClick()
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(CommonDrawableRes.delete_24),
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
                     IconButton(
                         onClick = {
                             viewModel.onSaveClick()
@@ -91,6 +107,13 @@ fun EditHotelInfoScreen(
 
     AnimatedVisibility(viewModel.onShowLoadingState) {
         ProgressDialog()
+    }
+
+    AnimatedVisibility(viewModel.onShowDialogDeleteConfirmation) {
+        DeleteConfirmationDialog(
+            onConfirmation = viewModel::onDeleteConfirm,
+            onDismissRequest = viewModel::onDeleteDismiss
+        )
     }
 
     TopMessageBar(
@@ -182,6 +205,7 @@ private fun getMessageError(context: Context, errorType: EditHotelInfoViewModel.
         EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_STAY_DURATION_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_hotel_stay_duration_is_invalid)
         EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_load_hotel_info)
         EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_update_hotel_info)
+        EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_hotel_info)
         else -> ""
     }
 }

@@ -11,6 +11,7 @@ import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.CreateNewHotelInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.usecase.DeleteHotelInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.usecase.GetHotelInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.usecase.UpdateHotelInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,17 +26,23 @@ class EditHotelInfoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val createNewHotelInfoUseCase: CreateNewHotelInfoUseCase,
     private val getHotelInfoUseCase: GetHotelInfoUseCase,
-    private val updateHotelInfoUseCase: UpdateHotelInfoUseCase
+    private val updateHotelInfoUseCase: UpdateHotelInfoUseCase,
+    private val deleteHotelInfoUseCase: DeleteHotelInfoUseCase
 ): ViewModel() {
 
     private var tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
     private var hotelId: Long = savedStateHandle.get<Long>(MainAppRoute.hotelIdArg) ?: 0L
 
+    var canDeleteInfo by mutableStateOf(hotelId > 0L)
+
     var allowSaveContent by mutableStateOf(false)
         private set
 
     var onShowLoadingState by mutableStateOf(false)
+        private set
+
+    var onShowDialogDeleteConfirmation by mutableStateOf(false)
         private set
 
     var errorType by mutableStateOf(ErrorType.ERROR_MESSAGE_NONE)
@@ -95,6 +102,32 @@ class EditHotelInfoViewModel @Inject constructor(
         uiState.value = uiState.value.copy(checkOutDate = checkOutDate)
         checkInvalidHotelCheckOutTimeRangeAndNotify()
         checkAllowSaveContent()
+    }
+
+    fun onDeleteClick() {
+        onShowDialogDeleteConfirmation = true
+    }
+
+    fun onDeleteConfirm() {
+        onShowDialogDeleteConfirmation = false
+
+        viewModelScope.launch {
+            deleteHotelInfoUseCase.execute(DeleteHotelInfoUseCase.Param(hotelId))?.collect {
+                onShowLoadingState = it == Result.Loading
+
+                when(it) {
+                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_HOTEL_INFO)
+                    else -> {
+                        // do nothing
+                    }
+                }
+            }
+        }
+    }
+
+    fun onDeleteDismiss() {
+        onShowDialogDeleteConfirmation = false
     }
 
     fun onSaveClick() {
@@ -206,6 +239,7 @@ class EditHotelInfoViewModel @Inject constructor(
         ERROR_MESSAGE_STAY_DURATION_IS_NOT_VALID,
         ERROR_MESSAGE_CAN_NOT_LOAD_HOTEL_INFO,
         ERROR_MESSAGE_CAN_NOT_UPDATE_HOTEL_INFO,
+        ERROR_MESSAGE_CAN_NOT_DELETE_HOTEL_INFO
     }
 
     sealed class Event {

@@ -54,6 +54,11 @@ class TripDetailRepository @Inject constructor(
         }
     }
 
+    fun getFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> =
+        flightInfoDao
+            .getFlights(tripId)
+            .mapWithAirportInfo(airportInfoDao.getAll())
+
     suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
         val hotelInfoModel = HotelInfoModel(
             hotelId = 0,
@@ -88,11 +93,6 @@ class TripDetailRepository @Inject constructor(
         }
     }
 
-    fun getFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> =
-        flightInfoDao
-            .getFlights(tripId)
-            .mapWithAirportInfo(airportInfoDao.getAll())
-
     fun getAllHotelInfo(tripId: Long): Flow<List<HotelInfo>> =
         hotelInfoDao
             .getHotels(tripId)
@@ -104,6 +104,14 @@ class TripDetailRepository @Inject constructor(
         hotelInfoDao
             .getHotel(hotelId)
             .toHotelInfo()
+    }
+
+    suspend fun deleteHotelInfo(hotelId: Long) = withContext(ioDispatcher) {
+        val result = hotelInfoDao.delete(hotelId)
+
+        if(result <= 0) {
+            throw ExceptionDeleteHotelInfo()
+        }
     }
 }
 

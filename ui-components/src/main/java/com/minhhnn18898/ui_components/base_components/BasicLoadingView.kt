@@ -11,9 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-class BasicLoadingView {
-}
-
 @Composable
 fun BasicLoadingView(modifier: Modifier) {
     Box(modifier = modifier
