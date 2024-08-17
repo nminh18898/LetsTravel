@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.minhhnn18898.signin.data.model.UserInfo
-import com.minhhnn18898.signin.usecase.GetAuthUserInfoUseCase
-import com.minhhnn18898.signin.usecase.SignOutUseCase
+import com.minhhnn18898.account.data.model.UserInfo
+import com.minhhnn18898.account.usecase.GetAuthUserInfoUseCase
+import com.minhhnn18898.account.usecase.SignOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

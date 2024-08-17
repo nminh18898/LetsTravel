@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class FlightInfoModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("flight_id")
-    val flightId: Int,
+    val flightId: Long,
     @ColumnInfo("flight_number")
     val flightNumber: String,
     @ColumnInfo("operated_airlines")

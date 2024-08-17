@@ -13,9 +13,9 @@ interface AppScreenDestination {
 
     companion object {
         fun getAppScreenDestination(route: String): AppScreenDestination {
-           return listAllDestinations.first {
+           return listAllDestinations.firstOrNull {
                destination -> destination.getAllRoutes().any { it == route }
-           }
+           } ?: HomeScreenDestination
         }
     }
 }

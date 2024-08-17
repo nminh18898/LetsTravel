@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class HotelInfoModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("hotel_id")
-    val hotelId: Int,
+    val hotelId: Long,
     @ColumnInfo("hotel_name")
     val hotelName: String,
     @ColumnInfo("address")
@@ -26,7 +26,7 @@ data class HotelInfoModel(
 )
 
 data class HotelInfo(
-    val hotelId: Int,
+    val hotelId: Long = 0,
     val hotelName: String,
     val address: String,
     val checkInDate: Long,

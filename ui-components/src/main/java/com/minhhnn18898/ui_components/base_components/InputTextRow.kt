@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -20,7 +21,8 @@ fun InputTextRow(
     label: String,
     inputText: String,
     onTextChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Row(modifier = modifier,
         verticalAlignment = Alignment.CenterVertically) {
@@ -36,7 +38,8 @@ fun InputTextRow(
             modifier = modifier.fillMaxWidth(),
             value = inputText,
             onValueChange = onTextChanged,
-            label = { Text(label) }
+            label = { Text(label) },
+            keyboardOptions = keyboardOptions
         )
     }
 }

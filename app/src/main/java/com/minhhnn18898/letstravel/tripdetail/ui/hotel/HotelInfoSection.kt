@@ -2,7 +2,14 @@
 
 package com.minhhnn18898.letstravel.tripdetail.ui.hotel
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,15 +22,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
@@ -31,8 +43,11 @@ import androidx.compose.ui.unit.dp
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.HotelDisplayInfo
+import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
+import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
+import com.minhhnn18898.core.R.plurals as CommonStringPluralsRes
 import com.minhhnn18898.core.R.string as CommonStringRes
 
 private val defaultPageItemSize = object : PageSize {
@@ -47,14 +62,18 @@ private val defaultPageItemSize = object : PageSize {
 @Composable
 fun HotelDetailBody(
     hotelInfoContentState: UiState<List<HotelDisplayInfo>, UiState.UndefinedError>,
-    onNavigateToCreateHotelInfoScreen: () -> Unit,
+    onClickCreateHotelInfo: () -> Unit,
+    onClickHotelInfoItem: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     if(hotelInfoContentState is UiState.Loading) {
-
+        HotelDetailLoading()
     } else if(hotelInfoContentState is UiState.Error) {
-
+        ErrorTextView(
+            error = stringResource(id = CommonStringRes.can_not_load_info),
+            modifier = modifier
+        )
     } else if(hotelInfoContentState is UiState.Success) {
         val isEmpty = hotelInfoContentState.data.isEmpty()
 
@@ -64,17 +83,69 @@ fun HotelDetailBody(
                 modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth(),
-                onClick = onNavigateToCreateHotelInfoScreen
+                onClick = onClickCreateHotelInfo
             )
         } else {
-           //
+            HotelDetailBodyPager(
+                hotelDisplayInfo = hotelInfoContentState.data,
+                onClickHotelInfoItem = onClickHotelInfoItem,
+                modifier = modifier
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            CreateNewDefaultButton(
+                text = stringResource(id = CommonStringRes.add_new_hotel),
+                modifier = modifier,
+                onClick = onClickCreateHotelInfo
+            )
         }
     }
 }
 
 @Composable
+private fun HotelDetailLoading() {
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 1000
+                0.7f at 500
+            },
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+    Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+        HotelLoadingSkeletonItem(alpha)
+
+        Spacer(modifier = Modifier.width(60.dp))
+
+        HotelLoadingSkeletonItem(alpha)
+    }
+}
+
+@Composable
+private fun HotelLoadingSkeletonItem(alpha: Float) {
+    val configuration = LocalConfiguration.current
+    Box(
+        modifier = Modifier
+            .height(136.dp)
+            .width(configuration.screenWidthDp.dp * 0.6f)
+            .background(
+                color = Color.LightGray.copy(alpha = alpha),
+                shape = RoundedCornerShape(12.dp)
+            )
+    )
+}
+
+@Composable
 fun HotelDetailBodyPager(
     hotelDisplayInfo: List<HotelDisplayInfo>,
+    onClickHotelInfoItem: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -92,6 +163,9 @@ fun HotelDetailBodyPager(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp)
+                .clickable {
+                    onClickHotelInfoItem.invoke(pageInfo.hotelId)
+                }
         ) {
             Card(
                 elevation = CardDefaults.cardElevation(
@@ -122,7 +196,7 @@ fun HotelBasicInfo(
     Column(modifier = modifier) {
         Text(
             text = hotelDisplayInfo.hotelName,
-            style = typography.bodyMedium,
+            style = typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1
         )
@@ -148,7 +222,7 @@ fun HotelStayDurationInfo(
         )
 
         HotelDateDivider(
-            description = hotelDisplayInfo.duration
+            description = pluralStringResource(id = CommonStringPluralsRes.numberOfNights, count = hotelDisplayInfo.duration, hotelDisplayInfo.duration)
         )
 
         HotelDateInfo(
@@ -160,12 +234,11 @@ fun HotelStayDurationInfo(
 
 @Composable
 fun HotelDateDivider(
-    description: String,
-    modifier: Modifier = Modifier
+    description: String
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 24.dp)
+        modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         Text(
             text = description,
@@ -175,7 +248,7 @@ fun HotelDateDivider(
         )
 
         Icon(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(24.dp),
             painter = painterResource(id = R.drawable.night_sight_max_24),
             contentDescription = "",
             tint = MaterialTheme.colorScheme.primary

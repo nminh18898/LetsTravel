@@ -18,10 +18,11 @@ data class AirportDisplayInfo(
 )
 
 data class HotelDisplayInfo(
+    val hotelId: Long,
     val hotelName: String,
     val address: String,
     val checkInDate: String,
     val checkOutDate: String,
-    val duration: String,
+    val duration: Int,
     val price: String,
 )

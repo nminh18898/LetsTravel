@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.minhhnn18898.signin"
+    namespace = "com.minhhnn18898.account"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

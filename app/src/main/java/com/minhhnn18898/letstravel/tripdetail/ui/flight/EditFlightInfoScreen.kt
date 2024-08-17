@@ -49,6 +49,7 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.ui_components.base_components.InputPriceRow
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
@@ -139,6 +140,7 @@ fun EditFlightInfo(
             })
 
         Spacer(modifier = Modifier.height(8.dp))
+
         InputTextRow(
             iconRes = R.drawable.airlines_24,
             label = stringResource(id = CommonStringRes.airlines),
@@ -148,15 +150,18 @@ fun EditFlightInfo(
             })
 
         Spacer(modifier = Modifier.height(8.dp))
-        InputTextRow(
+
+        InputPriceRow(
             iconRes = R.drawable.payments_24,
             label = stringResource(id = CommonStringRes.prices),
             inputText = viewModel.prices,
             onTextChanged = {
                 viewModel.onPricesUpdated(it)
-            })
+            }
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
+
         InputFlightDateTimeSection(
             dateFrom = viewModel.getFlightDate(EditFlightInfoViewModel.ItineraryType.DEPARTURE),
             onDateFromSelected = {
@@ -534,8 +539,8 @@ fun TimePickerWithDialog(
 
 private fun getMessageError(context: Context, errorType: EditFlightInfoViewModel.ErrorType): String {
     return when(errorType) {
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, CommonStringRes.error_can_not_create_trip)
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, CommonStringRes.error_flight_time_is_invalid)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_create_flight_info)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_flight_time_is_invalid)
         else -> ""
     }
 }

@@ -218,14 +218,6 @@ class EditFlightInfoViewModel @Inject constructor(
         return dateTimeUtils.convertToLocalDateTimeMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
     }
 
-    private fun Map<ItineraryType, MutableState<Pair<Int, Int>>>.getTimeString(key: ItineraryType): String {
-       return (this[key]?.value ?: Pair(0, 0)).toTimeString()
-    }
-
-    private fun Pair<Int, Int>.toTimeString(): String {
-        return dateTimeUtils.formatTime(this.first, this.second)
-    }
-
     private fun Map<ItineraryType, MutableState<String>>.getStringValue(key: ItineraryType): String {
         return this[key]?.value ?: ""
     }

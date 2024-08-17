@@ -19,7 +19,7 @@ class DateTimeUtils @Inject constructor() {
 
     private val defaultFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
 
-    private val dateMonthYearFormatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy", Locale.getDefault())
+    private val dateMonthYearFormatter = DateTimeFormatter.ofPattern("dd MMMM, yy", Locale.getDefault())
 
     fun convertMillisToLocalDate(millis: Long): LocalDate {
         return Instant
@@ -43,9 +43,9 @@ class DateTimeUtils @Inject constructor() {
     }
 
 
-    fun dateToString(date: LocalDate): String {
-        val localDate = convertMillisToLocalDateWithFormatter(date, defaultFormatter)
-        return defaultFormatter.format(localDate)
+    fun dateToString(date: LocalDate, formatter: DateTimeFormatter = defaultFormatter): String {
+        val localDate = convertMillisToLocalDateWithFormatter(date, formatter)
+        return formatter.format(localDate)
     }
 
     fun dateToString(date: Date, formatter: DateTimeFormatter = dateMonthYearFormatter): String {
@@ -53,13 +53,17 @@ class DateTimeUtils @Inject constructor() {
         return formatter.format(localDate)
     }
 
+    fun millisToDateString(millis: Long): String {
+        return dateToString(convertMillisToLocalDate(millis), dateMonthYearFormatter)
+    }
+
     fun formatTime(hour: Int, minute: Int): String {
         return String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
     }
 
-    fun getFormatDateTimeString(millis: Long): String {
+    fun getFormatFlightDateTimeString(millis: Long): String {
         val localDateTime = convertMillisToLocalDateTime(millis)
-        val dateFormatter = DateTimeFormatter.ofPattern("HH:mm\nEEEE, dd MMMM", Locale.getDefault())
+        val dateFormatter = DateTimeFormatter.ofPattern("HH:mm\nEEE, dd MMMM", Locale.getDefault())
         return dateFormatter.format(localDateTime)
     }
 
@@ -89,5 +93,10 @@ class DateTimeUtils @Inject constructor() {
     fun parseHourMinute(time: String): Pair<Int, Int> {
         val localTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"))
         return Pair(localTime.hour, localTime.minute)
+    }
+
+    fun getNightDuration(from: Long, to: Long): Long {
+        val duration = (to - from).toDuration(DurationUnit.MILLISECONDS)
+        return duration.inWholeDays
     }
 }

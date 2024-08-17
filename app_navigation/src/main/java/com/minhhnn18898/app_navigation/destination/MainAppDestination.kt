@@ -3,6 +3,7 @@ package com.minhhnn18898.app_navigation.destination
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
+import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.hotelIdArg
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.tripIdArg
 import com.minhhnn18898.core.R.string as CommonStringRes
 
@@ -12,6 +13,7 @@ val listAllDestinations = mutableListOf(
     SavedTripsListingFullDestination,
     TripDetailDestination,
     EditFlightInfoDestination,
+    EditHotelInfoDestination,
 
     SignInScreenDestination,
     SignUpScreenDestination
@@ -53,6 +55,21 @@ object EditFlightInfoDestination: AppScreenDestination {
     val routeWithArgs = "$route/{$tripIdArg}"
     val arguments = listOf(
         navArgument(tripIdArg) { type = NavType.LongType }
+    )
+
+    override fun getAllRoutes(): List<String> {
+        return mutableListOf(route, routeWithArgs)
+    }
+}
+
+object EditHotelInfoDestination: AppScreenDestination {
+    override val title: Int get() = CommonStringRes.hotel_info
+    override val route: String = MainAppRoute.EDIT_HOTEL_INFO_SCREEN_ROUTE
+
+    val routeWithArgs = "$route/{$tripIdArg}/{$hotelIdArg}"
+    val arguments = listOf(
+        navArgument(tripIdArg) { type = NavType.LongType },
+        navArgument(hotelIdArg) { type = NavType.LongType }
     )
 
     override fun getAllRoutes(): List<String> {

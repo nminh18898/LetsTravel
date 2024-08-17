@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.minhhnn18898.letstravel.tripdetail.ui.trip
 
 import androidx.annotation.DrawableRes
@@ -9,7 +7,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -42,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.ui.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.ui.hotel.HotelDetailBody
@@ -57,6 +56,7 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 fun TripDetailScreen(
     modifier: Modifier = Modifier,
     onNavigateEditFlightScreen: (Long) -> Unit,
+    onNavigateEditHotelScreen: (Long, Long) -> Unit,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
     Column(
@@ -64,6 +64,13 @@ fun TripDetailScreen(
             .verticalScroll(rememberScrollState())
     ) {
         TripDetailHeader(modifier, viewModel.tripInfoContentState)
+
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        EstimatedBudgetSection(
+            modifier = modifier,
+            estimateBudget = viewModel.estimateBudgetDisplay
+        )
 
         // Flight Info
         DetailSection(
@@ -88,8 +95,11 @@ fun TripDetailScreen(
                 HotelDetailBody(
                     hotelInfoContentState = viewModel.hotelInfoContentState,
                     modifier = modifier,
-                    onNavigateToCreateHotelInfoScreen = {
-
+                    onClickCreateHotelInfo = {
+                        onNavigateEditHotelScreen.invoke(viewModel.tripId, 0L)
+                    },
+                    onClickHotelInfoItem = { hotelId ->
+                        onNavigateEditHotelScreen.invoke(viewModel.tripId, hotelId)
                     }
                 )
         }
@@ -113,6 +123,43 @@ private fun TripDetailHeader(
     if(tripInfoState is UiState.Success) {
         TripDetailHeaderContent(tripInfoItemDisplay = tripInfoState.data, modifier = modifier)
     }
+}
+
+@Composable
+private fun EstimatedBudgetSection(
+    modifier: Modifier = Modifier,
+    estimateBudget: String) {
+
+   if(estimateBudget.isNotBlankOrEmpty()) {
+       Row(
+           modifier = modifier.padding(horizontal = 16.dp),
+           verticalAlignment = Alignment.CenterVertically
+       ) {
+           Icon(
+               painter = painterResource(R.drawable.price_change_24),
+               contentDescription = "",
+               tint = MaterialTheme.colorScheme.primary
+           )
+
+           Spacer(modifier = Modifier.width(8.dp))
+
+           Text(
+               text = "${stringResource(CommonStringRes.estimated_budget)}:",
+               style = typography.titleMedium,
+               color = MaterialTheme.colorScheme.primary,
+               maxLines = 1
+           )
+
+           Spacer(modifier = Modifier.width(8.dp))
+
+           Text(
+               text = estimateBudget,
+               style = typography.titleMedium,
+               color = MaterialTheme.colorScheme.tertiary,
+               maxLines = 1
+           )
+       }
+   }
 }
 
 @Composable
@@ -183,7 +230,7 @@ private fun TripDetailHeaderContent(
 
         Text(
             text = tripInfoItemDisplay.tripName,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.titleLarge,
             maxLines = 1,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,

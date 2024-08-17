@@ -14,7 +14,7 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.usecase.GetFlightInfoUseCase
-import com.minhhnn18898.letstravel.tripdetail.usecase.GetHotelInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.usecase.GetListHotelInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.usecase.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import com.minhhnn18898.letstravel.tripinfo.ui.CoverDefaultResourceProvider
@@ -32,7 +32,7 @@ class TripDetailScreenViewModel @Inject constructor(
     private val getTripInfoUseCase: GetTripInfoUseCase,
     private val getFlightInfoUseCase: GetFlightInfoUseCase,
     private val dateTimeUtils: DateTimeUtils = DateTimeUtils(),
-    private val getHotelInfoUseCase: GetHotelInfoUseCase
+    private val getListHotelInfoUseCase: GetListHotelInfoUseCase
 ): ViewModel() {
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -44,6 +44,10 @@ class TripDetailScreenViewModel @Inject constructor(
         private set
 
     var hotelInfoContentState: UiState<List<HotelDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
+        private set
+
+    private var estimateBudget: MutableMap<BudgetType, Long> = mutableMapOf()
+    var estimateBudgetDisplay by mutableStateOf("")
         private set
 
     init {
@@ -85,6 +89,7 @@ class TripDetailScreenViewModel @Inject constructor(
     private suspend fun handleResultLoadFlightInfo(flowData: Flow<List<FlightWithAirportInfo>>) {
         flowData.collect { item ->
             flightInfoContentState = UiState.Success(item.map { it.toFlightDisplayInfo() })
+            onUpdateFlightBudget(item)
         }
     }
 
@@ -94,20 +99,20 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private fun FlightWithAirportInfo.toFlightDisplayInfo(): FlightDisplayInfo {
         return FlightDisplayInfo(
-            flightInfo.flightNumber,
-            departAirport.toAirportDisplayInfo(),
-            destinationAirport.toAirportDisplayInfo(),
-            flightInfo.operatedAirlines,
-            dateTimeUtils.getFormatDateTimeString(flightInfo.departureTime),
-            dateTimeUtils.getFormatDateTimeString(flightInfo.arrivalTime),
-            calculateDuration(flightInfo.departureTime, flightInfo.arrivalTime),
-            flightInfo.price.formatWithCommas()
+            flightNumber = flightInfo.flightNumber,
+            departAirport = departAirport.toAirportDisplayInfo(),
+            destinationAirport = destinationAirport.toAirportDisplayInfo(),
+            operatedAirlines = flightInfo.operatedAirlines,
+            departureTime = dateTimeUtils.getFormatFlightDateTimeString(flightInfo.departureTime),
+            arrivalTime = dateTimeUtils.getFormatFlightDateTimeString(flightInfo.arrivalTime),
+            duration = calculateFlightDuration(flightInfo.departureTime, flightInfo.arrivalTime),
+            price = flightInfo.price.formatWithCommas()
         )
     }
 
     private fun loadHotelInfo(tripId: Long) {
         viewModelScope.launch {
-            getHotelInfoUseCase.execute(GetHotelInfoUseCase.Param(tripId))?.collect {
+            getListHotelInfoUseCase.execute(GetListHotelInfoUseCase.Param(tripId))?.collect {
                 when(it) {
                     is Result.Loading -> hotelInfoContentState = UiState.Loading
                     is Result.Success -> handleResultLoadHotelInfo(it.data)
@@ -120,18 +125,65 @@ class TripDetailScreenViewModel @Inject constructor(
     private suspend fun handleResultLoadHotelInfo(flowData: Flow<List<HotelInfo>>) {
         flowData.collect { item ->
             hotelInfoContentState = UiState.Success(item.map { it.toHotelDisplayInfo() })
+            onUpdateHotelBudget(item)
         }
     }
 
     private fun HotelInfo.toHotelDisplayInfo(): HotelDisplayInfo {
-        return HotelDisplayInfo("","","","","","")
+        return HotelDisplayInfo(
+            hotelId = this.hotelId,
+            hotelName = this.hotelName,
+            address = this.address,
+            checkInDate = dateTimeUtils.millisToDateString(this.checkInDate),
+            checkOutDate = dateTimeUtils.millisToDateString(this.checkOutDate),
+            duration = calculateHotelStayDuration(this.checkInDate, this.checkOutDate),
+            price = this.price.formatWithCommas()
+        )
     }
 
     private fun Long.formatWithCommas(): String {
         return "%,d".format(this)
     }
 
-    private fun calculateDuration(from: Long, to: Long): String {
+    private fun calculateFlightDuration(from: Long, to: Long): String {
         return dateTimeUtils.getDurationInHourMinuteDisplayString(from, to)
     }
+
+    private fun calculateHotelStayDuration(from: Long, to: Long): Int {
+        return dateTimeUtils.getNightDuration(from, to).toInt()
+    }
+
+    private fun onUpdateFlightBudget(flightInfo: List<FlightWithAirportInfo>) {
+        estimateBudget[BudgetType.FLIGHT] = flightInfo.calculateFlightTotalPrices()
+        onUpdateBudgetTotal()
+    }
+
+    private fun onUpdateHotelBudget(hotelInfo: List<HotelInfo>) {
+        estimateBudget[BudgetType.HOTEL] = hotelInfo.calculateHotelTotalPrices()
+        onUpdateBudgetTotal()
+    }
+
+    private fun onUpdateBudgetTotal() {
+        val total = estimateBudget.getTotal()
+        if(total > 0) {
+            estimateBudgetDisplay = total.formatWithCommas()
+        }
+    }
+
+    enum class BudgetType {
+        FLIGHT,
+        HOTEL,
+    }
+}
+
+private fun List<HotelInfo>.calculateHotelTotalPrices(): Long {
+    return this.sumOf { it.price }
+}
+
+private fun List<FlightWithAirportInfo>.calculateFlightTotalPrices(): Long {
+    return this.sumOf { it.flightInfo.price }
+}
+
+private fun MutableMap<TripDetailScreenViewModel.BudgetType, Long>.getTotal(): Long {
+    return this.values.sumOf { it }
 }

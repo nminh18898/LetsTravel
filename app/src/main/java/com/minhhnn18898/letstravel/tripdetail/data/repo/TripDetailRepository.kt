@@ -54,19 +54,57 @@ class TripDetailRepository @Inject constructor(
         }
     }
 
+    suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
+        val hotelInfoModel = HotelInfoModel(
+            hotelId = 0,
+            tripId = tripId,
+            hotelName =  hotelInfo.hotelName,
+            address =  hotelInfo.address,
+            price = hotelInfo.price,
+            checkInDate =  hotelInfo.checkInDate,
+            checkOutDate = hotelInfo.checkOutDate
+        )
+
+        val resultCode = hotelInfoDao.insert(hotelInfoModel)
+        if(resultCode == -1L) {
+            throw ExceptionInsertHotelInfo()
+        }
+    }
+
+    suspend fun updateHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
+        val hotelInfoModel = HotelInfoModel(
+            hotelId = hotelInfo.hotelId,
+            tripId = tripId,
+            hotelName =  hotelInfo.hotelName,
+            address =  hotelInfo.address,
+            price = hotelInfo.price,
+            checkInDate =  hotelInfo.checkInDate,
+            checkOutDate = hotelInfo.checkOutDate
+        )
+
+        val result = hotelInfoDao.update(hotelInfoModel)
+        if(result <= 0) {
+            throw ExceptionUpdateHotelInfo()
+        }
+    }
+
     fun getFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> =
         flightInfoDao
             .getFlights(tripId)
             .mapWithAirportInfo(airportInfoDao.getAll())
 
-    class ExceptionInsertFlightInfo: Exception()
-
-    fun getHotelInfo(tripId: Long): Flow<List<HotelInfo>> =
+    fun getAllHotelInfo(tripId: Long): Flow<List<HotelInfo>> =
         hotelInfoDao
             .getHotels(tripId)
             .map {
                 it.toHotelInfo()
             }
+
+    suspend fun getHotelInfo(hotelId: Long): HotelInfo = withContext(ioDispatcher) {
+        hotelInfoDao
+            .getHotel(hotelId)
+            .toHotelInfo()
+    }
 }
 
 private fun Map<String, AirportInfoModel>.findAirportInfo(code: String): AirportInfoModel {

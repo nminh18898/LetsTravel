@@ -18,6 +18,7 @@
     <string name="arrival_flight">Return flight</string>
     <string name="airlines">Airlines</string>
     <string name="flight_info">Flight info</string>
+    <string name="hotel_info">Hotel info</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="saved_trips">Saved trips</string>
@@ -39,7 +40,6 @@
     <string name="add_new_flight">Add new flight</string>
     <string name="add_new_hotel">Add new hotel</string>
     <string name="can_not_load_info">Can not load info</string>
-    <string name="error_flight_time_is_invalid">Flight time is invalid.</string>
     <string name="explore">Explore</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -51,4 +51,11 @@
     <string name="read_more">Read more</string>
     <string name="of">of</string>
     <string name="pick_your_photo">Pick your photo</string>
+    <string name="check_in_date">Check-in date</string>
+    <string name="check_out_date">Check-out date</string>
+    <plurals name="numberOfNights">
+        <item quantity="one">%d night</item>
+        <item quantity="other">%d nights</item>
+    </plurals>
+    <string name="estimated_budget">Estimated budget</string>
 </resources>

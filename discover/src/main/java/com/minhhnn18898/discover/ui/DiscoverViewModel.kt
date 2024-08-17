@@ -10,8 +10,8 @@ import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.discover.data.model.Article
 import com.minhhnn18898.discover.usecase.GetListArticlesDiscovery
-import com.minhhnn18898.signin.usecase.CheckValidSignedInUserUseCase
-import com.minhhnn18898.signin.usecase.GetAuthStateUseCase
+import com.minhhnn18898.account.usecase.CheckValidSignedInUserUseCase
+import com.minhhnn18898.account.usecase.GetAuthStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Date

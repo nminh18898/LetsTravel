@@ -42,7 +42,7 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
-            <meta-data  android:name="com.minhhnn18898.signin.AuthInitializer"
+            <meta-data  android:name="com.minhhnn18898.account.AuthInitializer"
                 android:value="androidx.startup" />
         </provider>
 

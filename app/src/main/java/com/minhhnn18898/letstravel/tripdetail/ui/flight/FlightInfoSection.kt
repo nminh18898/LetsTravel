@@ -9,7 +9,6 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,18 +35,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.architecture.ui.UiState
-import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.AirportDisplayInfo
 import com.minhhnn18898.letstravel.tripdetail.ui.trip.FlightDisplayInfo
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
+import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 
@@ -70,7 +68,10 @@ fun FlightDetailBody(
     if(flightInfoContentState is UiState.Loading) {
         FlightDetailLoading()
     } else if(flightInfoContentState is UiState.Error) {
-        ErrorTextView(modifier = modifier)
+        ErrorTextView(
+            error = stringResource(id = CommonStringRes.can_not_load_info),
+            modifier = modifier
+        )
     } else if(flightInfoContentState is UiState.Success) {
          val isEmpty = flightInfoContentState.data.isEmpty()
 
@@ -97,33 +98,6 @@ fun FlightDetailBody(
             )
         }
     }
-}
-
-@Composable
-private fun ErrorTextView(modifier: Modifier) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            modifier = Modifier.size(16.dp),
-            painter = painterResource(id = R.drawable.error_24),
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.tertiary
-        )
-
-        Spacer(modifier = Modifier.width(4.dp))
-
-        Text(
-            text = stringResource(id = CommonStringRes.can_not_load_info),
-            style = typography.bodySmall,
-            color = MaterialTheme.colorScheme.tertiary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-    
 }
 
 @Composable
@@ -315,7 +289,7 @@ fun FlightDestinationInfoRow(
     ) {
         Text(
             text = airportDisplayInfo.code,
-            style = typography.titleLarge,
+            style = typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -346,7 +320,7 @@ fun FlightDestinationInfoRow(
         Text(
             text = time,
             style = typography.bodyMedium,
-            color = MaterialTheme.colorScheme.tertiary,
+            color = MaterialTheme.colorScheme.secondary,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center

@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.signin.data.model.UserInfo
+import com.minhhnn18898.account.data.model.UserInfo
 import com.minhhnn18898.ui_components.R
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
