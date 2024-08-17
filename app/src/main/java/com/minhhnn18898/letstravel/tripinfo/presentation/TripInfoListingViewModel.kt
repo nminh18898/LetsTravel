@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.homescreen
+package com.minhhnn18898.letstravel.tripinfo.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,14 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
-import com.minhhnn18898.letstravel.tripinfo.presentation.CoverDefaultResourceProvider
-import com.minhhnn18898.letstravel.tripinfo.presentation.CreateNewTripItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentError
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentLoading
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentResult
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentState
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripInfoItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.toTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.domain.GetListTripInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class TripInfoListingViewModel @Inject constructor(
     private val getListTripInfoUseCase: GetListTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider
 ): ViewModel() {
@@ -50,9 +42,10 @@ class HomeScreenViewModel @Inject constructor(
         flowData.collect { item ->
             val data = mutableListOf<TripInfoItemDisplay>()
             val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }
-            data.addAll(userTrips.take(2))
             data.add(CreateNewTripItemDisplay)
+            data.addAll(userTrips)
             contentState = GetSavedTripInfoContentResult(data)
         }
     }
+
 }

@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.minhhnn18898.app_navigation.destination.SignUpScreenDestination
 import com.minhhnn18898.app_navigation.destination.route.SignInFeatureRoute
-import com.minhhnn18898.account.signin.SignInScreen
-import com.minhhnn18898.account.signup.SignUpScreen
+import com.minhhnn18898.account.presentation.signin.SignInScreen
+import com.minhhnn18898.account.presentation.signup.SignUpScreen
 
 fun NavGraphBuilder.signInFeatureComposable(
     navigationController: NavHostController,
