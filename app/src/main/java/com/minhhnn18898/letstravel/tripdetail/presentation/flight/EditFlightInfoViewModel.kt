@@ -18,6 +18,7 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.domain.flight.CreateNewFlightInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.domain.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.flight.GetFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.flight.UpdateFlightInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,7 @@ class EditFlightInfoViewModel @Inject constructor(
     private val createNewFlightInfoUseCase: CreateNewFlightInfoUseCase,
     private val getFlightInfoUseCase: GetFlightInfoUseCase,
     private val updateFlightInfoUseCase: UpdateFlightInfoUseCase,
+    private val deleteFlightInfoUseCase: DeleteFlightInfoUseCase,
     private val dateTimeUtils: DateTimeUtils = DateTimeUtils()
 ): ViewModel() {
 
@@ -76,7 +78,12 @@ class EditFlightInfoViewModel @Inject constructor(
     var allowSaveContent by mutableStateOf(false)
         private set
 
+    var canDelete by mutableStateOf(flightId > 0L)
+
     var onShowLoadingState by mutableStateOf(false)
+        private set
+
+    var onShowDialogDeleteConfirmation by mutableStateOf(false)
         private set
 
     var errorType by mutableStateOf(ErrorType.ERROR_MESSAGE_NONE)
@@ -277,6 +284,32 @@ class EditFlightInfoViewModel @Inject constructor(
         }
     }
 
+    fun onDeleteClick() {
+        onShowDialogDeleteConfirmation = true
+    }
+
+    fun onDeleteConfirm() {
+        onShowDialogDeleteConfirmation = false
+
+        viewModelScope.launch {
+            deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId))?.collect {
+                onShowLoadingState = it == Result.Loading
+
+                when(it) {
+                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO)
+                    else -> {
+                        // do nothing
+                    }
+                }
+            }
+        }
+    }
+
+    fun onDeleteDismiss() {
+        onShowDialogDeleteConfirmation = false
+    }
+
     @Suppress("SameParameterValue")
     private fun showErrorInBriefPeriod(errorType: ErrorType) {
         viewModelScope.launch {
@@ -315,6 +348,7 @@ class EditFlightInfoViewModel @Inject constructor(
         ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO,
         ERROR_MESSAGE_CAN_NOT_LOAD_FLIGHT_INFO,
         ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO,
+        ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO,
         ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID
     }
 

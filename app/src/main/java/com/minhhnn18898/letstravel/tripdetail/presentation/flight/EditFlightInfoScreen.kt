@@ -49,6 +49,7 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
@@ -67,6 +68,20 @@ fun EditFlightInfoScreen(
         onComposedTopBarActions(
             AppBarActionsState(
                 actions = {
+                    if(viewModel.canDelete) {
+                        IconButton(
+                            onClick = {
+                                viewModel.onDeleteClick()
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(com.minhhnn18898.ui_components.R.drawable.delete_24),
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
                     IconButton(
                         onClick = {
                             viewModel.onSaveClick()
@@ -116,6 +131,13 @@ fun EditFlightInfoScreen(
 
     AnimatedVisibility(viewModel.onShowLoadingState) {
         ProgressDialog()
+    }
+
+    AnimatedVisibility(viewModel.onShowDialogDeleteConfirmation) {
+        DeleteConfirmationDialog(
+            onConfirmation = viewModel::onDeleteConfirm,
+            onDismissRequest = viewModel::onDeleteDismiss
+        )
     }
 
     TopMessageBar(
@@ -543,6 +565,7 @@ private fun getMessageError(context: Context, errorType: EditFlightInfoViewModel
         EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_flight_time_is_invalid)
         EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_load_flight_info)
         EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_update_flight_info)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_flight_info)
         else -> ""
     }
 }

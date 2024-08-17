@@ -9,5 +9,6 @@
     <string name="error_can_not_create_flight_info">Can not create flight info. Please try again</string>
     <string name="error_can_not_load_flight_info">Can not load flight info. Please try again</string>
     <string name="error_can_not_update_flight_info">Can not update flight info. Please try again</string>
+    <string name="error_can_not_delete_flight_info">Can not delete flight info. Please try again</string>
     <string name="error_flight_time_is_invalid">Flight time is invalid</string>
 </resources>

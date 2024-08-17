@@ -70,7 +70,15 @@ class TripDetailRepository @Inject constructor(
         val resultCode = flightInfoDao.update(flightInfoModel)
 
         if(resultCodeInsertDepartAirport <= 0 || resultCodeInsertDestinationAirport <= 0 ||  resultCode <= 0) {
-            throw ExceptionInsertFlightInfo()
+            throw ExceptionUpdateFlightInfo()
+        }
+    }
+
+    suspend fun deleteFlightInfo(flightId: Long) = withContext(ioDispatcher) {
+        val result = flightInfoDao.delete(flightId)
+
+        if(result <= 0) {
+            throw ExceptionDeleteFlightInfo()
         }
     }
 
