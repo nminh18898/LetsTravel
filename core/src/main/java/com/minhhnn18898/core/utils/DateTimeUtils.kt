@@ -95,6 +95,11 @@ class DateTimeUtils @Inject constructor() {
         return Pair(localTime.hour, localTime.minute)
     }
 
+    fun getHourMinute(millis: Long): Pair<Int, Int> {
+        val localDateTime = convertMillisToLocalDateTime(millis)
+        return Pair(localDateTime.hour, localDateTime.minute)
+    }
+
     fun getNightDuration(from: Long, to: Long): Long {
         val duration = (to - from).toDuration(DurationUnit.MILLISECONDS)
         return duration.inWholeDays

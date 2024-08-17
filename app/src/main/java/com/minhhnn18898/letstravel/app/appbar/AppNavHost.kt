@@ -85,9 +85,7 @@ fun AppNavHost(
             arguments = TripDetailDestination.arguments
         ) {
             TripDetailScreen(
-                onNavigateEditFlightScreen = {
-                    navController.navigateToEditFlightScreen(it)
-                },
+                onNavigateToEditFlightInfoScreen = { tripId, flightId -> navController.navigateToEditFlightScreen(tripId, flightId) },
                 onNavigateEditHotelScreen = { tripId, hotelId -> navController.navigateToEditHotelScreen(tripId, hotelId) }
             )
             ClearTopBarActions(onScreenDisplay)
@@ -127,8 +125,8 @@ private fun NavHostController.navigateToTripDetailScreen(tripId: Long) {
     this.navigate("${TripDetailDestination.route}/$tripId")
 }
 
-private fun NavHostController.navigateToEditFlightScreen(tripId: Long) {
-    this.navigate("${EditFlightInfoDestination.route}/$tripId")
+private fun NavHostController.navigateToEditFlightScreen(tripId: Long, flightId: Long) {
+    this.navigate("${EditFlightInfoDestination.route}/$tripId/$flightId")
 }
 
 private fun NavHostController.navigateToEditHotelScreen(tripId: Long, hotelId: Long) {

@@ -77,7 +77,6 @@ class EditHotelInfoViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     fun onHotelNameUpdated(hotelName: String) {
@@ -133,7 +132,7 @@ class EditHotelInfoViewModel @Inject constructor(
     fun onSaveClick() {
         viewModelScope.launch {
             val hotelInfo = uiState.value.toHotelInfo()
-            if(isEditExistingInfo()) {
+            if(isUpdateExistingInfo()) {
                 updateHotelInfo(hotelInfo)
             }
             else {
@@ -174,7 +173,7 @@ class EditHotelInfoViewModel @Inject constructor(
         }
     }
 
-    private fun isEditExistingInfo(): Boolean {
+    private fun isUpdateExistingInfo(): Boolean {
         return hotelId > 0L
     }
 

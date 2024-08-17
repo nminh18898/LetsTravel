@@ -3,6 +3,7 @@ package com.minhhnn18898.app_navigation.destination
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
+import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.flightIdArg
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.hotelIdArg
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.tripIdArg
 import com.minhhnn18898.core.R.string as CommonStringRes
@@ -52,9 +53,10 @@ object EditFlightInfoDestination: AppScreenDestination {
     override val title: Int get() = CommonStringRes.flight_info
     override val route: String = MainAppRoute.EDIT_FLIGHT_INFO_SCREEN_ROUTE
 
-    val routeWithArgs = "$route/{$tripIdArg}"
+    val routeWithArgs = "$route/{$tripIdArg}/{$flightIdArg}"
     val arguments = listOf(
-        navArgument(tripIdArg) { type = NavType.LongType }
+        navArgument(tripIdArg) { type = NavType.LongType },
+        navArgument(flightIdArg) { type = NavType.LongType }
     )
 
     override fun getAllRoutes(): List<String> {

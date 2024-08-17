@@ -11,6 +11,8 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.toFlightInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.toFlightInfoModel
+import com.minhhnn18898.letstravel.tripdetail.data.model.toHotelInfoModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -33,16 +35,12 @@ class TripDetailRepository @Inject constructor(
         destinationAirport: AirportInfoModel
     ) = withContext(ioDispatcher) {
 
-        val flightInfoModel = FlightInfoModel(
-            0,
-            flightInfo.flightNumber,
-            flightInfo.operatedAirlines,
-            flightInfo.departureTime,
-            flightInfo.arrivalTime,
-            flightInfo.price,
-            tripId,
-            departAirport.code,
-            destinationAirport.code
+        val flightInfoModel = flightInfo.toFlightInfoModel(
+            tripId = tripId,
+            departAirportCode = departAirport.code,
+            destinationAirportCode = destinationAirport.code
+        ).copy(
+            flightId = 0L
         )
 
         val resultCodeInsertDepartAirport = airportInfoDao.insert(departAirport)
@@ -54,21 +52,49 @@ class TripDetailRepository @Inject constructor(
         }
     }
 
-    fun getFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> =
+    suspend fun updateFlightInfo(
+        tripId: Long,
+        flightInfo: FlightInfo,
+        departAirport: AirportInfoModel,
+        destinationAirport: AirportInfoModel
+    ) = withContext(ioDispatcher) {
+
+        val flightInfoModel = flightInfo.toFlightInfoModel(
+            tripId = tripId,
+            departAirportCode = departAirport.code,
+            destinationAirportCode = destinationAirport.code
+        )
+
+        val resultCodeInsertDepartAirport = airportInfoDao.insert(departAirport)
+        val resultCodeInsertDestinationAirport = airportInfoDao.insert(destinationAirport)
+        val resultCode = flightInfoDao.update(flightInfoModel)
+
+        if(resultCodeInsertDepartAirport <= 0 || resultCodeInsertDestinationAirport <= 0 ||  resultCode <= 0) {
+            throw ExceptionInsertFlightInfo()
+        }
+    }
+
+    fun getListFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> =
         flightInfoDao
             .getFlights(tripId)
             .mapWithAirportInfo(airportInfoDao.getAll())
 
-    suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
-        val hotelInfoModel = HotelInfoModel(
-            hotelId = 0,
-            tripId = tripId,
-            hotelName =  hotelInfo.hotelName,
-            address =  hotelInfo.address,
-            price = hotelInfo.price,
-            checkInDate =  hotelInfo.checkInDate,
-            checkOutDate = hotelInfo.checkOutDate
+    suspend fun getFlightInfo(flightId: Long): FlightWithAirportInfo = withContext(ioDispatcher) {
+        val flightInfo = flightInfoDao.getFlight(flightId)
+        val departAirport = airportInfoDao.get(flightInfo.departAirportCode)
+        val destinationAirport = airportInfoDao.get(flightInfo.destinationAirportCode)
+
+        FlightWithAirportInfo(
+            flightInfo = flightInfo.toFlightInfo(),
+            departAirport = departAirport,
+            destinationAirport = destinationAirport
         )
+    }
+
+    suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
+        val hotelInfoModel = hotelInfo
+            .toHotelInfoModel(tripId)
+            .copy(hotelId = 0L)
 
         val resultCode = hotelInfoDao.insert(hotelInfoModel)
         if(resultCode == -1L) {
@@ -77,16 +103,7 @@ class TripDetailRepository @Inject constructor(
     }
 
     suspend fun updateHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
-        val hotelInfoModel = HotelInfoModel(
-            hotelId = hotelInfo.hotelId,
-            tripId = tripId,
-            hotelName =  hotelInfo.hotelName,
-            address =  hotelInfo.address,
-            price = hotelInfo.price,
-            checkInDate =  hotelInfo.checkInDate,
-            checkOutDate = hotelInfo.checkOutDate
-        )
-
+        val hotelInfoModel = hotelInfo.toHotelInfoModel(tripId)
         val result = hotelInfoDao.update(hotelInfoModel)
         if(result <= 0) {
             throw ExceptionUpdateHotelInfo()

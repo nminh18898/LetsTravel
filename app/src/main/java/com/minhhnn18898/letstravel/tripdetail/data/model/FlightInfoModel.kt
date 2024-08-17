@@ -31,6 +31,7 @@ data class FlightInfoModel(
 
 fun FlightInfoModel.toFlightInfo(): FlightInfo {
     return FlightInfo(
+        this.flightId,
         this.flightNumber,
         this.operatedAirlines,
         this.departureTime,
@@ -40,6 +41,7 @@ fun FlightInfoModel.toFlightInfo(): FlightInfo {
 }
 
 data class FlightInfo(
+    val flightId: Long,
     val flightNumber: String,
     val operatedAirlines: String,
     val departureTime: Long,
@@ -52,3 +54,17 @@ data class FlightWithAirportInfo(
     val departAirport: AirportInfoModel,
     val destinationAirport: AirportInfoModel
 )
+
+fun FlightInfo.toFlightInfoModel(tripId: Long, departAirportCode: String, destinationAirportCode: String): FlightInfoModel {
+    return FlightInfoModel(
+        flightId = this.flightId,
+        flightNumber = this.flightNumber,
+        operatedAirlines = this.operatedAirlines,
+        departureTime = this.departureTime,
+        arrivalTime = this.arrivalTime,
+        price = this.price,
+        tripId,
+        departAirportCode = departAirportCode,
+        destinationAirportCode = destinationAirportCode
+    )
+}

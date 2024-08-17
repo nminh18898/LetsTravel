@@ -33,3 +33,15 @@ data class HotelInfo(
     val checkOutDate: Long,
     val price: Long,
 )
+
+fun HotelInfo.toHotelInfoModel(tripId: Long): HotelInfoModel {
+    return HotelInfoModel(
+        hotelId = this.hotelId,
+        tripId = tripId,
+        hotelName =  this.hotelName,
+        address =  this.address,
+        price = this.price,
+        checkInDate =  this.checkInDate,
+        checkOutDate = this.checkOutDate
+    )
+}

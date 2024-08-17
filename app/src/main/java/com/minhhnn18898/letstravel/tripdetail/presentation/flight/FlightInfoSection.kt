@@ -9,6 +9,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,7 +62,8 @@ private val defaultPageItemSize = object : PageSize {
 @Composable
 fun FlightDetailBody(
     flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError>,
-    onNavigateToCreateFlightInfoScreen: () -> Unit,
+    onClickCreateNewFlight: () -> Unit,
+    onClickFlightInfoItem: (Long) -> Unit,
     modifier: Modifier
 ) {
 
@@ -81,11 +83,12 @@ fun FlightDetailBody(
                 modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth(),
-                onClick = onNavigateToCreateFlightInfoScreen
+                onClick = onClickCreateNewFlight
             )
         } else {
             FlightDetailBodyPager(
                 flightDisplayInfo = flightInfoContentState.data,
+                onClickFlightInfoItem = onClickFlightInfoItem,
                 modifier = modifier
             )
             
@@ -94,7 +97,7 @@ fun FlightDetailBody(
             CreateNewDefaultButton(
                 text = stringResource(id = CommonStringRes.add_new_flight),
                 modifier = modifier,
-                onClick = onNavigateToCreateFlightInfoScreen
+                onClick = onClickCreateNewFlight
             )
         }
     }
@@ -142,6 +145,7 @@ private fun FlightLoadingSkeletonItem(alpha: Float) {
 @Composable
 fun FlightDetailBodyPager(
     flightDisplayInfo: List<FlightDisplayInfo>,
+    onClickFlightInfoItem: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -160,6 +164,9 @@ fun FlightDetailBodyPager(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp)
+                .clickable {
+                    onClickFlightInfoItem(pageInfo.flightId)
+                }
         ) {
             Card(
                 elevation = CardDefaults.cardElevation(

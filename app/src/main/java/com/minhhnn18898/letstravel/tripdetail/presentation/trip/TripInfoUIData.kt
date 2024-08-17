@@ -1,6 +1,7 @@
 package com.minhhnn18898.letstravel.tripdetail.presentation.trip
 
 data class FlightDisplayInfo(
+    val flightId: Long,
     val flightNumber: String,
     val departAirport: AirportDisplayInfo,
     val destinationAirport: AirportDisplayInfo,

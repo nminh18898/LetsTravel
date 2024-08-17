@@ -114,7 +114,7 @@ fun EditFlightInfoScreen(
         )
     }
 
-    AnimatedVisibility(viewModel.onShowSaveLoadingState) {
+    AnimatedVisibility(viewModel.onShowLoadingState) {
         ProgressDialog()
     }
 
@@ -541,6 +541,8 @@ private fun getMessageError(context: Context, errorType: EditFlightInfoViewModel
     return when(errorType) {
         EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_create_flight_info)
         EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_flight_time_is_invalid)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_load_flight_info)
+        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_update_flight_info)
         else -> ""
     }
 }

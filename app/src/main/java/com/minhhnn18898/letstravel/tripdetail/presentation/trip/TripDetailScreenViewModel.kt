@@ -13,7 +13,7 @@ import com.minhhnn18898.core.utils.DateTimeUtils
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
-import com.minhhnn18898.letstravel.tripdetail.domain.flight.GetFlightInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.trip.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
@@ -30,7 +30,7 @@ class TripDetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val defaultResourceProvider: CoverDefaultResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,
-    private val getFlightInfoUseCase: GetFlightInfoUseCase,
+    private val getListFlightInfoUseCase: GetListFlightInfoUseCase,
     private val dateTimeUtils: DateTimeUtils = DateTimeUtils(),
     private val getListHotelInfoUseCase: GetListHotelInfoUseCase
 ): ViewModel() {
@@ -76,7 +76,7 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private fun loadFlightInfo(tripId: Long) {
         viewModelScope.launch {
-            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(tripId))?.collect {
+            getListFlightInfoUseCase.execute(GetListFlightInfoUseCase.Param(tripId))?.collect {
                 when(it) {
                     is Result.Loading -> flightInfoContentState = UiState.Loading
                     is Result.Success -> handleResultLoadFlightInfo(it.data)
@@ -99,6 +99,7 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private fun FlightWithAirportInfo.toFlightDisplayInfo(): FlightDisplayInfo {
         return FlightDisplayInfo(
+            flightId = flightInfo.flightId,
             flightNumber = flightInfo.flightNumber,
             departAirport = departAirport.toAirportDisplayInfo(),
             destinationAirport = destinationAirport.toAirportDisplayInfo(),

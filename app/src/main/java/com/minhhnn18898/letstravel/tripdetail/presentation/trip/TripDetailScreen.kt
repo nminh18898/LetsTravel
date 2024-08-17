@@ -55,7 +55,7 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 @Composable
 fun TripDetailScreen(
     modifier: Modifier = Modifier,
-    onNavigateEditFlightScreen: (Long) -> Unit,
+    onNavigateToEditFlightInfoScreen: (Long, Long) -> Unit,
     onNavigateEditHotelScreen: (Long, Long) -> Unit,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
@@ -81,8 +81,11 @@ fun TripDetailScreen(
             FlightDetailBody(
                 viewModel.flightInfoContentState,
                 modifier = modifier,
-                onNavigateToCreateFlightInfoScreen = {
-                    onNavigateEditFlightScreen.invoke(viewModel.tripId)
+                onClickCreateNewFlight = {
+                    onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, 0L)
+                },
+                onClickFlightInfoItem = { flightId ->
+                    onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, flightId)
                 }
             )
         }
