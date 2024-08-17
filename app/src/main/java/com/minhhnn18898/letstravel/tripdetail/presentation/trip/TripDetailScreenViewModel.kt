@@ -165,9 +165,7 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private fun onUpdateBudgetTotal() {
         val total = estimateBudget.getTotal()
-        if(total > 0) {
-            estimateBudgetDisplay = total.formatWithCommas()
-        }
+        estimateBudgetDisplay = if(total > 0) total.formatWithCommas() else ""
     }
 
     enum class BudgetType {
