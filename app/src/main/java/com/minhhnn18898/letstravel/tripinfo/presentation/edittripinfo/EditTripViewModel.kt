@@ -14,6 +14,7 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.domain.CreateTripInfoUseCase
+import com.minhhnn18898.letstravel.tripinfo.domain.DeleteTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.domain.GetListDefaultCoverUseCase
 import com.minhhnn18898.letstravel.tripinfo.domain.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.domain.ModifyTripInfoUseCase
@@ -38,7 +39,8 @@ class EditTripViewModel @Inject constructor(
     private val createTripInfoUseCase: CreateTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,
-    private val updateTripInfoUseCase: UpdateTripInfoUseCase
+    private val updateTripInfoUseCase: UpdateTripInfoUseCase,
+    private val deleteTripInfoUseCase: DeleteTripInfoUseCase
 ): ViewModel() {
 
     private var tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -55,11 +57,16 @@ class EditTripViewModel @Inject constructor(
     var onShowLoadingState by mutableStateOf(false)
         private set
 
+    var onShowDialogDeleteConfirmation by mutableStateOf(false)
+        private set
+
     var errorType by mutableStateOf(ErrorType.ERROR_MESSAGE_NONE)
         private set
 
     private val _eventChannel = Channel<Event>()
     val eventTriggerer = _eventChannel.receiveAsFlow()
+
+    var canDeleteInfo by mutableStateOf(tripId > 0L)
 
     init {
         initDefaultCoverList()
@@ -84,12 +91,17 @@ class EditTripViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo>) {
+    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo?>) {
         flowData.collect { item ->
-            val itemDisplay = item.toTripItemDisplay(defaultCoverResourceProvider)
-            onTripTitleUpdated(itemDisplay.tripName)
-            displayCoverFromTrip(itemDisplay)
-            checkAllowSaveContent()
+            if(item != null) {
+                val itemDisplay = item.toTripItemDisplay(defaultCoverResourceProvider)
+                onTripTitleUpdated(itemDisplay.tripName)
+                displayCoverFromTrip(itemDisplay)
+                checkAllowSaveContent()
+            }
+            else {
+                _eventChannel.send(Event.CloseScreen)
+            }
         }
     }
 
@@ -229,6 +241,32 @@ class EditTripViewModel @Inject constructor(
 
     private fun isUpdateExistingInfo(): Boolean {
         return tripId > 0L
+    }
+
+    fun onDeleteClick() {
+        onShowDialogDeleteConfirmation = true
+    }
+
+    fun onDeleteConfirm() {
+        onShowDialogDeleteConfirmation = false
+
+        viewModelScope.launch {
+            deleteTripInfoUseCase.execute(DeleteTripInfoUseCase.Param(tripId))?.collect {
+                onShowLoadingState = it == Result.Loading
+
+                when(it) {
+                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_TRIP_INFO)
+                    else -> {
+                        // do nothing
+                    }
+                }
+            }
+        }
+    }
+
+    fun onDeleteDismiss() {
+        onShowDialogDeleteConfirmation = false
     }
 
     enum class ErrorType {

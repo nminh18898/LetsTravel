@@ -2,9 +2,21 @@ package com.minhhnn18898.letstravel.tripdetail.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 
-@Entity(tableName = "flight_info")
+@Entity(
+    tableName = "flight_info",
+    foreignKeys = [
+        ForeignKey(
+            entity = TripInfoModel::class,
+            parentColumns = arrayOf("trip_id"),
+            childColumns = arrayOf("trip_id"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class FlightInfoModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("flight_id")

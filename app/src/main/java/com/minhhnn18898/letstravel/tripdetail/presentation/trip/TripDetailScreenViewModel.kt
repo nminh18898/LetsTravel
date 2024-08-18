@@ -21,7 +21,9 @@ import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResour
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,6 +52,9 @@ class TripDetailScreenViewModel @Inject constructor(
     var estimateBudgetDisplay by mutableStateOf("")
         private set
 
+    private val _eventChannel = Channel<Event>()
+    val eventTriggerer = _eventChannel.receiveAsFlow()
+
     init {
         loadTripInfo(tripId)
         loadFlightInfo(tripId)
@@ -68,9 +73,14 @@ class TripDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo>) {
+    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo?>) {
         flowData.collect { item ->
-            tripInfoContentState = UiState.Success(item.toTripItemDisplay(defaultResourceProvider))
+            if(item != null) {
+                tripInfoContentState = UiState.Success(item.toTripItemDisplay(defaultResourceProvider))
+            }
+            else {
+                _eventChannel.send(Event.CloseScreen)
+           }
         }
     }
 
@@ -172,6 +182,10 @@ class TripDetailScreenViewModel @Inject constructor(
     enum class BudgetType {
         FLIGHT,
         HOTEL,
+    }
+
+    sealed class Event {
+        data object CloseScreen: Event()
     }
 }
 

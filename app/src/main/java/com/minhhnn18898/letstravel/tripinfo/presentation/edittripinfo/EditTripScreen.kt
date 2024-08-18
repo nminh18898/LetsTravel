@@ -50,6 +50,7 @@ import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripinfo.presentation.edittripinfo.EditTripViewModel.ErrorType
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
@@ -68,6 +69,20 @@ fun EditTripScreen(
         onComposedTopBarActions(
             AppBarActionsState(
                 actions = {
+                    if(viewModel.canDeleteInfo) {
+                        IconButton(
+                            onClick = {
+                                viewModel.onDeleteClick()
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(CommonDrawableRes.delete_24),
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
                     IconButton(
                         onClick = {
                             viewModel.onSaveClick()
@@ -153,6 +168,13 @@ fun EditTripScreen(
 
     AnimatedVisibility(viewModel.onShowLoadingState) {
         ProgressDialog()
+    }
+
+    AnimatedVisibility(viewModel.onShowDialogDeleteConfirmation) {
+        DeleteConfirmationDialog(
+            onConfirmation = viewModel::onDeleteConfirm,
+            onDismissRequest = viewModel::onDeleteDismiss
+        )
     }
 
     TopMessageBar(
@@ -242,11 +264,13 @@ fun DefaultCoverCollectionCard(
 }
 
 private fun getMessageError(context: Context, errorType: ErrorType): String {
-    if(errorType == ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO) {
-        return StringUtils.getString(context, CommonStringRes.error_can_not_create_trip)
+    return when(errorType) {
+        ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_create_trip)
+        ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_load_trip)
+        ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_update_trip)
+        ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_trip)
+        else -> ""
     }
-
-    return ""
 }
 
 private fun ErrorType.isShow(): Boolean {

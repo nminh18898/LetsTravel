@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -40,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.architecture.ui.UiState
@@ -58,6 +61,7 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 @Composable
 fun TripDetailScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
+    navigateUp: () -> Unit,
     onNavigateToEditFlightInfoScreen: (Long, Long) -> Unit,
     onNavigateEditHotelScreen: (Long, Long) -> Unit,
     onNavigateToEditTripScreen: (Long) -> Unit,
@@ -83,6 +87,17 @@ fun TripDetailScreen(
                 }
             )
         )
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.eventTriggerer.collect { event ->
+                if(event == TripDetailScreenViewModel.Event.CloseScreen) {
+                    navigateUp.invoke()
+                }
+            }
+        }
     }
 
     Column(

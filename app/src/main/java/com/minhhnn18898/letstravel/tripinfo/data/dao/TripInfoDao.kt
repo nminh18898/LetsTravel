@@ -24,5 +24,5 @@ interface TripInfoDao {
     fun getAll(): Flow<List<TripInfoModel>>
 
     @Query("SELECT * FROM trip_info WHERE trip_id=:id")
-    fun getTripInfo(id: Long): Flow<TripInfoModel>
+    fun getTripInfo(id: Long): Flow<TripInfoModel?>
 }

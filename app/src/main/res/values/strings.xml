@@ -11,4 +11,8 @@
     <string name="error_can_not_update_flight_info">Can not update flight info. Please try again</string>
     <string name="error_can_not_delete_flight_info">Can not delete flight info. Please try again</string>
     <string name="error_flight_time_is_invalid">Flight time is invalid</string>
+    <string name="error_can_not_create_trip">Can not create trip info. Please try again.</string>
+    <string name="error_can_not_load_trip">Can not load trip info. Please try again.</string>
+    <string name="error_can_not_update_trip">Can not update trip info. Please try again.</string>
+    <string name="error_can_not_delete_trip">Can not delete trip info. Please try again.</string>
 </resources>

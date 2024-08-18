@@ -91,6 +91,9 @@ fun AppNavHost(
                 onComposedTopBarActions = {
                     appBarOnScreenDisplay.invoke(it)
                 },
+                navigateUp = {
+                    navController.navigateUp()
+                },
                 onNavigateToEditFlightInfoScreen = { tripId, flightId ->
                     navController.navigateToEditFlightScreen(tripId, flightId)
                 },

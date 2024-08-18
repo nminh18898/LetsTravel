@@ -17,7 +17,7 @@ import kotlin.time.toDuration
 @Suppress("unused")
 class DateTimeUtils @Inject constructor() {
 
-    private val defaultFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
+    private val defaultFormatter = DateTimeFormatter.ofPattern("EEE, dd MMMM, yyyy", Locale.getDefault())
 
     private val dateMonthYearFormatter = DateTimeFormatter.ofPattern("dd MMMM, yy", Locale.getDefault())
 

@@ -2,6 +2,7 @@ package com.minhhnn18898.letstravel.tripinfo.data.repo
 
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
+import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionDeleteTripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionInsertTripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionUpdateTripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
@@ -36,11 +37,11 @@ class TripInfoRepository @Inject constructor(
             }
     }
 
-    fun getTrip(id: Long): Flow<TripInfo> {
+    fun getTrip(id: Long): Flow<TripInfo?> {
         return tripInfoDao
             .getTripInfo(id)
             .map {
-                it.toTripInfo()
+                it?.toTripInfo()
             }
     }
 
@@ -59,6 +60,14 @@ class TripInfoRepository @Inject constructor(
         val resultCode = tripInfoDao.update(tripInfoModel)
         if(resultCode <= 0) {
             throw ExceptionUpdateTripInfo()
+        }
+    }
+
+    suspend fun deleteTripInfo(tripId: Long) = withContext(ioDispatcher) {
+        val result = tripInfoDao.delete(tripId)
+
+        if(result <= 0) {
+            throw ExceptionDeleteTripInfo()
         }
     }
 }
