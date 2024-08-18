@@ -10,16 +10,16 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.DateTimeUtils
-import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
+import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.hotel.GetListHotelInfoUseCase
-import com.minhhnn18898.letstravel.tripdetail.domain.trip.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
-import com.minhhnn18898.letstravel.tripinfo.presentation.CoverDefaultResourceProvider
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.toTripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.domain.GetTripInfoUseCase
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResourceProvider
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ class TripDetailScreenViewModel @Inject constructor(
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
-    var tripInfoContentState: UiState<TripItemDisplay, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
+    var tripInfoContentState: UiState<UserTripDisplay, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set
 
     var flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
@@ -93,7 +93,7 @@ class TripDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private fun AirportInfoModel.toAirportDisplayInfo(): AirportDisplayInfo {
+    private fun AirportInfo.toAirportDisplayInfo(): AirportDisplayInfo {
         return AirportDisplayInfo(this.city, this.code, this.airportName)
     }
 

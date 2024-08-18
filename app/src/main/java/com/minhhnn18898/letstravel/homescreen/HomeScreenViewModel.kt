@@ -8,14 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.domain.GetListTripInfoUseCase
-import com.minhhnn18898.letstravel.tripinfo.presentation.CoverDefaultResourceProvider
-import com.minhhnn18898.letstravel.tripinfo.presentation.CreateNewTripItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentError
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentLoading
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentResult
-import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentState
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripInfoItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.toTripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResourceProvider
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.CreateNewTripCtaDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentError
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentLoading
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentResult
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentState
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripInfoItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -51,7 +51,7 @@ class HomeScreenViewModel @Inject constructor(
             val data = mutableListOf<TripInfoItemDisplay>()
             val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }
             data.addAll(userTrips.take(2))
-            data.add(CreateNewTripItemDisplay)
+            data.add(CreateNewTripCtaDisplay)
             contentState = GetSavedTripInfoContentResult(data)
         }
     }

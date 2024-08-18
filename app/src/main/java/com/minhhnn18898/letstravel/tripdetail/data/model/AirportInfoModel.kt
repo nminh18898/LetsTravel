@@ -13,3 +13,17 @@ data class AirportInfoModel(
     @ColumnInfo("airport_name")
     val airportName: String = ""
 )
+
+data class AirportInfo(
+    val code: String,
+    val city: String,
+    val airportName: String = ""
+)
+
+fun AirportInfoModel.toAirportInfo(): AirportInfo {
+    return AirportInfo(
+        code = this.code,
+        city = this.city,
+        airportName = this.airportName
+    )
+}

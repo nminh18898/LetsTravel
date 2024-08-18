@@ -10,6 +10,7 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfoModel
+import com.minhhnn18898.letstravel.tripdetail.data.model.toAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.toFlightInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.toFlightInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.toHotelInfoModel
@@ -89,8 +90,8 @@ class TripDetailRepository @Inject constructor(
 
     suspend fun getFlightInfo(flightId: Long): FlightWithAirportInfo = withContext(ioDispatcher) {
         val flightInfo = flightInfoDao.getFlight(flightId)
-        val departAirport = airportInfoDao.get(flightInfo.departAirportCode)
-        val destinationAirport = airportInfoDao.get(flightInfo.destinationAirportCode)
+        val departAirport = airportInfoDao.get(flightInfo.departAirportCode).toAirportInfo()
+        val destinationAirport = airportInfoDao.get(flightInfo.destinationAirportCode).toAirportInfo()
 
         FlightWithAirportInfo(
             flightInfo = flightInfo.toFlightInfo(),
@@ -150,8 +151,8 @@ private fun Flow<List<FlightInfoModel>>.mapWithAirportInfo(airportFlow: Flow<Lis
         flightInfos.map { flightInfoItem ->
             FlightWithAirportInfo(
                 flightInfoItem.toFlightInfo(),
-                airportMap.findAirportInfo(flightInfoItem.departAirportCode),
-                airportMap.findAirportInfo(flightInfoItem.destinationAirportCode)
+                airportMap.findAirportInfo(flightInfoItem.departAirportCode).toAirportInfo(),
+                airportMap.findAirportInfo(flightInfoItem.destinationAirportCode).toAirportInfo()
             )
         }
     }

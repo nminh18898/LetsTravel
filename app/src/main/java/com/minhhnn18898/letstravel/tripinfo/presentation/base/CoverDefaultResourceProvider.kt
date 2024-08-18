@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripinfo.presentation
+package com.minhhnn18898.letstravel.tripinfo.presentation.base
 
 import androidx.annotation.DrawableRes
 import com.minhhnn18898.letstravel.R

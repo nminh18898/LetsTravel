@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripinfo.presentation
+package com.minhhnn18898.letstravel.tripinfo.presentation.edittripinfo
 
 import android.content.Context
 import android.content.Intent
@@ -48,7 +48,7 @@ import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.tripinfo.presentation.EditTripViewModel.ErrorType
+import com.minhhnn18898.letstravel.tripinfo.presentation.edittripinfo.EditTripViewModel.ErrorType
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
@@ -194,14 +194,14 @@ fun DefaultCoverCollectionCard(
             .height(100.dp)
             .width(200.dp)
     ) {
-        if(coverUIElement is EditTripViewModel.DefaultCoverUI) {
+        if(coverUIElement is EditTripViewModel.DefaultCoverElement) {
             Image(
                 painter = painterResource(coverUIElement.resId),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
             )
         }
-        else if(coverUIElement is EditTripViewModel.CustomCoverPhoto) {
+        else if(coverUIElement is EditTripViewModel.CustomCoverPhotoElement) {
             AsyncImage(
                 model = coverUIElement.uri,
                 contentDescription = "",

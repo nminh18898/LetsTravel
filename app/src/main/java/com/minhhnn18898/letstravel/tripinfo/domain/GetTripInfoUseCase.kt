@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripdetail.domain.trip
+package com.minhhnn18898.letstravel.tripinfo.domain
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase

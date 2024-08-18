@@ -47,9 +47,9 @@ import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.HotelDetailBody
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripCustomCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripDefaultCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripDefaultCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
@@ -139,7 +139,7 @@ fun TripDetailScreen(
 @Composable
 private fun TripDetailHeader(
     modifier: Modifier = Modifier,
-    tripInfoState: UiState<TripItemDisplay, UiState.UndefinedError>) {
+    tripInfoState: UiState<UserTripDisplay, UiState.UndefinedError>) {
 
     if(tripInfoState is UiState.Loading) {
         TripDetailHeaderLoading()
@@ -224,7 +224,7 @@ private fun TripDetailHeaderLoading() {
 
 @Composable
 private fun TripDetailHeaderContent(
-    tripInfoItemDisplay: TripItemDisplay,
+    tripInfoItemDisplay: UserTripDisplay,
     modifier: Modifier = Modifier) {
 
     val shape =  RoundedCornerShape(8.dp)

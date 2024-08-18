@@ -19,8 +19,8 @@ import com.minhhnn18898.letstravel.homescreen.HomeScreen
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.EditFlightInfoScreen
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.EditHotelInfoScreen
 import com.minhhnn18898.letstravel.tripdetail.presentation.trip.TripDetailScreen
-import com.minhhnn18898.letstravel.tripinfo.presentation.EditTripScreen
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripInfoListingScreen
+import com.minhhnn18898.letstravel.tripinfo.presentation.edittripinfo.EditTripScreen
+import com.minhhnn18898.letstravel.tripinfo.presentation.triplisting.TripInfoListingScreen
 
 @Composable
 fun AppNavHost(

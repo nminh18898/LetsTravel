@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripinfo.presentation
+package com.minhhnn18898.letstravel.tripinfo.presentation.edittripinfo
 
 import android.net.Uri
 import androidx.annotation.DrawableRes
@@ -12,10 +12,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.letstravel.tripdetail.domain.trip.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.domain.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.domain.GetListDefaultCoverUseCase
+import com.minhhnn18898.letstravel.tripinfo.domain.GetTripInfoUseCase
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResourceProvider
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripDefaultCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -85,13 +90,13 @@ class EditTripViewModel @Inject constructor(
         }
     }
 
-    private fun displayCoverFromTrip(tripDisplay: TripItemDisplay) {
+    private fun displayCoverFromTrip(tripDisplay: UserTripDisplay) {
         val coverDisplay = tripDisplay.coverDisplay
 
         if(coverDisplay is TripDefaultCoverDisplay) {
             listCoverItems
                 .firstOrNull { coverItem ->
-                    coverItem is DefaultCoverUI && coverItem.resId == coverDisplay.defaultCoverRes
+                    coverItem is DefaultCoverElement && coverItem.resId == coverDisplay.defaultCoverRes
                 }
                 ?.let { coverItem ->
                     onCoverSelected(coverItem)
@@ -109,8 +114,8 @@ class EditTripViewModel @Inject constructor(
     fun onCoverSelected(selectedItem: CoverUIElement) {
         listCoverItems = listCoverItems.map {
             when(it) {
-                is DefaultCoverUI -> it.copy(isSelected = it == selectedItem)
-                is CustomCoverPhoto -> it.copy(isSelected = it == selectedItem)
+                is DefaultCoverElement -> it.copy(isSelected = it == selectedItem)
+                is CustomCoverPhotoElement -> it.copy(isSelected = it == selectedItem)
                 else -> it
             }
         }
@@ -126,9 +131,9 @@ class EditTripViewModel @Inject constructor(
     }
 
     private fun initDefaultCoverList() {
-        val list: List<DefaultCoverUI> = getListDefaultCoverUseCase.execute(Unit)?.map { coverElement ->
+        val list: List<DefaultCoverElement> = getListDefaultCoverUseCase.execute(Unit)?.map { coverElement ->
             val uiRes = defaultCoverResourceProvider.getDefaultCoverList()[coverElement] ?: 0
-            DefaultCoverUI(coverElement.type, isSelected = false, uiRes)
+            DefaultCoverElement(coverElement.type, isSelected = false, uiRes)
         } ?: emptyList()
 
         listCoverItems = list.toMutableStateList()
@@ -144,8 +149,8 @@ class EditTripViewModel @Inject constructor(
         }
 
         val params = when(selectedItem) {
-            is DefaultCoverUI -> CreateTripInfoUseCase.DefaultCoverParam(tripName, selectedItem.coverId)
-            is CustomCoverPhoto -> CreateTripInfoUseCase.CustomCoverParam(tripName, selectedItem.uri)
+            is DefaultCoverElement -> CreateTripInfoUseCase.DefaultCoverParam(tripName, selectedItem.coverId)
+            is CustomCoverPhotoElement -> CreateTripInfoUseCase.CustomCoverParam(tripName, selectedItem.uri)
             else -> null
         }
 
@@ -173,14 +178,14 @@ class EditTripViewModel @Inject constructor(
 
         listCoverItems = listCoverItems.map {
             when(it) {
-                is DefaultCoverUI -> it.copy(isSelected = false)
-                is CustomCoverPhoto -> it.copy(isSelected = false)
+                is DefaultCoverElement -> it.copy(isSelected = false)
+                is CustomCoverPhotoElement -> it.copy(isSelected = false)
                 else -> it
             }
         }
             .toMutableList()
             .apply {
-                add(0, CustomCoverPhoto(uri, isSelected = true))
+                add(0, CustomCoverPhotoElement(uri, isSelected = true))
             }
 
         checkAllowSaveContent()
@@ -203,9 +208,9 @@ class EditTripViewModel @Inject constructor(
 
     abstract class CoverUIElement(open val isSelected: Boolean = false)
 
-    data class DefaultCoverUI(val coverId: Int, override val isSelected: Boolean, @DrawableRes val resId: Int): CoverUIElement(isSelected)
+    data class DefaultCoverElement(val coverId: Int, override val isSelected: Boolean, @DrawableRes val resId: Int): CoverUIElement(isSelected)
 
-    data class CustomCoverPhoto(val uri: Uri, override val isSelected: Boolean): CoverUIElement(isSelected)
+    data class CustomCoverPhotoElement(val uri: Uri, override val isSelected: Boolean): CoverUIElement(isSelected)
 
     sealed class Event {
         data object CloseScreen: Event()

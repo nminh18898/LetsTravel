@@ -43,16 +43,16 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.discover.presentation.DiscoverScreen
-import com.minhhnn18898.letstravel.tripinfo.presentation.CreateNewTripItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.EmptySavedTripView
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripInfoItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripCustomCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripDefaultCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.TripItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.getResult
-import com.minhhnn18898.letstravel.tripinfo.presentation.hasError
-import com.minhhnn18898.letstravel.tripinfo.presentation.hasResult
-import com.minhhnn18898.letstravel.tripinfo.presentation.isContentLoading
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.CreateNewTripCtaDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.EmptySavedTripView
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripInfoItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripDefaultCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.getResult
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.hasError
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.hasResult
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.isContentLoading
 import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
@@ -94,7 +94,7 @@ fun HomeScreen(
 
                 if (contentState.hasResult()) {
                     val items = contentState.getResult()
-                    val hasUserTrip = items.any { it is TripItemDisplay }
+                    val hasUserTrip = items.any { it is UserTripDisplay }
 
                     if (hasUserTrip) {
                         ContentListTripItem(
@@ -135,10 +135,10 @@ private fun ContentListTripItem(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         listUserTripItem.forEach { itemDisplay ->
-            if(itemDisplay is TripItemDisplay) {
+            if(itemDisplay is UserTripDisplay) {
                 TripItemView(modifier = Modifier, itemDisplay = itemDisplay, onClick = onClickTripItem)
             }
-            else if(itemDisplay is CreateNewTripItemDisplay) {
+            else if(itemDisplay is CreateNewTripCtaDisplay) {
                 TripItemCreateNewView(modifier = Modifier, onClick = onClickCreateNew)
             }
         }
@@ -148,7 +148,7 @@ private fun ContentListTripItem(
 @Composable
 private fun TripItemView(
     modifier: Modifier,
-    itemDisplay: TripItemDisplay,
+    itemDisplay: UserTripDisplay,
     onClick: (Long) -> Unit
 ) {
     val hexagon = remember {

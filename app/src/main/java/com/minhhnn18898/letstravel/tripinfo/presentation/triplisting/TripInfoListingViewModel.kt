@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripinfo.presentation
+package com.minhhnn18898.letstravel.tripinfo.presentation.triplisting
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,8 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
-import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import com.minhhnn18898.letstravel.tripinfo.domain.GetListTripInfoUseCase
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResourceProvider
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.CreateNewTripCtaDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentError
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentLoading
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentResult
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.GetSavedTripInfoContentState
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripInfoItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -43,7 +50,7 @@ class TripInfoListingViewModel @Inject constructor(
         flowData.collect { item ->
             val data = mutableListOf<TripInfoItemDisplay>()
             val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }
-            data.add(CreateNewTripItemDisplay)
+            data.add(CreateNewTripCtaDisplay)
             data.addAll(userTrips)
             contentState = GetSavedTripInfoContentResult(data)
         }
