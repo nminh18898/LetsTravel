@@ -87,7 +87,7 @@ fun MainApp(
 
             AppNavHost(
                 navController = navController,
-                onScreenDisplay = {
+                appBarOnScreenDisplay = {
                     appBarActionsState = it
                 },
                 modifier = modifier.padding(innerPadding)

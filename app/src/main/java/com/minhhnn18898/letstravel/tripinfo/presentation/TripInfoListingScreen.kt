@@ -58,7 +58,7 @@ fun TripInfoListingScreen(
 
             if (contentState.hasResult()) {
                 val items = contentState.getResult()
-                val hasUserTrip = items.any { it is UserTripItemDisplay }
+                val hasUserTrip = items.any { it is TripItemDisplay }
 
                 if (hasUserTrip) {
                     ContentListTripItem(
@@ -91,7 +91,7 @@ private fun ContentListTripItem(
         modifier = modifier
     ) {
         items(listUserTripItem) { itemDisplay ->
-            if (itemDisplay is UserTripItemDisplay) {
+            if (itemDisplay is TripItemDisplay) {
                 TripItemView(
                     modifier = Modifier,
                     itemDisplay = itemDisplay,
@@ -109,7 +109,7 @@ private fun ContentListTripItem(
 @Composable
 private fun TripItemView(
     modifier: Modifier,
-    itemDisplay: UserTripItemDisplay,
+    itemDisplay: TripItemDisplay,
     onClick: (Long) -> Unit
 ) {
     Column(
@@ -122,7 +122,7 @@ private fun TripItemView(
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         val coverDisplay = itemDisplay.coverDisplay
-        if(coverDisplay is UserTripDefaultCoverDisplay) {
+        if(coverDisplay is TripDefaultCoverDisplay) {
             Image(
                 painter = painterResource(coverDisplay.defaultCoverRes),
                 contentDescription = "",
@@ -132,7 +132,7 @@ private fun TripItemView(
                     .height(100.dp)
                     .padding(top = 8.dp)
             )
-        } else if(coverDisplay is UserTripCustomCoverDisplay) {
+        } else if(coverDisplay is TripCustomCoverDisplay) {
             AsyncImage(
                 model = coverDisplay.coverPath,
                 contentDescription = "",

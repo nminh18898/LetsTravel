@@ -16,9 +16,9 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.trip.GetTripInfoUseCase
-import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.presentation.CoverDefaultResourceProvider
-import com.minhhnn18898.letstravel.tripinfo.presentation.UserTripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.TripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +37,7 @@ class TripDetailScreenViewModel @Inject constructor(
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
-    var tripInfoContentState: UiState<UserTripItemDisplay, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
+    var tripInfoContentState: UiState<TripItemDisplay, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set
 
     var flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
@@ -68,7 +68,7 @@ class TripDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfoModel>) {
+    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo>) {
         flowData.collect { item ->
             tripInfoContentState = UiState.Success(item.toTripItemDisplay(defaultResourceProvider))
         }

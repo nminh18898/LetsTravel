@@ -22,13 +22,13 @@ class CreateTripInfoUseCase @Inject constructor(private val repository: TripInfo
 
     override fun run(params: Param):  Flow<Result<Unit>> = flow {
         emit(Result.Loading)
-        repository.insertTripInfo(createTripInfo(params))
+        repository.insertTripInfo(createTripInfoModel(params))
         emit(Result.Success(Unit))
     }.catch {
         emit(Result.Error(it))
     }
 
-    private fun createTripInfo(param: Param): TripInfoModel {
+    private fun createTripInfoModel(param: Param): TripInfoModel {
         return when(param) {
             is DefaultCoverParam -> TripInfoModel(
                 tripId = 0,

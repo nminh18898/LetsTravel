@@ -28,6 +28,15 @@ object HomeScreenDestination: AppScreenDestination {
 object EditTripInfoDestination: AppScreenDestination {
     override val title: Int =  CommonStringRes.trip_info
     override val route: String = MainAppRoute.EDIT_TRIP_SCREEN_ROUTE
+
+    val routeWithArgs = "${route}/{$tripIdArg}"
+    val arguments = listOf(
+        navArgument(tripIdArg) { type = NavType.LongType }
+    )
+
+    override fun getAllRoutes(): List<String> {
+        return mutableListOf(TripDetailDestination.route, routeWithArgs)
+    }
 }
 
 object SavedTripsListingFullDestination: AppScreenDestination {

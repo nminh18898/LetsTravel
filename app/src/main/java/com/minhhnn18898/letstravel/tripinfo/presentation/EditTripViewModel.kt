@@ -6,24 +6,34 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
+import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
+import com.minhhnn18898.letstravel.tripdetail.domain.trip.GetTripInfoUseCase
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.domain.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.domain.GetListDefaultCoverUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EditTripViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val getListDefaultCoverUseCase: GetListDefaultCoverUseCase,
     private val createTripInfoUseCase: CreateTripInfoUseCase,
-    private val defaultCoverResourceProvider: CoverDefaultResourceProvider
+    private val defaultCoverResourceProvider: CoverDefaultResourceProvider,
+    private val getTripInfoUseCase: GetTripInfoUseCase
 ): ViewModel() {
+
+    private var tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
     var tripTitle by mutableStateOf("")
         private set
@@ -34,7 +44,7 @@ class EditTripViewModel @Inject constructor(
     var allowSaveContent by mutableStateOf(false)
         private set
 
-    var onShowSaveLoadingState by mutableStateOf(false)
+    var onShowLoadingState by mutableStateOf(false)
         private set
 
     var errorType by mutableStateOf(ErrorType.ERROR_MESSAGE_NONE)
@@ -45,6 +55,50 @@ class EditTripViewModel @Inject constructor(
 
     init {
         initDefaultCoverList()
+        loadTripInfo(tripId = tripId)
+    }
+
+    private fun loadTripInfo(tripId: Long) {
+        if(tripId <= 0) return
+
+        viewModelScope.launch {
+            getTripInfoUseCase.execute(GetTripInfoUseCase.Param(tripId))?.collect {
+                onShowLoadingState = it == Result.Loading
+
+                when(it) {
+                    is Result.Success -> handleResultLoadTripInfo(it.data)
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_TRIP_INFO)
+                    is Result.Loading -> {
+                        /* do nothing */
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo>) {
+        flowData.collect { item ->
+            val itemDisplay = item.toTripItemDisplay(defaultCoverResourceProvider)
+            onTripTitleUpdated(itemDisplay.tripName)
+            displayCoverFromTrip(itemDisplay)
+            checkAllowSaveContent()
+        }
+    }
+
+    private fun displayCoverFromTrip(tripDisplay: TripItemDisplay) {
+        val coverDisplay = tripDisplay.coverDisplay
+
+        if(coverDisplay is TripDefaultCoverDisplay) {
+            listCoverItems
+                .firstOrNull { coverItem ->
+                    coverItem is DefaultCoverUI && coverItem.resId == coverDisplay.defaultCoverRes
+                }
+                ?.let { coverItem ->
+                    onCoverSelected(coverItem)
+                }
+        } else if(coverDisplay is TripCustomCoverDisplay) {
+            onNewPhotoPicked(coverDisplay.coverPath.toUri())
+        }
     }
 
     fun onTripTitleUpdated(value: String) {
@@ -98,7 +152,7 @@ class EditTripViewModel @Inject constructor(
         if(params != null) {
             viewModelScope.launch {
                 createTripInfoUseCase.execute(params)?.collect {
-                    onShowSaveLoadingState = it == Result.Loading
+                    onShowLoadingState = it == Result.Loading
 
                     when(it) {
                         is Result.Success -> _eventChannel.send(Event.CloseScreen)
@@ -143,7 +197,8 @@ class EditTripViewModel @Inject constructor(
 
     enum class ErrorType {
         ERROR_MESSAGE_NONE,
-        ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO
+        ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO,
+        ERROR_MESSAGE_CAN_NOT_LOAD_TRIP_INFO
     }
 
     abstract class CoverUIElement(open val isSelected: Boolean = false)

@@ -22,9 +22,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,14 +41,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.HotelDetailBody
-import com.minhhnn18898.letstravel.tripinfo.presentation.UserTripCustomCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.UserTripDefaultCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.UserTripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.TripCustomCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.TripDefaultCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.TripItemDisplay
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
@@ -54,11 +57,34 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun TripDetailScreen(
-    modifier: Modifier = Modifier,
+    onComposedTopBarActions: (AppBarActionsState) -> Unit,
     onNavigateToEditFlightInfoScreen: (Long, Long) -> Unit,
     onNavigateEditHotelScreen: (Long, Long) -> Unit,
+    onNavigateToEditTripScreen: (Long) -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(key1 = true) {
+        onComposedTopBarActions(
+            AppBarActionsState(
+                actions = {
+                    IconButton(
+                        onClick = {
+                            onNavigateToEditTripScreen.invoke(viewModel.tripId)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(CommonDrawableRes.edit_square_24),
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            )
+        )
+    }
+
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
@@ -113,7 +139,7 @@ fun TripDetailScreen(
 @Composable
 private fun TripDetailHeader(
     modifier: Modifier = Modifier,
-    tripInfoState: UiState<UserTripItemDisplay, UiState.UndefinedError>) {
+    tripInfoState: UiState<TripItemDisplay, UiState.UndefinedError>) {
 
     if(tripInfoState is UiState.Loading) {
         TripDetailHeaderLoading()
@@ -198,7 +224,7 @@ private fun TripDetailHeaderLoading() {
 
 @Composable
 private fun TripDetailHeaderContent(
-    tripInfoItemDisplay: UserTripItemDisplay,
+    tripInfoItemDisplay: TripItemDisplay,
     modifier: Modifier = Modifier) {
 
     val shape =  RoundedCornerShape(8.dp)
@@ -212,7 +238,7 @@ private fun TripDetailHeaderContent(
     ) {
 
         val coverDisplay = tripInfoItemDisplay.coverDisplay
-        if(coverDisplay is UserTripDefaultCoverDisplay) {
+        if(coverDisplay is TripDefaultCoverDisplay) {
             Image(
                 painter = painterResource(coverDisplay.defaultCoverRes),
                 contentDescription = stringResource(id = CommonStringRes.trip_detail_header_cover_content_desc),
@@ -220,7 +246,7 @@ private fun TripDetailHeaderContent(
                 modifier = Modifier
                     .fillMaxSize()
             )
-        } else if(coverDisplay is UserTripCustomCoverDisplay) {
+        } else if(coverDisplay is TripCustomCoverDisplay) {
             AsyncImage(
                 model = coverDisplay.coverPath,
                 contentDescription = stringResource(id = CommonStringRes.trip_detail_header_cover_content_desc),

@@ -1,10 +1,10 @@
 package com.minhhnn18898.letstravel.tripinfo.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import kotlinx.coroutines.flow.Flow
 
@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 interface TripInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(vararg tripInfoModel: TripInfoModel): List<Long>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(tripInfoModel: TripInfoModel): Long
 
-    @Delete
-    suspend fun delete(tripInfoModel: TripInfoModel)
+    @Update
+    suspend fun update(tripInfoModel: TripInfoModel): Int
+
+    @Query("DELETE FROM trip_info WHERE trip_id = :tripId")
+    suspend fun delete(tripId: Long): Int
 
     @Query("SELECT * FROM trip_info ORDER BY trip_id DESC")
     fun getAll(): Flow<List<TripInfoModel>>

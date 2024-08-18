@@ -6,7 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
+import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
+import com.minhhnn18898.letstravel.tripinfo.domain.GetListTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.presentation.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.presentation.CreateNewTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentError
@@ -15,7 +16,6 @@ import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContent
 import com.minhhnn18898.letstravel.tripinfo.presentation.GetSavedTripInfoContentState
 import com.minhhnn18898.letstravel.tripinfo.presentation.TripInfoItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.toTripItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.domain.GetListTripInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -46,7 +46,7 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleResultLoadListTripInfo(flowData: Flow<List<TripInfoModel>>) {
+    private suspend fun handleResultLoadListTripInfo(flowData: Flow<List<TripInfo>>) {
         flowData.collect { item ->
             val data = mutableListOf<TripInfoItemDisplay>()
             val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }

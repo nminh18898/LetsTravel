@@ -46,9 +46,9 @@ import com.minhhnn18898.discover.presentation.DiscoverScreen
 import com.minhhnn18898.letstravel.tripinfo.presentation.CreateNewTripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.EmptySavedTripView
 import com.minhhnn18898.letstravel.tripinfo.presentation.TripInfoItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.UserTripCustomCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.UserTripDefaultCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.UserTripItemDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.TripCustomCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.TripDefaultCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.TripItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.getResult
 import com.minhhnn18898.letstravel.tripinfo.presentation.hasError
 import com.minhhnn18898.letstravel.tripinfo.presentation.hasResult
@@ -94,7 +94,7 @@ fun HomeScreen(
 
                 if (contentState.hasResult()) {
                     val items = contentState.getResult()
-                    val hasUserTrip = items.any { it is UserTripItemDisplay }
+                    val hasUserTrip = items.any { it is TripItemDisplay }
 
                     if (hasUserTrip) {
                         ContentListTripItem(
@@ -135,7 +135,7 @@ private fun ContentListTripItem(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         listUserTripItem.forEach { itemDisplay ->
-            if(itemDisplay is UserTripItemDisplay) {
+            if(itemDisplay is TripItemDisplay) {
                 TripItemView(modifier = Modifier, itemDisplay = itemDisplay, onClick = onClickTripItem)
             }
             else if(itemDisplay is CreateNewTripItemDisplay) {
@@ -148,7 +148,7 @@ private fun ContentListTripItem(
 @Composable
 private fun TripItemView(
     modifier: Modifier,
-    itemDisplay: UserTripItemDisplay,
+    itemDisplay: TripItemDisplay,
     onClick: (Long) -> Unit
 ) {
     val hexagon = remember {
@@ -200,7 +200,7 @@ private fun TripItemView(
                 )
         ) {
             val coverDisplay = itemDisplay.coverDisplay
-            if(coverDisplay is UserTripDefaultCoverDisplay) {
+            if(coverDisplay is TripDefaultCoverDisplay) {
                 Image(
                     painter = painterResource(coverDisplay.defaultCoverRes),
                     contentDescription = "",
@@ -213,7 +213,7 @@ private fun TripItemView(
                         .size(thumbSize.dp)
                 )
             }
-            else if(coverDisplay is UserTripCustomCoverDisplay) {
+            else if(coverDisplay is TripCustomCoverDisplay) {
                 AsyncImage(
                     model = Uri.parse(coverDisplay.coverPath),
                     contentDescription = "",

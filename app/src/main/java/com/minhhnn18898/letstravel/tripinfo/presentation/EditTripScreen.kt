@@ -151,7 +151,7 @@ fun EditTripScreen(
         }
     }
 
-    AnimatedVisibility(viewModel.onShowSaveLoadingState) {
+    AnimatedVisibility(viewModel.onShowLoadingState) {
         ProgressDialog()
     }
 

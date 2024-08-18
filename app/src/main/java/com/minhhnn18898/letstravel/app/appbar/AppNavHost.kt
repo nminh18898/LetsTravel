@@ -25,7 +25,7 @@ import com.minhhnn18898.letstravel.tripinfo.presentation.TripInfoListingScreen
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    onScreenDisplay: (AppBarActionsState) -> Unit,
+    appBarOnScreenDisplay: (AppBarActionsState) -> Unit,
     modifier: Modifier = Modifier) {
 
     NavHost(
@@ -36,10 +36,10 @@ fun AppNavHost(
         composable(route = HomeScreenDestination.route) {
             HomeScreen(
                 onClickEmptyView = {
-                    navController.navigate(EditTripInfoDestination.route)
+                    navController.navigateToEditTripScreen()
                 },
                 onClickCreateNew = {
-                    navController.navigate(EditTripInfoDestination.route)
+                    navController.navigateToEditTripScreen()
                 },
                 onClickShowAllSavedTrips = {
                     navController.navigate(SavedTripsListingFullDestination.route)
@@ -51,13 +51,16 @@ fun AppNavHost(
                     navController.navigate(SignInScreenDestination.route)
                 }
             )
-            ClearTopBarActions(onScreenDisplay)
+            ClearTopBarActions(appBarOnScreenDisplay)
         }
 
-        composable(route = EditTripInfoDestination.route) {
+        composable(
+            route = EditTripInfoDestination.routeWithArgs,
+            arguments = EditTripInfoDestination.arguments
+        ) {
             EditTripScreen(
                 onComposedTopBarActions = {
-                    onScreenDisplay.invoke(it)
+                    appBarOnScreenDisplay.invoke(it)
                 },
                 navigateUp = {
                     navController.navigateUp()
@@ -77,7 +80,7 @@ fun AppNavHost(
                     navController.navigateToTripDetailScreen(tripId)
                 }
             )
-            ClearTopBarActions(onScreenDisplay)
+            ClearTopBarActions(appBarOnScreenDisplay)
         }
 
         composable(
@@ -85,10 +88,19 @@ fun AppNavHost(
             arguments = TripDetailDestination.arguments
         ) {
             TripDetailScreen(
-                onNavigateToEditFlightInfoScreen = { tripId, flightId -> navController.navigateToEditFlightScreen(tripId, flightId) },
-                onNavigateEditHotelScreen = { tripId, hotelId -> navController.navigateToEditHotelScreen(tripId, hotelId) }
+                onComposedTopBarActions = {
+                    appBarOnScreenDisplay.invoke(it)
+                },
+                onNavigateToEditFlightInfoScreen = { tripId, flightId ->
+                    navController.navigateToEditFlightScreen(tripId, flightId)
+                },
+                onNavigateEditHotelScreen = { tripId, hotelId ->
+                    navController.navigateToEditHotelScreen(tripId, hotelId)
+                },
+                onNavigateToEditTripScreen = {
+                    tripId -> navController.navigateToEditTripScreen(tripId)
+                }
             )
-            ClearTopBarActions(onScreenDisplay)
         }
 
         composable(
@@ -97,7 +109,7 @@ fun AppNavHost(
         ) {
             EditFlightInfoScreen(
                 onComposedTopBarActions = {
-                    onScreenDisplay.invoke(it)
+                    appBarOnScreenDisplay.invoke(it)
                 },
                 navigateUp = {
                     navController.navigateUp()
@@ -110,15 +122,26 @@ fun AppNavHost(
         ) {
             EditHotelInfoScreen(
                 onComposedTopBarActions = {
-                    onScreenDisplay.invoke(it)
+                    appBarOnScreenDisplay.invoke(it)
                 },
                 navigateUp = {
                     navController.navigateUp()
                 })
         }
 
-        signInFeatureComposable(navController)
+        signInFeatureComposable(
+            navigationController = navController,
+            appBarOnScreenDisplay = appBarOnScreenDisplay
+        )
     }
+}
+
+private fun NavHostController.navigateToEditTripScreen() {
+    this.navigateToEditTripScreen(tripId = 0L)
+}
+
+private fun NavHostController.navigateToEditTripScreen(tripId: Long) {
+    this.navigate("${EditTripInfoDestination.route}/$tripId")
 }
 
 private fun NavHostController.navigateToTripDetailScreen(tripId: Long) {
