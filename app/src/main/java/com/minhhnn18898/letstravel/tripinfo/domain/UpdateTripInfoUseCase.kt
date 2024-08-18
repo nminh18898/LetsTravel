@@ -7,13 +7,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class CreateTripInfoUseCase @Inject constructor(private val repository: TripInfoRepository): ModifyTripInfoUseCase() {
+class UpdateTripInfoUseCase @Inject constructor(private val repository: TripInfoRepository): ModifyTripInfoUseCase() {
 
-    override fun run(params: Param): Flow<Result<Unit>> = flow {
+    override fun run(params: ModifyTripInfoUseCase.Param): Flow<Result<Unit>> = flow {
         emit(Result.Loading)
-        repository.insertTripInfo(createTripInfoModel(params))
+        repository.updateTripInfo(createTripInfoModel(params))
         emit(Result.Success(Unit))
     }.catch {
         emit(Result.Error(it))
     }
+
+    class Param(val tripId: Long)
 }

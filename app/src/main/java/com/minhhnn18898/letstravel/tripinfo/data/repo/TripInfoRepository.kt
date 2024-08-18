@@ -3,6 +3,7 @@ package com.minhhnn18898.letstravel.tripinfo.data.repo
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.letstravel.tripinfo.data.dao.TripInfoDao
 import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionInsertTripInfo
+import com.minhhnn18898.letstravel.tripinfo.data.model.ExceptionUpdateTripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfoModel
 import com.minhhnn18898.letstravel.tripinfo.data.model.toTripInfo
@@ -47,10 +48,17 @@ class TripInfoRepository @Inject constructor(
 
     suspend fun insertTripInfo(tripInfoModel: TripInfoModel) {
         withContext(ioDispatcher) {
-            val resultCode = tripInfoDao.insert(tripInfoModel)
+            val resultCode = tripInfoDao.insert(tripInfoModel.copy(tripId = 0L))
             if(resultCode == -1L) {
                 throw ExceptionInsertTripInfo()
             }
+        }
+    }
+
+    suspend fun updateTripInfo(tripInfoModel: TripInfoModel) = withContext(ioDispatcher) {
+        val resultCode = tripInfoDao.update(tripInfoModel)
+        if(resultCode <= 0) {
+            throw ExceptionUpdateTripInfo()
         }
     }
 }

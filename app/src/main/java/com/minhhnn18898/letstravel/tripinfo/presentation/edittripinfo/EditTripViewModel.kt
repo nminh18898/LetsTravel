@@ -16,6 +16,8 @@ import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.domain.CreateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.domain.GetListDefaultCoverUseCase
 import com.minhhnn18898.letstravel.tripinfo.domain.GetTripInfoUseCase
+import com.minhhnn18898.letstravel.tripinfo.domain.ModifyTripInfoUseCase
+import com.minhhnn18898.letstravel.tripinfo.domain.UpdateTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripDefaultCoverDisplay
@@ -35,7 +37,8 @@ class EditTripViewModel @Inject constructor(
     private val getListDefaultCoverUseCase: GetListDefaultCoverUseCase,
     private val createTripInfoUseCase: CreateTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider,
-    private val getTripInfoUseCase: GetTripInfoUseCase
+    private val getTripInfoUseCase: GetTripInfoUseCase,
+    private val updateTripInfoUseCase: UpdateTripInfoUseCase
 ): ViewModel() {
 
     private var tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -149,22 +152,46 @@ class EditTripViewModel @Inject constructor(
         }
 
         val params = when(selectedItem) {
-            is DefaultCoverElement -> CreateTripInfoUseCase.DefaultCoverParam(tripName, selectedItem.coverId)
-            is CustomCoverPhotoElement -> CreateTripInfoUseCase.CustomCoverParam(tripName, selectedItem.uri)
+            is DefaultCoverElement -> ModifyTripInfoUseCase.DefaultCoverParam(tripId, tripName, selectedItem.coverId)
+            is CustomCoverPhotoElement -> ModifyTripInfoUseCase.CustomCoverParam(tripId, tripName, selectedItem.uri)
             else -> null
         }
 
         if(params != null) {
-            viewModelScope.launch {
-                createTripInfoUseCase.execute(params)?.collect {
-                    onShowLoadingState = it == Result.Loading
+            if(isUpdateExistingInfo()) {
+                updateTrip(params)
+            } else {
+                createNewTrip(params)
+            }
+        }
+    }
 
-                    when(it) {
-                        is Result.Success -> _eventChannel.send(Event.CloseScreen)
-                        is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
-                        else -> {
-                            // do nothing
-                        }
+    private fun createNewTrip(param: ModifyTripInfoUseCase.Param) {
+        viewModelScope.launch {
+            createTripInfoUseCase.execute(param)?.collect {
+                onShowLoadingState = it == Result.Loading
+
+                when(it) {
+                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
+                    else -> {
+                        // do nothing
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateTrip(param: ModifyTripInfoUseCase.Param) {
+        viewModelScope.launch {
+            updateTripInfoUseCase.execute(param)?.collect {
+                onShowLoadingState = it == Result.Loading
+
+                when(it) {
+                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_TRIP_INFO)
+                    else -> {
+                        // do nothing
                     }
                 }
             }
@@ -200,10 +227,16 @@ class EditTripViewModel @Inject constructor(
         }
     }
 
+    private fun isUpdateExistingInfo(): Boolean {
+        return tripId > 0L
+    }
+
     enum class ErrorType {
         ERROR_MESSAGE_NONE,
         ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO,
-        ERROR_MESSAGE_CAN_NOT_LOAD_TRIP_INFO
+        ERROR_MESSAGE_CAN_NOT_LOAD_TRIP_INFO,
+        ERROR_MESSAGE_CAN_NOT_UPDATE_TRIP_INFO,
+        ERROR_MESSAGE_CAN_NOT_DELETE_TRIP_INFO
     }
 
     abstract class CoverUIElement(open val isSelected: Boolean = false)
