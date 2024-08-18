@@ -1,7 +1,7 @@
 package com.minhhnn18898.discover.di
 
-import com.minhhnn18898.discover.data.DiscoverRepository
-import com.minhhnn18898.discover.data.DiscoverRepositoryImpl
+import com.minhhnn18898.discover.data.repo.DiscoverRepository
+import com.minhhnn18898.discover.data.repo.DiscoverRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

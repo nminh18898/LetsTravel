@@ -1,4 +1,4 @@
-package com.minhhnn18898.discover.data
+package com.minhhnn18898.discover.data.repo
 
 import com.minhhnn18898.discover.data.model.Article
 

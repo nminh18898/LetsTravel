@@ -2,7 +2,7 @@ package com.minhhnn18898.discover.domain
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
-import com.minhhnn18898.discover.data.DiscoverRepository
+import com.minhhnn18898.discover.data.repo.DiscoverRepository
 import com.minhhnn18898.discover.data.model.Article
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

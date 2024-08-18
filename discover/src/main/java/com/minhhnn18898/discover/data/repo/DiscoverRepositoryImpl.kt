@@ -1,4 +1,4 @@
-package com.minhhnn18898.discover.data
+package com.minhhnn18898.discover.data.repo
 
 import android.util.Log
 import com.google.firebase.Firebase
