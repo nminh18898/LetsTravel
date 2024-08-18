@@ -64,6 +64,9 @@ fun AppNavHost(
                 },
                 navigateUp = {
                     navController.navigateUp()
+                },
+                onNavigateToTripDetailScreen = {
+                    navController.navigateToTripDetailScreen(it)
                 }
             )
         }

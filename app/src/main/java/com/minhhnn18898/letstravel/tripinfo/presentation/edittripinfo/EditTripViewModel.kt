@@ -1,12 +1,10 @@
 package com.minhhnn18898.letstravel.tripinfo.presentation.edittripinfo
 
-import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
-import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -117,7 +115,7 @@ class EditTripViewModel @Inject constructor(
                     onCoverSelected(coverItem)
                 }
         } else if(coverDisplay is TripCustomCoverDisplay) {
-            onNewPhotoPicked(coverDisplay.coverPath.toUri())
+            onNewPhotoPicked(coverDisplay.coverPath)
         }
     }
 
@@ -184,7 +182,10 @@ class EditTripViewModel @Inject constructor(
                 onShowLoadingState = it == Result.Loading
 
                 when(it) {
-                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
+                    is Result.Success -> {
+                        _eventChannel.send(Event.CloseScreen)
+                        _eventChannel.send(Event.NavigateToTripDetailScreen(it.data))
+                    }
                     is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
                     else -> {
                         // do nothing
@@ -210,11 +211,7 @@ class EditTripViewModel @Inject constructor(
         }
     }
 
-    fun onNewPhotoPicked(uri: Uri?) {
-        if(uri == null) {
-            return
-        }
-
+    fun onNewPhotoPicked(uri: String) {
         listCoverItems = listCoverItems.map {
             when(it) {
                 is DefaultCoverElement -> it.copy(isSelected = false)
@@ -281,9 +278,10 @@ class EditTripViewModel @Inject constructor(
 
     data class DefaultCoverElement(val coverId: Int, override val isSelected: Boolean, @DrawableRes val resId: Int): CoverUIElement(isSelected)
 
-    data class CustomCoverPhotoElement(val uri: Uri, override val isSelected: Boolean): CoverUIElement(isSelected)
+    data class CustomCoverPhotoElement(val uri: String, override val isSelected: Boolean): CoverUIElement(isSelected)
 
     sealed class Event {
         data object CloseScreen: Event()
+        data class NavigateToTripDetailScreen(val tripId: Long): Event()
     }
 }

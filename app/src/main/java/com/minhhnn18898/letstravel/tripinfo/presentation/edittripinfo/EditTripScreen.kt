@@ -62,6 +62,7 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 fun EditTripScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
     navigateUp: () -> Unit,
+    onNavigateToTripDetailScreen: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditTripViewModel = hiltViewModel()
 ) {
@@ -104,8 +105,9 @@ fun EditTripScreen(
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.eventTriggerer.collect { event ->
-                if(event == EditTripViewModel.Event.CloseScreen) {
-                    navigateUp.invoke()
+                when(event) {
+                    is EditTripViewModel.Event.CloseScreen -> navigateUp.invoke()
+                    is EditTripViewModel.Event.NavigateToTripDetailScreen -> onNavigateToTripDetailScreen.invoke(event.tripId)
                 }
             }
         }
@@ -152,7 +154,7 @@ fun EditTripScreen(
                 uri?.let {
                     val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                     context.contentResolver.takePersistableUriPermission(uri, flag)
-                    viewModel.onNewPhotoPicked(uri)
+                    viewModel.onNewPhotoPicked(uri.toString())
                 }
             }
         )

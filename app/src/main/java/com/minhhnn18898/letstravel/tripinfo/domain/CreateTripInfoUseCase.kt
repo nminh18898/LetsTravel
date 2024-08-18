@@ -9,10 +9,10 @@ import javax.inject.Inject
 
 class CreateTripInfoUseCase @Inject constructor(private val repository: TripInfoRepository): ModifyTripInfoUseCase() {
 
-    override fun run(params: Param): Flow<Result<Unit>> = flow {
+    override fun run(params: Param): Flow<Result<Long>> = flow {
         emit(Result.Loading)
-        repository.insertTripInfo(createTripInfoModel(params))
-        emit(Result.Success(Unit))
+        val tripId = repository.insertTripInfo(createTripInfoModel(params))
+        emit(Result.Success(tripId))
     }.catch {
         emit(Result.Error(it))
     }

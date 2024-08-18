@@ -47,25 +47,24 @@ class TripInfoRepository @Inject constructor(
 
     fun getListDefaultCoverElements(): List<DefaultCoverElement> = defaultCoverIdList
 
-    suspend fun insertTripInfo(tripInfoModel: TripInfoModel) {
-        withContext(ioDispatcher) {
-            val resultCode = tripInfoDao.insert(tripInfoModel.copy(tripId = 0L))
-            if(resultCode == -1L) {
-                throw ExceptionInsertTripInfo()
-            }
+    suspend fun insertTripInfo(tripInfoModel: TripInfoModel): Long = withContext(ioDispatcher) {
+        val resultCode = tripInfoDao.insert(tripInfoModel.copy(tripId = 0L))
+        if(resultCode == -1L) {
+            throw ExceptionInsertTripInfo()
         }
+        resultCode
     }
 
-    suspend fun updateTripInfo(tripInfoModel: TripInfoModel) = withContext(ioDispatcher) {
+    suspend fun updateTripInfo(tripInfoModel: TripInfoModel): Long = withContext(ioDispatcher) {
         val resultCode = tripInfoDao.update(tripInfoModel)
         if(resultCode <= 0) {
             throw ExceptionUpdateTripInfo()
         }
+        tripInfoModel.tripId
     }
 
     suspend fun deleteTripInfo(tripId: Long) = withContext(ioDispatcher) {
         val result = tripInfoDao.delete(tripId)
-
         if(result <= 0) {
             throw ExceptionDeleteTripInfo()
         }
