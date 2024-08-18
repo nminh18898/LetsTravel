@@ -48,6 +48,7 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.R
+import com.minhhnn18898.letstravel.tripdetail.presentation.activity.TripActivityScreen
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.HotelDetailBody
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
@@ -147,6 +148,16 @@ fun TripDetailScreen(
                     }
                 )
         }
+
+        // Activity info
+        DetailSection(
+            icon = R.drawable.nature_people_24,
+            title = CommonStringRes.activities,
+            modifier = modifier) {
+
+            TripActivityScreen(modifier = modifier)
+        }
+
         Spacer(Modifier.height(16.dp))
     }
 }

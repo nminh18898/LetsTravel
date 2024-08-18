@@ -58,4 +58,5 @@
     </plurals>
     <string name="estimated_budget">Estimated budget</string>
     <string name="delete_confirmation_prompt">Are you sure you want to delete this?</string>
+    <string name="activities">Activities</string>
 </resources>
