@@ -8,12 +8,16 @@ import javax.inject.Inject
 class CoverDefaultResourceProvider @Inject constructor() {
 
     private val defaultCoverList = mapOf(
-        DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER to R.drawable.trip_cover_default_1,
-        DefaultCoverElement.COVER_DEFAULT_THEME_LONG_TRIP to R.drawable.trip_cover_default_2,
-        DefaultCoverElement.COVER_DEFAULT_THEME_AROUND_THE_WORLD to R.drawable.trip_cover_default_3,
-        DefaultCoverElement.COVER_DEFAULT_THEME_NIGHT_DRIVE to R.drawable.trip_cover_default_4,
-        DefaultCoverElement.COVER_DEFAULT_THEME_SEA to R.drawable.trip_cover_default_5,
-        DefaultCoverElement.COVER_DEFAULT_THEME_NATURE to R.drawable.trip_cover_default_6
+        DefaultCoverElement.COVER_DEFAULT_THEME_SPRING to R.drawable.trip_cover_default_spring,
+        DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER to R.drawable.trip_cover_default_summer,
+        DefaultCoverElement.COVER_DEFAULT_THEME_AUTUMN to R.drawable.trip_cover_default_autumn,
+        DefaultCoverElement.COVER_DEFAULT_THEME_WINTER to R.drawable.trip_cover_default_winter,
+        DefaultCoverElement.COVER_DEFAULT_THEME_BEACH to R.drawable.trip_cover_default_beach,
+        DefaultCoverElement.COVER_DEFAULT_THEME_MOUNTAIN to R.drawable.trip_cover_default_mountain,
+        DefaultCoverElement.COVER_DEFAULT_THEME_AURORA to R.drawable.trip_cover_default_aurora,
+        DefaultCoverElement.COVER_DEFAULT_THEME_VIETNAM to R.drawable.trip_cover_default_vietnam,
+        DefaultCoverElement.COVER_DEFAULT_THEME_CHINA to R.drawable.trip_cover_default_china,
+        DefaultCoverElement.COVER_DEFAULT_THEME_SEA_DIVING to R.drawable.trip_cover_default_sea_diving,
     )
 
     private val defaultCoverListBaseValue = defaultCoverList.mapKeys { it.key.type }

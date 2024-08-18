@@ -21,12 +21,16 @@ class TripInfoRepository @Inject constructor(
 ) {
 
     private val defaultCoverIdList = listOf(
+        DefaultCoverElement.COVER_DEFAULT_THEME_SPRING,
         DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER,
-        DefaultCoverElement.COVER_DEFAULT_THEME_LONG_TRIP,
-        DefaultCoverElement.COVER_DEFAULT_THEME_AROUND_THE_WORLD,
-        DefaultCoverElement.COVER_DEFAULT_THEME_NIGHT_DRIVE,
-        DefaultCoverElement.COVER_DEFAULT_THEME_SEA,
-        DefaultCoverElement.COVER_DEFAULT_THEME_NATURE
+        DefaultCoverElement.COVER_DEFAULT_THEME_AUTUMN,
+        DefaultCoverElement.COVER_DEFAULT_THEME_WINTER,
+        DefaultCoverElement.COVER_DEFAULT_THEME_BEACH,
+        DefaultCoverElement.COVER_DEFAULT_THEME_MOUNTAIN,
+        DefaultCoverElement.COVER_DEFAULT_THEME_AURORA,
+        DefaultCoverElement.COVER_DEFAULT_THEME_VIETNAM,
+        DefaultCoverElement.COVER_DEFAULT_THEME_CHINA,
+        DefaultCoverElement.COVER_DEFAULT_THEME_SEA_DIVING,
     )
 
     fun getAllTrips(): Flow<List<TripInfo>> {

@@ -17,7 +17,7 @@ fun TripInfo.toTripItemDisplay(defaultCoverResourceProvider: CoverDefaultResourc
     val coverDisplay: TripCoverDisplay = when(this.coverType) {
         TripInfoModel.TRIP_COVER_TYPE_DEFAULT -> TripDefaultCoverDisplay(defaultCoverResourceProvider.getCoverResource(this.defaultCoverId))
         TripInfoModel.TRIP_COVER_TYPE_CUSTOM -> TripCustomCoverDisplay(this.customCoverPath)
-        else -> TripDefaultCoverDisplay(defaultCoverResourceProvider.getCoverResource(DefaultCoverElement.COVER_DEFAULT_THEME_SUMMER.type))
+        else -> TripDefaultCoverDisplay(defaultCoverResourceProvider.getCoverResource(DefaultCoverElement.COVER_DEFAULT_THEME_BEACH.type))
     }
 
     return UserTripDisplay(this.tripId, this.title, coverDisplay)

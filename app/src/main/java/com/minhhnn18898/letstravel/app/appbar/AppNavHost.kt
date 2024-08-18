@@ -74,10 +74,10 @@ fun AppNavHost(
         composable(route = SavedTripsListingFullDestination.route) {
             TripInfoListingScreen(
                 onClickEmptyView = {
-                    navController.navigate(EditTripInfoDestination.route)
+                    navController.navigateToEditTripScreen()
                 },
                 onClickCreateNew = {
-                    navController.navigate(EditTripInfoDestination.route)
+                    navController.navigateToEditTripScreen()
                 },
                 onClickTripItem = { tripId ->
                     navController.navigateToTripDetailScreen(tripId)
