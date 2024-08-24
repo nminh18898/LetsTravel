@@ -66,6 +66,7 @@ fun TripDetailScreen(
     onNavigateToEditFlightInfoScreen: (Long, Long) -> Unit,
     onNavigateEditHotelScreen: (Long, Long) -> Unit,
     onNavigateToEditTripScreen: (Long) -> Unit,
+    onNavigateEditTripActivityScreen: (Long, Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
@@ -158,7 +159,7 @@ fun TripDetailScreen(
             TripActivityScreen(
                 activityInfoContentState = viewModel.activityInfoContentState,
                 onClickCreateTripActivity = {
-
+                    onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
                 },
                 modifier = modifier
             )
@@ -229,17 +230,11 @@ private fun TripDetailHeaderLoading() {
     val alpha by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        // `infiniteRepeatable` repeats the specified duration-based `AnimationSpec` infinitely.
         animationSpec = infiniteRepeatable(
-            // The `keyframes` animates the value by specifying multiple timestamps.
             animation = keyframes {
-                // One iteration is 1000 milliseconds.
                 durationMillis = 1000
-                // 0.7f at the middle of an iteration.
                 0.7f at 500
             },
-            // When the value finishes animating from 0f to 1f, it repeats by reversing the
-            // animation direction.
             repeatMode = RepeatMode.Reverse
         ),
         label = "alpha"

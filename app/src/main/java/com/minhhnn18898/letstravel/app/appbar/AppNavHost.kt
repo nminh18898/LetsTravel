@@ -10,12 +10,14 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.app_navigation.appbarstate.ClearTopBarActions
 import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditHotelInfoDestination
+import com.minhhnn18898.app_navigation.destination.EditTripActivityInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.SignInScreenDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
 import com.minhhnn18898.letstravel.homescreen.HomeScreen
+import com.minhhnn18898.letstravel.tripdetail.presentation.activity.EditTripActivityScreen
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.EditFlightInfoScreen
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.EditHotelInfoScreen
 import com.minhhnn18898.letstravel.tripdetail.presentation.trip.TripDetailScreen
@@ -105,6 +107,9 @@ fun AppNavHost(
                 },
                 onNavigateToEditTripScreen = {
                     tripId -> navController.navigateToEditTripScreen(tripId)
+                },
+                onNavigateEditTripActivityScreen = { tripId, activityId ->
+                    navController.navigateToEditTripActivityScreen(tripId, activityId)
                 }
             )
         }
@@ -135,6 +140,20 @@ fun AppNavHost(
                 })
         }
 
+        composable(
+            route = EditTripActivityInfoDestination.routeWithArgs,
+            arguments = EditTripActivityInfoDestination.arguments
+        ) {
+            EditTripActivityScreen(
+                onComposedTopBarActions = {
+                    appBarOnScreenDisplay.invoke(it)
+                },
+                navigateUp = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
         signInFeatureComposable(
             navigationController = navController,
             appBarOnScreenDisplay = appBarOnScreenDisplay
@@ -160,5 +179,9 @@ private fun NavHostController.navigateToEditFlightScreen(tripId: Long, flightId:
 
 private fun NavHostController.navigateToEditHotelScreen(tripId: Long, hotelId: Long) {
     this.navigate("${EditHotelInfoDestination.route}/$tripId/$hotelId")
+}
+
+private fun NavHostController.navigateToEditTripActivityScreen(tripId: Long, activityId: Long = 0L) {
+    this.navigate("${EditTripActivityInfoDestination.route}/$tripId/$activityId")
 }
 

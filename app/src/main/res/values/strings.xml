@@ -21,4 +21,5 @@
     <string name="edit_hotel_info">Edit hotel info</string>
     <string name="add_your_activities">Add your activities</string>
     <string name="edit_activity_info">Edit activity info</string>
+    <string name="activity_name">Activity name</string>
 </resources>

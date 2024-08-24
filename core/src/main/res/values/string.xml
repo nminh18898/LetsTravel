@@ -19,6 +19,7 @@
     <string name="airlines">Airlines</string>
     <string name="flight_info">Flight info</string>
     <string name="hotel_info">Hotel info</string>
+    <string name="activity_info">Activity info</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="saved_trips">Saved trips</string>
@@ -55,4 +56,8 @@
     <string name="estimated_budget">Estimated budget</string>
     <string name="delete_confirmation_prompt">Are you sure you want to delete this?</string>
     <string name="activities">Activities</string>
+    <string name="description">Description</string>
+    <string name="schedule">Schedule</string>
+    <string name="information">Information</string>
+    <string name="change_photo">Change photo</string>
 </resources>
