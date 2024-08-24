@@ -9,6 +9,8 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,7 +51,8 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.tripdetail.presentation.activity.TripActivityScreen
+import com.minhhnn18898.letstravel.homescreen.SectionCtaData
+import com.minhhnn18898.letstravel.tripdetail.presentation.activity.TripActivitySection
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.HotelDetailBody
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
@@ -154,12 +158,22 @@ fun TripDetailScreen(
         DetailSection(
             icon = R.drawable.nature_people_24,
             title = CommonStringRes.activities,
+            sectionCtaData = SectionCtaData(
+                icon = CommonDrawableRes.add_24,
+                title = R.string.add_new_activity,
+                onClick = {
+                    onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
+                }
+            ),
             modifier = modifier) {
 
-            TripActivityScreen(
+            TripActivitySection(
                 activityInfoContentState = viewModel.activityInfoContentState,
                 onClickCreateTripActivity = {
                     onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
+                },
+                onClickActivityItem = { activityId ->
+                    onNavigateEditTripActivityScreen.invoke(viewModel.tripId, activityId)
                 },
                 modifier = modifier
             )
@@ -309,12 +323,19 @@ private fun DetailSection(
     @DrawableRes icon: Int,
     @StringRes title: Int,
     modifier: Modifier = Modifier,
+    sectionCtaData: SectionCtaData? = null,
     content: @Composable () -> Unit
 ) {
     Column(modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)) {
+            horizontalArrangement  =  Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(icon),
                     contentDescription = "",
@@ -328,6 +349,34 @@ private fun DetailSection(
                     color = MaterialTheme.colorScheme.primary,
                     maxLines = 1
                 )
+            }
+
+            if(sectionCtaData != null) {
+                Row(
+                    modifier = Modifier.clickable {
+                        sectionCtaData.onClick.invoke()
+                    },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        modifier = Modifier,
+                        text = stringResource(sectionCtaData.title),
+                        style = typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        maxLines = 1
+                    )
+
+                    Icon(
+                        modifier = Modifier
+                            .size(20.dp),
+                        painter = painterResource(sectionCtaData.icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
+
         }
 
         content()

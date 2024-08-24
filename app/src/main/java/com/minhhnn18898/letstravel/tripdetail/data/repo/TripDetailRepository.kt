@@ -148,7 +148,7 @@ class TripDetailRepository @Inject constructor(
     suspend fun insertActivityInfo(tripId: Long, activityInfo: TripActivityInfo) = withContext(ioDispatcher) {
         val tripActivityInfoModel = activityInfo
             .toTripActivityModel(tripId)
-            .copy(tripId = 0L)
+            .copy(activityId = 0L)
 
         val resultCode = activityInfoDao.insert(tripActivityInfoModel)
         if(resultCode == -1L) {

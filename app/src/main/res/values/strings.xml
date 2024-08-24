@@ -20,6 +20,12 @@
     <string name="add_your_hotels">Add your hotels</string>
     <string name="edit_hotel_info">Edit hotel info</string>
     <string name="add_your_activities">Add your activities</string>
+    <string name="add_new_activity">Add new activity</string>
     <string name="edit_activity_info">Edit activity info</string>
     <string name="activity_name">Activity name</string>
+    <string name="error_can_not_create_activity">Can not create activity. Please try again</string>
+    <string name="error_can_not_load_activity">Can not load activity. Please try again</string>
+    <string name="error_can_not_update_activity">Can not update activity. Please try again</string>
+    <string name="error_can_not_delete_activity">Can not delete activity. Please try again</string>
+    <string name="error_activity_schedule_is_invalid">Schedule is invalid</string>
 </resources>

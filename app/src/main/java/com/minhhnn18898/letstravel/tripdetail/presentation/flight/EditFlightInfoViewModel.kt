@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.core.utils.DateTimeUtils
+import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
@@ -35,7 +35,7 @@ class EditFlightInfoViewModel @Inject constructor(
     private val getFlightInfoUseCase: GetFlightInfoUseCase,
     private val updateFlightInfoUseCase: UpdateFlightInfoUseCase,
     private val deleteFlightInfoUseCase: DeleteFlightInfoUseCase,
-    private val dateTimeUtils: DateTimeUtils = DateTimeUtils()
+    private val baseDateTimeFormatter: BaseDateTimeFormatter = BaseDateTimeFormatter()
 ): ViewModel() {
 
     private val tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -120,9 +120,9 @@ class EditFlightInfoViewModel @Inject constructor(
         onAirlinesUpdated(flightInfo.operatedAirlines)
         onPricesUpdated(flightInfo.price.toString())
         onFlightDateUpdated(ItineraryType.DEPARTURE, flightInfo.departureTime)
-        onFlightTimeUpdated(ItineraryType.DEPARTURE, dateTimeUtils.getHourMinute(flightInfo.departureTime))
+        onFlightTimeUpdated(ItineraryType.DEPARTURE, baseDateTimeFormatter.getHourMinute(flightInfo.departureTime))
         onFlightDateUpdated(ItineraryType.ARRIVAL, flightInfo.arrivalTime, showWarningInvalidRange = false)
-        onFlightTimeUpdated(ItineraryType.ARRIVAL, dateTimeUtils.getHourMinute(flightInfo.arrivalTime), showWarningInvalidRange = false)
+        onFlightTimeUpdated(ItineraryType.ARRIVAL, baseDateTimeFormatter.getHourMinute(flightInfo.arrivalTime), showWarningInvalidRange = false)
 
         val departAirport = flightInfoWithAirport.departAirport
         onAirportCodeUpdated(ItineraryType.DEPARTURE, departAirport.code)
@@ -310,7 +310,6 @@ class EditFlightInfoViewModel @Inject constructor(
         onShowDialogDeleteConfirmation = false
     }
 
-    @Suppress("SameParameterValue")
     private fun showErrorInBriefPeriod(errorType: ErrorType) {
         viewModelScope.launch {
             this@EditFlightInfoViewModel.errorType = errorType
@@ -331,7 +330,7 @@ class EditFlightInfoViewModel @Inject constructor(
         val localDate = flightDate[type]?.value ?: 0L
         val timeHourMinutes = flightTime[type]?.value ?: Pair(0, 0)
 
-        return dateTimeUtils.convertToLocalDateTimeMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
+        return baseDateTimeFormatter.convertToLocalDateTimeMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
     }
 
     private fun Map<ItineraryType, MutableState<String>>.getStringValue(key: ItineraryType): String {

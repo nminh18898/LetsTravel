@@ -15,11 +15,11 @@ import kotlin.time.toDuration
 
 
 @Suppress("unused")
-class DateTimeUtils @Inject constructor() {
+open class BaseDateTimeFormatter @Inject constructor() {
 
     private val defaultFormatter = DateTimeFormatter.ofPattern("EEE, dd MMMM, yyyy", Locale.getDefault())
 
-    private val dateMonthYearFormatter = DateTimeFormatter.ofPattern("dd MMMM, yy", Locale.getDefault())
+    private val dateMonthYearShortFormatter = DateTimeFormatter.ofPattern("dd MMMM, yy", Locale.getDefault())
 
     fun convertMillisToLocalDate(millis: Long): LocalDate {
         return Instant
@@ -48,13 +48,13 @@ class DateTimeUtils @Inject constructor() {
         return formatter.format(localDate)
     }
 
-    fun dateToString(date: Date, formatter: DateTimeFormatter = dateMonthYearFormatter): String {
+    fun dateToString(date: Date, formatter: DateTimeFormatter = dateMonthYearShortFormatter): String {
         val localDate = convertMillisToLocalDate(date.time)
         return formatter.format(localDate)
     }
 
-    fun millisToDateString(millis: Long): String {
-        return dateToString(convertMillisToLocalDate(millis), dateMonthYearFormatter)
+    fun millisToDateString(millis: Long, formatter: DateTimeFormatter = dateMonthYearShortFormatter): String {
+        return dateToString(convertMillisToLocalDate(millis), formatter)
     }
 
     fun formatTime(hour: Int, minute: Int): String {
@@ -67,7 +67,7 @@ class DateTimeUtils @Inject constructor() {
         return dateFormatter.format(localDateTime)
     }
 
-    private fun convertMillisToLocalDateTime(millis: Long): LocalDateTime {
+    fun convertMillisToLocalDateTime(millis: Long): LocalDateTime {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), TimeZone.getDefault().toZoneId())
     }
 
@@ -80,7 +80,7 @@ class DateTimeUtils @Inject constructor() {
             .toEpochMilli()
     }
 
-    private fun getDurationInHourMinute(from: Long, to: Long): Pair<Int, Int> {
+    fun getDurationInHourMinute(from: Long, to: Long): Pair<Int, Int> {
         val duration = (to - from).toDuration(DurationUnit.MILLISECONDS)
         return Pair(duration.inWholeHours.toInt(), duration.inWholeMinutes.rem(60).toInt())
     }

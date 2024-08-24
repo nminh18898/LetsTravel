@@ -46,7 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
-import com.minhhnn18898.core.utils.DateTimeUtils
+import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
@@ -415,11 +415,11 @@ fun DatePickerWithDialog(
     )
 
     val millisToLocalDate = date?.let {
-        DateTimeUtils().convertMillisToLocalDate(it)
+        BaseDateTimeFormatter().convertMillisToLocalDate(it)
     }
 
     val dateToString = millisToLocalDate?.let {
-        DateTimeUtils().dateToString(millisToLocalDate)
+        BaseDateTimeFormatter().dateToString(millisToLocalDate)
     } ?: stringResource(id = CommonStringRes.choose_date)
 
     var showDialog by remember { mutableStateOf(false) }
@@ -508,7 +508,7 @@ fun TimePickerWithDialog(
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = DateTimeUtils().formatTime(time.first, time.second),
+            text = BaseDateTimeFormatter().formatTime(time.first, time.second),
             style = MaterialTheme.typography.bodyLarge
         )
     }

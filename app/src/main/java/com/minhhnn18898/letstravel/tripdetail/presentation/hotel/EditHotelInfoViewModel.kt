@@ -194,7 +194,6 @@ class EditHotelInfoViewModel @Inject constructor(
         return checkOutDate > checkInDate
     }
 
-    @Suppress("SameParameterValue")
     private fun showErrorInBriefPeriod(errorType: ErrorType) {
         viewModelScope.launch {
             this@EditHotelInfoViewModel.errorType = errorType

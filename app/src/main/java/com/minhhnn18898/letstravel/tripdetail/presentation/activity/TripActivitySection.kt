@@ -1,5 +1,7 @@
 package com.minhhnn18898.letstravel.tripdetail.presentation.activity
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,9 +10,11 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,9 +34,10 @@ import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
-fun TripActivityScreen(
+fun TripActivitySection(
     activityInfoContentState: UiState<List<TripActivityDisplayInfo>, UiState.UndefinedError>,
     onClickCreateTripActivity: () -> Unit,
+    onClickActivityItem: (Long) -> Unit,
     modifier: Modifier
 ) {
 
@@ -55,35 +60,80 @@ fun TripActivityScreen(
                 onClick = onClickCreateTripActivity
             )
         } else {
-
+            ListActivity(
+                listActivity = activityInfoContentState.data,
+                onItemClick = onClickActivityItem
+            )
         }
     }
 }
 
 @Composable
-private fun ActivityItemView(modifier: Modifier) {
-    Column(modifier = modifier.padding(horizontal = 16.dp)) {
+private fun ListActivity(
+    listActivity: List<TripActivityDisplayInfo>,
+    onItemClick: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(start = 16.dp, end = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        listActivity.forEach {
+            ActivityItemView(
+                activityDisplayInfo = it,
+                onClick = onItemClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun ActivityItemView(
+    activityDisplayInfo: TripActivityDisplayInfo,
+    onClick: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .clickable {
+                onClick(activityDisplayInfo.activityId)
+            }
+    ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = "https://www.yttags.com/blog/wp-content/uploads/2023/02/image-urls-for-testing.webp",
-                contentDescription = "",
-                modifier = Modifier
-                    .width(132.dp)
-                    .aspectRatio(1.2f),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.image_placeholder),
-                error = painterResource(id = R.drawable.empty_image_bg)
-            )
+            val photoPath = activityDisplayInfo.photo
+
+            if(photoPath.isEmpty()) {
+                Image(
+                    painter = painterResource(com.minhhnn18898.letstravel.R.drawable.default_activity_photo),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(132.dp)
+                        .aspectRatio(1.5f)
+                )
+            } else {
+                AsyncImage(
+                    model = photoPath,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(132.dp)
+                        .aspectRatio(1.5f),
+                    placeholder = painterResource(id = R.drawable.image_placeholder),
+                    error = painterResource(id = R.drawable.empty_image_bg)
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column {
                 Text(
-                    text = "Chao Phraya Princess Dinner Cruise",
+                    text = activityDisplayInfo.title,
                     style = typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary,
                     maxLines = 1,
@@ -93,7 +143,7 @@ private fun ActivityItemView(modifier: Modifier) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Embark on an unforgettable evening with the Chao Phraya Princess Dinner Cruise departing from ICONSIAM Pier. This world-class dinner cruise takes you on a 2-hour journey along the Chao Phraya River, offering breathtaking views of Bangkok’s iconic landmarks, including the Temple of Dawn and The Grand Palace, beautifully illuminated under the night sky.",
+                    text = activityDisplayInfo.description,
                     style = typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     maxLines = 5,
@@ -113,9 +163,9 @@ private fun ActivityItemView(modifier: Modifier) {
             Column(modifier = Modifier.wrapContentSize()) {
 
                 Text(
-                    text = "Wed, 16 August",
+                    text = activityDisplayInfo.date,
                     style = typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -128,20 +178,19 @@ private fun ActivityItemView(modifier: Modifier) {
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "2 hours",
-                        style = typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(id = com.minhhnn18898.letstravel.R.drawable.departure_board_24),
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.tertiary
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
-                        text = "8:00 - 10:00",
+                        text = "${activityDisplayInfo.startTime} - ${activityDisplayInfo.endTime}",
                         style = typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.tertiary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -149,7 +198,7 @@ private fun ActivityItemView(modifier: Modifier) {
             }
 
             Text(
-                text = "2,500,000",
+                text = activityDisplayInfo.price,
                 style = typography.bodyLarge,
                 color = MaterialTheme.colorScheme.tertiary,
                 maxLines = 4,

@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.core.utils.DateTimeUtils
+import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
@@ -17,6 +17,7 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.TripActivityInfo
 import com.minhhnn18898.letstravel.tripdetail.domain.activity.GetListTripActivityInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.hotel.GetListHotelInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.presentation.activity.TripActivityDateTimeFormatter
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.domain.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResourceProvider
@@ -35,7 +36,8 @@ class TripDetailScreenViewModel @Inject constructor(
     private val defaultResourceProvider: CoverDefaultResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,
     private val getListFlightInfoUseCase: GetListFlightInfoUseCase,
-    private val dateTimeUtils: DateTimeUtils = DateTimeUtils(),
+    private val baseDateTimeFormatter: BaseDateTimeFormatter,
+    private val activityDateTimeFormatter: TripActivityDateTimeFormatter,
     private val getListHotelInfoUseCase: GetListHotelInfoUseCase,
     private val getListTripActivityInfoUseCase: GetListTripActivityInfoUseCase
 ): ViewModel() {
@@ -157,11 +159,11 @@ class TripDetailScreenViewModel @Inject constructor(
     }
 
     private fun calculateFlightDuration(from: Long, to: Long): String {
-        return dateTimeUtils.getDurationInHourMinuteDisplayString(from, to)
+        return baseDateTimeFormatter.getDurationInHourMinuteDisplayString(from, to)
     }
 
     private fun calculateHotelStayDuration(from: Long, to: Long): Int {
-        return dateTimeUtils.getNightDuration(from, to).toInt()
+        return baseDateTimeFormatter.getNightDuration(from, to).toInt()
     }
 
     private fun onUpdateFlightBudget(flightInfo: List<FlightWithAirportInfo>) {
@@ -201,8 +203,8 @@ class TripDetailScreenViewModel @Inject constructor(
             departAirport = departAirport.toAirportDisplayInfo(),
             destinationAirport = destinationAirport.toAirportDisplayInfo(),
             operatedAirlines = flightInfo.operatedAirlines,
-            departureTime = dateTimeUtils.getFormatFlightDateTimeString(flightInfo.departureTime),
-            arrivalTime = dateTimeUtils.getFormatFlightDateTimeString(flightInfo.arrivalTime),
+            departureTime = baseDateTimeFormatter.getFormatFlightDateTimeString(flightInfo.departureTime),
+            arrivalTime = baseDateTimeFormatter.getFormatFlightDateTimeString(flightInfo.arrivalTime),
             duration = calculateFlightDuration(flightInfo.departureTime, flightInfo.arrivalTime),
             price = flightInfo.price.formatWithCommas()
         )
@@ -213,8 +215,8 @@ class TripDetailScreenViewModel @Inject constructor(
             hotelId = this.hotelId,
             hotelName = this.hotelName,
             address = this.address,
-            checkInDate = dateTimeUtils.millisToDateString(this.checkInDate),
-            checkOutDate = dateTimeUtils.millisToDateString(this.checkOutDate),
+            checkInDate = baseDateTimeFormatter.millisToDateString(this.checkInDate),
+            checkOutDate = baseDateTimeFormatter.millisToDateString(this.checkOutDate),
             duration = calculateHotelStayDuration(this.checkInDate, this.checkOutDate),
             price = this.price.formatWithCommas()
         )
@@ -224,9 +226,11 @@ class TripDetailScreenViewModel @Inject constructor(
         return TripActivityDisplayInfo(
             activityId = this.activityId,
             title = this.title,
+            photo = this.photo,
             description = this.description,
-            date = "Test Data",
-            duration = -1,
+            date = activityDateTimeFormatter.millisToDateString(this.timeFrom),
+            startTime = activityDateTimeFormatter.getHourMinuteFormatted(this.timeFrom),
+            endTime = activityDateTimeFormatter.getHourMinuteFormatted(this.timeTo),
             price = this.price.formatWithCommas(),
         )
     }

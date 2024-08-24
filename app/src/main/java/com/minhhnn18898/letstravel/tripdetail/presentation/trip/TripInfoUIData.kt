@@ -32,7 +32,9 @@ data class TripActivityDisplayInfo(
     val activityId: Long,
     val title: String,
     val description: String,
+    val photo: String,
     val date: String,
-    val duration: Int,
+    val startTime: String,
+    val endTime: String,
     val price: String,
 )

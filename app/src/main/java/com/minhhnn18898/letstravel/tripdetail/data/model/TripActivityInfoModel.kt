@@ -26,6 +26,8 @@ data class TripActivityInfoModel(
     val title: String,
     @ColumnInfo("description")
     val description: String,
+    @ColumnInfo("photo")
+    val photo: String,
     @ColumnInfo("time_from")
     val timeFrom: Long,
     @ColumnInfo("time_to")
@@ -42,6 +44,7 @@ data class TripActivityInfo(
     val activityId: Long,
     val title: String,
     val description: String,
+    val photo: String,
     val timeFrom: Long,
     val timeTo: Long,
     val price: Long,
@@ -52,6 +55,7 @@ fun TripActivityInfoModel.toTripActivityInfo(): TripActivityInfo {
         activityId = this.activityId,
         title = this.title,
         description = this.description,
+        photo = this.photo,
         timeFrom = this.timeFrom,
         timeTo = this.timeTo,
         price = this.price
@@ -67,6 +71,7 @@ fun TripActivityInfo.toTripActivityModel(tripId: Long): TripActivityInfoModel {
         activityId = this.activityId,
         title = this.title,
         description = this.description,
+        photo = this.photo,
         timeFrom = this.timeFrom,
         timeTo = this.timeTo,
         price = this.price,
