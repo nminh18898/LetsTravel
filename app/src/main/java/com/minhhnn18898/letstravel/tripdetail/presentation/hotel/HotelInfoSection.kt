@@ -79,7 +79,7 @@ fun HotelDetailBody(
 
         if(isEmpty) {
             DefaultEmptyView(
-                text = stringResource(id = CommonStringRes.add_your_hotels),
+                text = stringResource(id = R.string.add_your_hotels),
                 modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth(),

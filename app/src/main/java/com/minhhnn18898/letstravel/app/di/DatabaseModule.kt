@@ -3,6 +3,7 @@ package com.minhhnn18898.letstravel.app.di
 import android.content.Context
 import androidx.room.Room
 import com.minhhnn18898.letstravel.app.database.UserTripDatabase
+import com.minhhnn18898.letstravel.tripdetail.data.dao.ActivityInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.HotelInfoDao
@@ -46,5 +47,10 @@ object DatabaseModule {
     @Provides
     fun provideHotelInfoDao(database: UserTripDatabase): HotelInfoDao {
         return database.hotelInfoDao()
+    }
+
+    @Provides
+    fun provideActivityInfoDao(database: UserTripDatabase): ActivityInfoDao {
+        return database.activityInfoDao()
     }
 }

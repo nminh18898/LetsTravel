@@ -1,6 +1,7 @@
 package com.minhhnn18898.letstravel.tripdetail.data.repo
 
 import com.minhhnn18898.core.di.IODispatcher
+import com.minhhnn18898.letstravel.tripdetail.data.dao.ActivityInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.HotelInfoDao
@@ -9,11 +10,14 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightInfoModel
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
-import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfoModel
+import com.minhhnn18898.letstravel.tripdetail.data.model.TripActivityInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.toAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.toFlightInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.toFlightInfoModel
+import com.minhhnn18898.letstravel.tripdetail.data.model.toHotelInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.toHotelInfoModel
+import com.minhhnn18898.letstravel.tripdetail.data.model.toTripActivityInfo
+import com.minhhnn18898.letstravel.tripdetail.data.model.toTripActivityModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -26,7 +30,8 @@ class TripDetailRepository @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val airportInfoDao: AirportInfoDao,
     private val flightInfoDao: FlightInfoDao,
-    private val hotelInfoDao: HotelInfoDao
+    private val hotelInfoDao: HotelInfoDao,
+    private val activityInfoDao: ActivityInfoDao
 ) {
 
     suspend fun insertFlightInfo(
@@ -139,6 +144,46 @@ class TripDetailRepository @Inject constructor(
             throw ExceptionDeleteHotelInfo()
         }
     }
+
+    suspend fun insertActivityInfo(tripId: Long, activityInfo: TripActivityInfo) = withContext(ioDispatcher) {
+        val tripActivityInfoModel = activityInfo
+            .toTripActivityModel(tripId)
+            .copy(tripId = 0L)
+
+        val resultCode = activityInfoDao.insert(tripActivityInfoModel)
+        if(resultCode == -1L) {
+            throw ExceptionInsertTripActivityInfo()
+        }
+    }
+
+    suspend fun updateActivityInfo(tripId: Long, activityInfo: TripActivityInfo) = withContext(ioDispatcher) {
+        val tripActivityInfoModel = activityInfo.toTripActivityModel(tripId)
+        val result = activityInfoDao.update(tripActivityInfoModel)
+        if(result <= 0L) {
+            throw ExceptionUpdateTripActivityInfo()
+        }
+    }
+
+    suspend fun deleteActivityInfo(activityId: Long) = withContext(ioDispatcher) {
+        val result = activityInfoDao.delete(activityId)
+
+        if(result <= 0) {
+            throw ExceptionDeleteTripActivityInfo()
+        }
+    }
+
+    fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>> =
+        activityInfoDao
+            .getTripActivities(tripId)
+            .map {
+                it.toTripActivityInfo()
+            }
+
+    suspend fun getActivityInfo(activityId: Long): TripActivityInfo = withContext(ioDispatcher) {
+        activityInfoDao
+            .getTripActivity(activityId)
+            .toTripActivityInfo()
+    }
 }
 
 private fun Map<String, AirportInfoModel>.findAirportInfo(code: String): AirportInfoModel {
@@ -157,17 +202,3 @@ private fun Flow<List<FlightInfoModel>>.mapWithAirportInfo(airportFlow: Flow<Lis
         }
     }
 
-private fun List<HotelInfoModel>.toHotelInfo(): List<HotelInfo> {
-    return this.map { it.toHotelInfo() }
-}
-
-private fun HotelInfoModel.toHotelInfo(): HotelInfo {
-    return HotelInfo(
-        hotelId = hotelId,
-        hotelName = hotelName,
-        address = address,
-        checkInDate = checkInDate,
-        checkOutDate = checkOutDate,
-        price = price
-    )
-}

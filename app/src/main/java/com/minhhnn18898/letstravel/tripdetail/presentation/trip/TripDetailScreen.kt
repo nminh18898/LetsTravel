@@ -155,7 +155,13 @@ fun TripDetailScreen(
             title = CommonStringRes.activities,
             modifier = modifier) {
 
-            TripActivityScreen(modifier = modifier)
+            TripActivityScreen(
+                activityInfoContentState = viewModel.activityInfoContentState,
+                onClickCreateTripActivity = {
+
+                },
+                modifier = modifier
+            )
         }
 
         Spacer(Modifier.height(16.dp))

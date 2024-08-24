@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripdetail.presentation.trip.AirportDisplayInfo
 import com.minhhnn18898.letstravel.tripdetail.presentation.trip.FlightDisplayInfo
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
@@ -79,7 +80,7 @@ fun FlightDetailBody(
 
         if(isEmpty) {
             DefaultEmptyView(
-                text = stringResource(id = CommonStringRes.add_your_flights),
+                text = stringResource(id = R.string.add_your_flights),
                 modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth(),

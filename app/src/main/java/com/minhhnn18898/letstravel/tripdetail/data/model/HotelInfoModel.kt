@@ -57,3 +57,18 @@ fun HotelInfo.toHotelInfoModel(tripId: Long): HotelInfoModel {
         checkOutDate = this.checkOutDate
     )
 }
+
+fun List<HotelInfoModel>.toHotelInfo(): List<HotelInfo> {
+    return this.map { it.toHotelInfo() }
+}
+
+fun HotelInfoModel.toHotelInfo(): HotelInfo {
+    return HotelInfo(
+        hotelId = hotelId,
+        hotelName = hotelName,
+        address = address,
+        checkInDate = checkInDate,
+        checkOutDate = checkOutDate,
+        price = price
+    )
+}

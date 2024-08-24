@@ -15,4 +15,10 @@
     <string name="error_can_not_load_trip">Can not load trip info. Please try again.</string>
     <string name="error_can_not_update_trip">Can not update trip info. Please try again.</string>
     <string name="error_can_not_delete_trip">Can not delete trip info. Please try again.</string>
+    <string name="add_your_flights">Add your flights</string>
+    <string name="edit_flight_info">Edit flight info</string>
+    <string name="add_your_hotels">Add your hotels</string>
+    <string name="edit_hotel_info">Edit hotel info</string>
+    <string name="add_your_activities">Add your activities</string>
+    <string name="edit_activity_info">Edit activity info</string>
 </resources>

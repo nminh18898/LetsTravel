@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.tripdetail.domain.flight
+package com.minhhnn18898.letstravel.tripdetail.domain.activity
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
@@ -8,15 +8,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class DeleteFlightInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<DeleteFlightInfoUseCase.Param, Flow<Result<Unit>>>() {
+class DeleteTripActivityInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<DeleteTripActivityInfoUseCase.Param, Flow<Result<Unit>>>() {
 
     override fun run(params: Param): Flow<Result<Unit>> = flow {
         emit(Result.Loading)
-        repository.deleteFlightInfo(params.flightId)
+        repository.deleteActivityInfo(params.activityId)
         emit(Result.Success(Unit))
     }.catch {
         emit(Result.Error(it))
     }
 
-    class Param(val flightId: Long)
+    class Param(val activityId: Long)
 }

@@ -18,15 +18,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.letstravel.tripdetail.presentation.trip.TripActivityDisplayInfo
 import com.minhhnn18898.ui_components.R
+import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
+import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
-fun TripActivityScreen(modifier: Modifier) {
+fun TripActivityScreen(
+    activityInfoContentState: UiState<List<TripActivityDisplayInfo>, UiState.UndefinedError>,
+    onClickCreateTripActivity: () -> Unit,
+    modifier: Modifier
+) {
 
+    if(activityInfoContentState is UiState.Loading) {
+
+    } else if(activityInfoContentState is UiState.Error) {
+        ErrorTextView(
+            error = stringResource(id = com.minhhnn18898.core.R.string.can_not_load_info),
+            modifier = modifier
+        )
+    } else if(activityInfoContentState is UiState.Success) {
+        val isEmpty = activityInfoContentState.data.isEmpty()
+
+        if(isEmpty) {
+            DefaultEmptyView(
+                text = stringResource(id = com.minhhnn18898.letstravel.R.string.add_your_activities),
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth(),
+                onClick = onClickCreateTripActivity
+            )
+        } else {
+
+        }
+    }
+}
+
+@Composable
+private fun ActivityItemView(modifier: Modifier) {
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
 
         Row(
@@ -45,7 +80,7 @@ fun TripActivityScreen(modifier: Modifier) {
             )
 
             Spacer(modifier = Modifier.width(16.dp))
-            
+
             Column {
                 Text(
                     text = "Chao Phraya Princess Dinner Cruise",
@@ -56,7 +91,7 @@ fun TripActivityScreen(modifier: Modifier) {
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
-                
+
                 Text(
                     text = "Embark on an unforgettable evening with the Chao Phraya Princess Dinner Cruise departing from ICONSIAM Pier. This world-class dinner cruise takes you on a 2-hour journey along the Chao Phraya River, offering breathtaking views of Bangkok’s iconic landmarks, including the Temple of Dawn and The Grand Palace, beautifully illuminated under the night sky.",
                     style = typography.bodyMedium,

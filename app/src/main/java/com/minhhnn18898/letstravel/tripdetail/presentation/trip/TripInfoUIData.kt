@@ -27,3 +27,12 @@ data class HotelDisplayInfo(
     val duration: Int,
     val price: String,
 )
+
+data class TripActivityDisplayInfo(
+    val activityId: Long,
+    val title: String,
+    val description: String,
+    val date: String,
+    val duration: Int,
+    val price: String,
+)
