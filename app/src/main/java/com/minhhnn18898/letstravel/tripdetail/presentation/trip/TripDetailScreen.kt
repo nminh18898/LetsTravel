@@ -1,5 +1,6 @@
 package com.minhhnn18898.letstravel.tripdetail.presentation.trip
 
+import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.RepeatMode
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,7 +50,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.architecture.ui.UiState
-import com.minhhnn18898.core.utils.isNotBlankOrEmpty
+import com.minhhnn18898.core.utils.StringUtils
+import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.homescreen.SectionCtaData
 import com.minhhnn18898.letstravel.tripdetail.presentation.activity.renderTripActivitySection
@@ -58,6 +61,9 @@ import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDis
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
+import com.minhhnn18898.ui_components.base_components.PieChartData
+import com.minhhnn18898.ui_components.base_components.PieChartItem
+import com.minhhnn18898.ui_components.base_components.PieChartWithLabel
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
@@ -113,7 +119,7 @@ fun TripDetailScreen(
         item {
             EstimatedBudgetSection(
                 modifier = modifier,
-                estimateBudget = viewModel.estimateBudgetDisplay
+                budgetDisplay = viewModel.budgetDisplay
             )
         }
 
@@ -209,38 +215,49 @@ private fun TripDetailHeader(
 @Composable
 private fun EstimatedBudgetSection(
     modifier: Modifier = Modifier,
-    estimateBudget: String) {
+    budgetDisplay: BudgetDisplay) {
 
-   if(estimateBudget.isNotBlankOrEmpty()) {
-       Row(
-           modifier = modifier.padding(horizontal = 16.dp),
-           verticalAlignment = Alignment.CenterVertically
-       ) {
-           Icon(
-               painter = painterResource(R.drawable.price_change_24),
-               contentDescription = "",
-               tint = MaterialTheme.colorScheme.primary
-           )
+    if(budgetDisplay.total > 0) {
+        Column {
+            Row(
+                modifier = modifier.padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.price_change_24),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary
+                )
 
-           Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-           Text(
-               text = "${stringResource(CommonStringRes.estimated_budget)}:",
-               style = typography.titleMedium,
-               color = MaterialTheme.colorScheme.primary,
-               maxLines = 1
-           )
+                Text(
+                    text = stringResource(CommonStringRes.estimated_budget),
+                    style = typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        Box(
+            modifier = modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            val pieChartItems = getPieChartItems(context = LocalContext.current, budgetDisplay)
+            PieChartWithLabel(
+                chartSize = 132.dp,
+                data = PieChartData(
+                    items = pieChartItems,
+                    title = budgetDisplay.total.formatWithCommas()
+                )
+            )
+        }
 
-           Spacer(modifier = Modifier.width(8.dp))
-
-           Text(
-               text = estimateBudget,
-               style = typography.titleMedium,
-               color = MaterialTheme.colorScheme.tertiary,
-               maxLines = 1
-           )
-       }
-   }
+        Spacer(modifier = Modifier.height(8.dp))
+    }
 }
 
 @Composable
@@ -398,4 +415,48 @@ private fun DetailSection(
 
         content()
     }
+}
+
+private fun getBudgetLabel(context: Context, type: BudgetType): String {
+    return when(type) {
+        BudgetType.FLIGHT -> StringUtils.getString(context, id = CommonStringRes.flight)
+        BudgetType.HOTEL -> StringUtils.getString(context, id = CommonStringRes.hotel)
+        BudgetType.ACTIVITY -> StringUtils.getString(context, id = CommonStringRes.activity)
+    }
+}
+
+private val pieChartColor = mutableListOf(
+    Color(0xFF4CB140),
+    Color(0xFF5752D1),
+    Color(0xFFF4C145),
+    Color(0xFFEF9234),
+    Color(0xFF519DE9),
+    Color(0xFFC9190B)
+)
+
+fun getPieChartColor(index: Int): Color {
+    if(index in 0 until pieChartColor.size) {
+        return pieChartColor[index]
+    }
+
+    return Color(0xFFFFA600)
+}
+
+fun getPieChartItems(context: Context, budgetDisplay: BudgetDisplay): List<PieChartItem> {
+    val pieChartItems = mutableListOf<PieChartItem>()
+
+    for(i in budgetDisplay.portions.indices) {
+        val portion = budgetDisplay.portions[i]
+        val percent = (portion.price.toFloat() / budgetDisplay.total * 100)
+        pieChartItems.add(
+            PieChartItem(
+                color = getPieChartColor(i),
+                value = portion.price.toFloat(),
+                percent = percent,
+                label = getBudgetLabel(context, portion.type)
+            )
+        )
+    }
+
+    return pieChartItems
 }

@@ -48,3 +48,19 @@ data class TripActivityDateGroupHeader(
     val dateOrdering: Int,
     @DrawableRes val resId: Int
 ): ITripActivityDisplay
+
+enum class BudgetType {
+    FLIGHT,
+    HOTEL,
+    ACTIVITY
+}
+
+data class BudgetDisplay(
+    val total: Long,
+    val portions: List<BudgetPortion>
+)
+
+data class BudgetPortion(
+    val type: BudgetType,
+    val price: Long
+)

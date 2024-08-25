@@ -10,6 +10,7 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.BaseDateTimeFormatter
+import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
@@ -60,6 +61,9 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private var estimateBudget: MutableMap<BudgetType, Long> = mutableMapOf()
     var estimateBudgetDisplay by mutableStateOf("")
+        private set
+
+    var budgetDisplay by mutableStateOf(BudgetDisplay(total = 0, portions = emptyList()))
         private set
 
     private val _eventChannel = Channel<Event>()
@@ -173,10 +177,6 @@ class TripDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private fun Long.formatWithCommas(): String {
-        return "%,d".format(this)
-    }
-
     private fun calculateFlightDuration(from: Long, to: Long): String {
         return baseDateTimeFormatter.getDurationInHourMinuteDisplayString(from, to)
     }
@@ -203,12 +203,10 @@ class TripDetailScreenViewModel @Inject constructor(
     private fun onUpdateBudgetTotal() {
         val total = estimateBudget.getTotal()
         estimateBudgetDisplay = if(total > 0) total.formatWithCommas() else ""
-    }
-
-    enum class BudgetType {
-        FLIGHT,
-        HOTEL,
-        ACTIVITY
+        budgetDisplay = BudgetDisplay(
+            total = total,
+            portions = estimateBudget.map { BudgetPortion(it.key, it.value) }
+        )
     }
 
     sealed class Event {
@@ -275,6 +273,6 @@ private fun List<TripActivityInfo>.calculateActivityTotalPrices(): Long {
     return this.sumOf { it.price }
 }
 
-private fun MutableMap<TripDetailScreenViewModel.BudgetType, Long>.getTotal(): Long {
+private fun MutableMap<BudgetType, Long>.getTotal(): Long {
     return this.values.sumOf { it }
 }

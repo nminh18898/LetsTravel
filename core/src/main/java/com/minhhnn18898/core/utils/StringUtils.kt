@@ -19,3 +19,7 @@ fun String.isValidEmail(): Boolean {
     val emailPattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
     return emailPattern.matcher(this).matches()
 }
+
+fun Long.formatWithCommas(): String {
+    return "%,d".format(this)
+}
