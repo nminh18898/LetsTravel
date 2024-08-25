@@ -11,6 +11,8 @@ open class TripActivityDateTimeFormatter @Inject constructor(private val baseDat
 
     private val defaultFormatter = DateTimeFormatter.ofPattern("EE, dd MMM, yyyy", Locale.getDefault())
 
+    private val dateSeparatorFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
+
     fun getHourMinuteFormatted(millis: Long):String {
         val localDateTime = baseDateTimeFormatter.convertMillisToLocalDateTime(millis)
         return baseDateTimeFormatter.formatTime(localDateTime.hour, localDateTime.minute)
@@ -18,6 +20,10 @@ open class TripActivityDateTimeFormatter @Inject constructor(private val baseDat
 
     fun millisToDateString(millis: Long): String {
         return baseDateTimeFormatter.millisToDateString(millis, defaultFormatter)
+    }
+
+    fun getFormattedDateSeparatorString(millis: Long): String {
+        return baseDateTimeFormatter.millisToDateString(millis, dateSeparatorFormatter)
     }
 
     fun convertToLocalDateTimeMillis(dateMillis: Long, hour: Int, minute: Int): Long {

@@ -1,6 +1,7 @@
 package com.minhhnn18898.letstravel.tripdetail.data.repo
 
 import com.minhhnn18898.core.di.IODispatcher
+import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.letstravel.tripdetail.data.dao.ActivityInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.letstravel.tripdetail.data.dao.FlightInfoDao
@@ -31,7 +32,8 @@ class TripDetailRepository @Inject constructor(
     private val airportInfoDao: AirportInfoDao,
     private val flightInfoDao: FlightInfoDao,
     private val hotelInfoDao: HotelInfoDao,
-    private val activityInfoDao: ActivityInfoDao
+    private val activityInfoDao: ActivityInfoDao,
+    private val baseDateTimeFormatter: BaseDateTimeFormatter
 ) {
 
     suspend fun insertFlightInfo(
@@ -172,12 +174,24 @@ class TripDetailRepository @Inject constructor(
         }
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>> =
         activityInfoDao
             .getTripActivities(tripId)
             .map {
                 it.toTripActivityInfo()
             }
+
+    fun getSortedActivityInfo(tripId: Long): Flow<Map<Long?, List<TripActivityInfo>>> {
+        return getAllActivityInfo(tripId)
+            .map { listActivity ->
+                listActivity.sortedBy {
+                    it.timeFrom
+                }.groupBy {
+                    if(it.timeFrom != null) baseDateTimeFormatter.getStartOfDayInMillis(it.timeFrom) else null
+                }
+            }
+    }
 
     suspend fun getActivityInfo(activityId: Long): TripActivityInfo = withContext(ioDispatcher) {
         activityInfoDao

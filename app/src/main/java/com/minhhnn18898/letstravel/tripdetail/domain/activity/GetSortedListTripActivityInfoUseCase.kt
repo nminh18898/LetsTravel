@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetListTripActivityInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<GetListTripActivityInfoUseCase.Param, Flow<Result<Flow<List<TripActivityInfo>>>>>() {
+class GetSortedListTripActivityInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<GetSortedListTripActivityInfoUseCase.Param, Flow<Result<Flow<Map<Long?, List<TripActivityInfo>>>>>>() {
 
-    override fun run(params: Param): Flow<Result<Flow<List<TripActivityInfo>>>> = flow {
+    override fun run(params: Param): Flow<Result<Flow<Map<Long?, List<TripActivityInfo>>>>> = flow {
         emit(Result.Loading)
-        val result = repository.getAllActivityInfo(params.tripId)
+        val result = repository.getSortedActivityInfo(params.tripId)
         emit(Result.Success(result))
     }.catch {
         emit(Result.Error(it))

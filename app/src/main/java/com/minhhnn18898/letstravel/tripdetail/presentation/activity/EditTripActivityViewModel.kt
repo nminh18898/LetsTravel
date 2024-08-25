@@ -216,26 +216,32 @@ class EditTripActivityViewModel @Inject constructor(
     )
 
     private fun EditTripActivityUiState.toActivityInfo(): TripActivityInfo {
+        val timeFrom: Long? = if(this.date == null)  null else getDateTimeMillis(this.date, this.timeFrom)
+        val timeTo: Long? = if(this.date == null)  null else getDateTimeMillis(this.date, this.timeTo)
+
         return TripActivityInfo(
             activityId = activityId,
             title = this.name,
             description = this.description,
             photo = this.photo,
-            timeFrom = getDateTimeMillis(this.date ?: 0L, this.timeFrom),
-            timeTo = getDateTimeMillis(this.date ?: 0L, this.timeTo),
+            timeFrom = timeFrom,
+            timeTo = timeTo,
             price = this.prices.toLongOrNull() ?: 0L
         )
     }
 
     private fun TripActivityInfo.toTripActivityUiState(): EditTripActivityUiState {
+        val timeFrom = if(this.timeFrom != null) dateTimeFormatter.getHourMinute(this.timeFrom) else Pair(0, 0)
+        val timeTo = if(this.timeTo != null) dateTimeFormatter.getHourMinute(this.timeTo) else Pair(0, 0)
+
         return EditTripActivityUiState(
             photo = this.photo,
             name = this.title,
             description = this.description,
             prices = this.price.toString(),
             date = this.timeFrom,
-            timeFrom = dateTimeFormatter.getHourMinute(this.timeFrom),
-            timeTo = dateTimeFormatter.getHourMinute(this.timeTo)
+            timeFrom = timeFrom,
+            timeTo = timeTo
         )
     }
 

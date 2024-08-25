@@ -1,8 +1,10 @@
 package com.minhhnn18898.letstravel.tripdetail.presentation.activity
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,10 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,15 +29,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.core.utils.isNotBlankOrEmpty
+import com.minhhnn18898.letstravel.tripdetail.presentation.trip.ITripActivityDisplay
+import com.minhhnn18898.letstravel.tripdetail.presentation.trip.TripActivityDateGroupHeader
 import com.minhhnn18898.letstravel.tripdetail.presentation.trip.TripActivityDisplayInfo
 import com.minhhnn18898.ui_components.R
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
+import com.minhhnn18898.core.R.string as CommonStringRes
 
 fun LazyListScope.renderTripActivitySection(
-    activityInfoContentState: UiState<List<TripActivityDisplayInfo>, UiState.UndefinedError>,
+    activityInfoContentState: UiState<List<ITripActivityDisplay>, UiState.UndefinedError>,
     onClickCreateTripActivity: () -> Unit,
     onClickActivityItem: (Long) -> Unit,
     modifier: Modifier
@@ -66,17 +70,26 @@ fun LazyListScope.renderTripActivitySection(
 
         } else {
             items(activityInfoContentState.data) { displayInfo ->
-                ActivityItemView(
-                    activityDisplayInfo = displayInfo,
-                    onClick = onClickActivityItem
-                )
+                if(displayInfo is TripActivityDateGroupHeader) {
+                    ActivityDateSeparatorView(
+                        title = displayInfo.title,
+                        dateOrdering = displayInfo.dateOrdering,
+                        resId = displayInfo.resId
+                    )
+                }
+                else if(displayInfo is TripActivityDisplayInfo) {
+                    ActivityItemView(
+                        activityDisplayInfo = displayInfo,
+                        onClick = onClickActivityItem
+                    )
+                }
             }
 
             if(activityInfoContentState.data.size >= 3) {
                 item {
                     CreateNewDefaultButton(
                         text = stringResource(id = com.minhhnn18898.letstravel.R.string.add_new_activity),
-                        modifier = modifier.padding(start = 16.dp, top = 8.dp),
+                        modifier = modifier.padding(start = 16.dp),
                         onClick = onClickCreateTripActivity
                     )
                 }
@@ -84,6 +97,34 @@ fun LazyListScope.renderTripActivitySection(
         }
     }
 
+}
+
+@Composable
+private fun ActivityDateSeparatorView(
+    title: String,
+    dateOrdering: Int,
+    @DrawableRes resId: Int,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        Image(
+            painter = painterResource(resId),
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(4f)
+        )
+
+        Text(
+            text = "${stringResource(id = CommonStringRes.day)} $dateOrdering: $title",
+            style = typography.titleMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
 }
 
 @Composable
@@ -100,102 +141,97 @@ private fun ActivityItemView(
             }
     ) {
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val photoPath = activityDisplayInfo.photo
+        ActivityItemDescription(
+            activityDisplayInfo = activityDisplayInfo,
+            modifier = Modifier.fillMaxWidth()
+        )
 
-            if(photoPath.isEmpty()) {
-                Image(
-                    painter = painterResource(com.minhhnn18898.letstravel.R.drawable.default_activity_photo),
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(132.dp)
-                        .aspectRatio(1.5f)
-                )
-            } else {
-                AsyncImage(
-                    model = photoPath,
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .width(132.dp)
-                        .aspectRatio(1.5f),
-                    placeholder = painterResource(id = R.drawable.image_placeholder),
-                    error = painterResource(id = R.drawable.empty_image_bg)
-                )
-            }
+        Spacer(modifier = Modifier.height(12.dp))
 
-            Spacer(modifier = Modifier.width(16.dp))
+        ActivityItemFooter(
+            activityDisplayInfo = activityDisplayInfo,
+            modifier = Modifier.fillMaxWidth()
+        )
 
-            Column {
-                Text(
-                    text = activityDisplayInfo.title,
-                    style = typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+    }
+}
 
-                Spacer(modifier = Modifier.height(4.dp))
+@Composable
+private fun ActivityItemDescription(
+    activityDisplayInfo: TripActivityDisplayInfo,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val photoPath = activityDisplayInfo.photo
 
-                Text(
-                    text = activityDisplayInfo.description,
-                    style = typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    maxLines = 5,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+        if(photoPath.isEmpty()) {
+            Image(
+                painter = painterResource(com.minhhnn18898.letstravel.R.drawable.default_empty_photo_trip_activity),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(132.dp)
+                    .aspectRatio(1.5f)
+            )
+        } else {
+            AsyncImage(
+                model = photoPath,
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(132.dp)
+                    .aspectRatio(1.5f),
+                placeholder = painterResource(id = R.drawable.image_placeholder),
+                error = painterResource(id = R.drawable.empty_image_bg)
+            )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+        Column {
+            Text(
+                text = activityDisplayInfo.title,
+                style = typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
-            Column(modifier = Modifier.wrapContentSize()) {
+            Spacer(modifier = Modifier.height(4.dp))
 
-                Text(
-                    text = activityDisplayInfo.date,
-                    style = typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+            Text(
+                text = activityDisplayInfo.description,
+                style = typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary,
+                maxLines = 5,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
 
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    modifier = Modifier
-                        .width(60.dp)
-                        .padding(vertical = 8.dp)
-                )
+@Composable
+private fun ActivityItemFooter(
+    activityDisplayInfo: TripActivityDisplayInfo,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(id = com.minhhnn18898.letstravel.R.drawable.departure_board_24),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
+        if(activityDisplayInfo.date.isNotBlankOrEmpty()) {
+            ActivityScheduleInfo(
+                startTime = activityDisplayInfo.startTime,
+                endTime =  activityDisplayInfo.endTime
+            )
+        }
 
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text(
-                        text = "${activityDisplayInfo.startTime} - ${activityDisplayInfo.endTime}",
-                        style = typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-
+        if(activityDisplayInfo.price.isNotBlankOrEmpty()) {
             Text(
                 text = activityDisplayInfo.price,
                 style = typography.bodyLarge,
@@ -204,6 +240,34 @@ private fun ActivityItemView(
                 overflow = TextOverflow.Ellipsis
             )
         }
+    }
+}
 
+@Composable
+private fun ActivityScheduleInfo(
+    startTime: String,
+    endTime: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(id = com.minhhnn18898.letstravel.R.drawable.departure_board_24),
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.tertiary
+        )
+
+        Spacer(modifier = Modifier.width(4.dp))
+
+        Text(
+            text = "$startTime - $endTime",
+            style = typography.bodyMedium,
+            color = MaterialTheme.colorScheme.tertiary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }

@@ -1,5 +1,7 @@
 package com.minhhnn18898.letstravel.tripdetail.presentation.trip
 
+import androidx.annotation.DrawableRes
+
 data class FlightDisplayInfo(
     val flightId: Long,
     val flightNumber: String,
@@ -28,6 +30,8 @@ data class HotelDisplayInfo(
     val price: String,
 )
 
+interface ITripActivityDisplay
+
 data class TripActivityDisplayInfo(
     val activityId: Long,
     val title: String,
@@ -37,4 +41,10 @@ data class TripActivityDisplayInfo(
     val startTime: String,
     val endTime: String,
     val price: String,
-)
+): ITripActivityDisplay
+
+data class TripActivityDateGroupHeader(
+    val title: String,
+    val dateOrdering: Int,
+    @DrawableRes val resId: Int
+): ITripActivityDisplay

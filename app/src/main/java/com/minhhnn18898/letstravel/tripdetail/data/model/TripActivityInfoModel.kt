@@ -29,9 +29,9 @@ data class TripActivityInfoModel(
     @ColumnInfo("photo")
     val photo: String,
     @ColumnInfo("time_from")
-    val timeFrom: Long,
+    val timeFrom: Long?,
     @ColumnInfo("time_to")
-    val timeTo: Long,
+    val timeTo: Long?,
     @ColumnInfo("price")
     val price: Long,
 
@@ -45,8 +45,8 @@ data class TripActivityInfo(
     val title: String,
     val description: String,
     val photo: String,
-    val timeFrom: Long,
-    val timeTo: Long,
+    val timeFrom: Long?,
+    val timeTo: Long?,
     val price: Long,
 )
 

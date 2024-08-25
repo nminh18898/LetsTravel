@@ -14,13 +14,14 @@ import com.minhhnn18898.letstravel.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.letstravel.tripdetail.data.model.TripActivityInfo
-import com.minhhnn18898.letstravel.tripdetail.domain.activity.GetListTripActivityInfoUseCase
+import com.minhhnn18898.letstravel.tripdetail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.domain.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.letstravel.tripdetail.presentation.activity.TripActivityDateTimeFormatter
 import com.minhhnn18898.letstravel.tripinfo.data.model.TripInfo
 import com.minhhnn18898.letstravel.tripinfo.domain.GetTripInfoUseCase
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.CoverDefaultResourceProvider
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripActivityDateSeparatorResourceProvider
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,13 +34,14 @@ import javax.inject.Inject
 @HiltViewModel
 class TripDetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val defaultResourceProvider: CoverDefaultResourceProvider,
+    private val coverResourceProvider: CoverDefaultResourceProvider,
+    private val activityDateSeparatorResourceProvider: TripActivityDateSeparatorResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,
     private val getListFlightInfoUseCase: GetListFlightInfoUseCase,
     private val baseDateTimeFormatter: BaseDateTimeFormatter,
     private val activityDateTimeFormatter: TripActivityDateTimeFormatter,
     private val getListHotelInfoUseCase: GetListHotelInfoUseCase,
-    private val getListTripActivityInfoUseCase: GetListTripActivityInfoUseCase
+    private val getSortedListTripActivityInfoUseCase: GetSortedListTripActivityInfoUseCase
 ): ViewModel() {
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -53,7 +55,7 @@ class TripDetailScreenViewModel @Inject constructor(
     var hotelInfoContentState: UiState<List<HotelDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set
 
-    var activityInfoContentState: UiState<List<TripActivityDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
+    var activityInfoContentState: UiState<List<ITripActivityDisplay>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set
 
     private var estimateBudget: MutableMap<BudgetType, Long> = mutableMapOf()
@@ -85,7 +87,7 @@ class TripDetailScreenViewModel @Inject constructor(
     private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo?>) {
         flowData.collect { item ->
             if(item != null) {
-                tripInfoContentState = UiState.Success(item.toTripItemDisplay(defaultResourceProvider))
+                tripInfoContentState = UiState.Success(item.toTripItemDisplay(coverResourceProvider))
             }
             else {
                 _eventChannel.send(Event.CloseScreen)
@@ -137,7 +139,7 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private fun loadActivityInfo(tripId: Long) {
         viewModelScope.launch {
-            getListTripActivityInfoUseCase.execute(GetListTripActivityInfoUseCase.Param(tripId))?.collect {
+            getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId))?.collect {
                 when(it) {
                     is Result.Loading -> activityInfoContentState = UiState.Loading
                     is Result.Success -> handleResultLoadActivityInfo(it.data)
@@ -147,10 +149,27 @@ class TripDetailScreenViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleResultLoadActivityInfo(flowData: Flow<List<TripActivityInfo>>) {
+    private suspend fun handleResultLoadActivityInfo(flowData: Flow<Map<Long?, List<TripActivityInfo>>>) {
         flowData.collect { item ->
-            activityInfoContentState = UiState.Success(item.map { it.toActivityDisplayInfo() })
-            onUpdateActivityBudget(item)
+            val itemRender = mutableListOf<ITripActivityDisplay>()
+            var countDay = 1
+            item.forEach { (date, activities) ->
+                if (date != null) {
+                    itemRender.add(
+                        TripActivityDateGroupHeader(
+                            title = activityDateTimeFormatter.getFormattedDateSeparatorString(date),
+                            dateOrdering = countDay,
+                            resId = activityDateSeparatorResourceProvider.getResource(countDay)
+                        )
+                    )
+                    countDay++
+                }
+
+                itemRender.addAll(activities.toActivityDisplayInfo())
+            }
+
+            activityInfoContentState = UiState.Success(itemRender)
+            onUpdateActivityBudget(item.values.flatten())
         }
     }
 
@@ -223,16 +242,24 @@ class TripDetailScreenViewModel @Inject constructor(
     }
 
     private fun TripActivityInfo.toActivityDisplayInfo(): TripActivityDisplayInfo {
+        val dateString = if(this.timeFrom != null) activityDateTimeFormatter.millisToDateString(this.timeFrom) else ""
+        val startTimeString =  if(this.timeFrom != null) activityDateTimeFormatter.getHourMinuteFormatted(this.timeFrom) else ""
+        val endTimeString = if(this.timeTo != null) activityDateTimeFormatter.getHourMinuteFormatted(this.timeTo) else ""
+
         return TripActivityDisplayInfo(
             activityId = this.activityId,
             title = this.title,
             photo = this.photo,
             description = this.description,
-            date = activityDateTimeFormatter.millisToDateString(this.timeFrom),
-            startTime = activityDateTimeFormatter.getHourMinuteFormatted(this.timeFrom),
-            endTime = activityDateTimeFormatter.getHourMinuteFormatted(this.timeTo),
-            price = this.price.formatWithCommas(),
+            date = dateString,
+            startTime = startTimeString,
+            endTime = endTimeString,
+            price = if(this.price > 0) this.price.formatWithCommas() else "",
         )
+    }
+
+    private fun List<TripActivityInfo>.toActivityDisplayInfo(): List<TripActivityDisplayInfo> {
+        return this.map { it.toActivityDisplayInfo() }
     }
 }
 

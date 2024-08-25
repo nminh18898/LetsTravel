@@ -280,7 +280,7 @@ private fun ActivityPhoto(
             }
         ) {
             Image(
-                painter = painterResource(R.drawable.default_activity_photo),
+                painter = painterResource(R.drawable.default_empty_photo_trip_activity),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

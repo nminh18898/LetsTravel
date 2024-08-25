@@ -29,7 +29,7 @@ open class BaseDateTimeFormatter @Inject constructor() {
     }
 
     private fun convertMillisToLocalDateWithFormatter(date: LocalDate, dateTimeFormatter: DateTimeFormatter): LocalDate {
-        //Convert the date to a long in millis using a dateformmater
+        //Convert the date to a long in millis using a date formatter
         val dateInMillis = LocalDate.parse(date.format(dateTimeFormatter), dateTimeFormatter)
             .atStartOfDay(ZoneId.systemDefault())
             .toInstant()
@@ -103,5 +103,12 @@ open class BaseDateTimeFormatter @Inject constructor() {
     fun getNightDuration(from: Long, to: Long): Long {
         val duration = (to - from).toDuration(DurationUnit.MILLISECONDS)
         return duration.inWholeDays
+    }
+
+    fun getStartOfDayInMillis(millis: Long): Long {
+        return convertMillisToLocalDate(millis)
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
     }
 }
