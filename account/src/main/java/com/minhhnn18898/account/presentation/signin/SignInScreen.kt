@@ -23,10 +23,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.repeatOnLifecycle
-import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.account.R
 import com.minhhnn18898.account.base.EmailField
 import com.minhhnn18898.account.base.PasswordTextField
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
@@ -124,7 +124,7 @@ fun CreateNewAccountButton(
     ) {
         CreateNewDefaultButton(
             text = stringResource(id = CommonStringRes.create_new_account),
-            modifier = Modifier,
+            modifier = Modifier.padding(start = 8.dp, top = 8.dp),
             onClick = onClick)
     }
 }

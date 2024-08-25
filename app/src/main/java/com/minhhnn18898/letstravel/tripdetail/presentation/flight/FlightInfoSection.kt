@@ -97,7 +97,7 @@ fun FlightDetailBody(
 
             CreateNewDefaultButton(
                 text = stringResource(id = CommonStringRes.add_new_flight),
-                modifier = modifier,
+                modifier = modifier.padding(start = 16.dp, top = 8.dp),
                 onClick = onClickCreateNewFlight
             )
         }
@@ -165,18 +165,16 @@ fun FlightDetailBodyPager(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp)
-                .clickable {
-                    onClickFlightInfoItem(pageInfo.flightId)
-                }
+
         ) {
             Card(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 3.dp
-                )
+                elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                modifier = Modifier.clickable {
+                    onClickFlightInfoItem(pageInfo.flightId)
+                }
             ) {
-                Column(modifier = modifier.padding(
-                    vertical = 8.dp,
-                    horizontal = 16.dp)
+                Column(
+                    modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)
                 ) {
 
                     FlightBasicInfoRow(flightDisplayInfo = pageInfo)

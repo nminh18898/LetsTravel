@@ -110,7 +110,7 @@ private fun RequireSignInPromptForm(
             text = stringResource(id = CommonStringRes.sign_in),
             iconRes = CommonDrawableRes.login_24,
             onClick = onClickSignIn,
-            modifier = modifier
+            modifier = Modifier.padding(start = 8.dp, top = 8.dp)
         )
     }
 }

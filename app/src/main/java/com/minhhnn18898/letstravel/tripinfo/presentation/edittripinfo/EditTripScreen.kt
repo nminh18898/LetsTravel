@@ -159,7 +159,10 @@ fun EditTripScreen(
             }
         )
 
-        CreateNewDefaultButton(text = stringResource(id = com.minhhnn18898.core.R.string.pick_your_photo)) {
+        CreateNewDefaultButton(
+            text = stringResource(id = com.minhhnn18898.core.R.string.pick_your_photo),
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
             imagePicker.launch(
                 PickVisualMediaRequest(
                     ActivityResultContracts.PickVisualMedia.ImageOnly

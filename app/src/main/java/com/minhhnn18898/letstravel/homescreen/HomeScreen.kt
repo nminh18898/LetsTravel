@@ -45,9 +45,9 @@ import coil.compose.AsyncImage
 import com.minhhnn18898.discover.presentation.DiscoverScreen
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.CreateNewTripCtaDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.EmptySavedTripView
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripInfoItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripDefaultCoverDisplay
+import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripInfoItemDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.getResult
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.hasError
@@ -279,7 +279,7 @@ private fun TripItemCreateNewView(
 ) {
     CreateNewDefaultButton(
         text = stringResource(id = CommonStringRes.create_new_trip),
-        modifier = modifier,
+        modifier = modifier.padding(start = 8.dp, top = 8.dp),
         onClick = onClick
     )
 }

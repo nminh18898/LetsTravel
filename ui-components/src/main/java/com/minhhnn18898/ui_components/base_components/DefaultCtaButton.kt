@@ -25,7 +25,6 @@ fun DefaultCtaButton(
 ) {
     Row(
         modifier = modifier
-            .padding(start = 8.dp, top = 8.dp)
             .clickable {
                 onClick.invoke()
             },

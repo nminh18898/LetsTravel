@@ -96,7 +96,7 @@ fun HotelDetailBody(
 
             CreateNewDefaultButton(
                 text = stringResource(id = CommonStringRes.add_new_hotel),
-                modifier = modifier,
+                modifier = modifier.padding(start = 16.dp, top = 8.dp),
                 onClick = onClickCreateHotelInfo
             )
         }
@@ -163,18 +163,15 @@ fun HotelDetailBodyPager(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp)
-                .clickable {
-                    onClickHotelInfoItem.invoke(pageInfo.hotelId)
-                }
         ) {
             Card(
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 3.dp
-                )
+                elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                modifier = Modifier.clickable {
+                    onClickHotelInfoItem.invoke(pageInfo.hotelId)
+                }
             ) {
-                Column(modifier = modifier.padding(
-                    vertical = 8.dp,
-                    horizontal = 16.dp)
+                Column(
+                    modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)
                 ) {
 
                     HotelBasicInfo(hotelDisplayInfo = pageInfo)
@@ -217,7 +214,7 @@ fun HotelStayDurationInfo(
         modifier = modifier
     ) {
         HotelDateInfo(
-            title = "Check in",
+            title = stringResource(id = CommonStringRes.check_in),
             date = hotelDisplayInfo.checkInDate
         )
 
@@ -226,7 +223,7 @@ fun HotelStayDurationInfo(
         )
 
         HotelDateInfo(
-            title = "Check out",
+            title = stringResource(id = CommonStringRes.check_out),
             date = hotelDisplayInfo.checkOutDate
         )
     }

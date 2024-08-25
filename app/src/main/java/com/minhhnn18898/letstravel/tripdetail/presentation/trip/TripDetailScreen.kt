@@ -21,9 +21,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +51,7 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.homescreen.SectionCtaData
-import com.minhhnn18898.letstravel.tripdetail.presentation.activity.TripActivitySection
+import com.minhhnn18898.letstravel.tripdetail.presentation.activity.renderTripActivitySection
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.HotelDetailBody
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
@@ -106,42 +105,49 @@ fun TripDetailScreen(
         }
     }
 
-    Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
-    ) {
-        TripDetailHeader(modifier, viewModel.tripInfoContentState)
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item {
+            TripDetailHeader(modifier, viewModel.tripInfoContentState)
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        EstimatedBudgetSection(
-            modifier = modifier,
-            estimateBudget = viewModel.estimateBudgetDisplay
-        )
-
-        // Flight Info
-        DetailSection(
-            icon = R.drawable.flight_takeoff_24,
-            title = CommonStringRes.flights,
-            modifier = modifier) {
-
-            FlightDetailBody(
-                viewModel.flightInfoContentState,
+        item {
+            EstimatedBudgetSection(
                 modifier = modifier,
-                onClickCreateNewFlight = {
-                    onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, 0L)
-                },
-                onClickFlightInfoItem = { flightId ->
-                    onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, flightId)
-                }
+                estimateBudget = viewModel.estimateBudgetDisplay
             )
         }
 
-        // Hotel info
-        DetailSection(
-            icon = R.drawable.hotel_24,
-            title = CommonStringRes.hotels,
-            modifier = modifier) {
+        item {
+            DetailSection(
+                icon = R.drawable.flight_takeoff_24,
+                title = CommonStringRes.flights,
+                modifier = modifier
+            ) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                FlightDetailBody(
+                    viewModel.flightInfoContentState,
+                    modifier = modifier,
+                    onClickCreateNewFlight = {
+                        onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, 0L)
+                    },
+                    onClickFlightInfoItem = { flightId ->
+                        onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, flightId)
+                    }
+                )
+            }
+        }
+
+        item {
+            DetailSection(
+                icon = R.drawable.hotel_24,
+                title = CommonStringRes.hotels,
+                modifier = modifier
+            ) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 HotelDetailBody(
                     hotelInfoContentState = viewModel.hotelInfoContentState,
                     modifier = modifier,
@@ -152,34 +158,33 @@ fun TripDetailScreen(
                         onNavigateEditHotelScreen.invoke(viewModel.tripId, hotelId)
                     }
                 )
+            }
         }
 
-        // Activity info
-        DetailSection(
-            icon = R.drawable.nature_people_24,
-            title = CommonStringRes.activities,
-            sectionCtaData = SectionCtaData(
-                icon = CommonDrawableRes.add_24,
-                title = R.string.add_new_activity,
-                onClick = {
-                    onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
-                }
-            ),
-            modifier = modifier) {
-
-            TripActivitySection(
-                activityInfoContentState = viewModel.activityInfoContentState,
-                onClickCreateTripActivity = {
-                    onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
-                },
-                onClickActivityItem = { activityId ->
-                    onNavigateEditTripActivityScreen.invoke(viewModel.tripId, activityId)
-                },
-                modifier = modifier
-            )
+        item {
+            DetailSection(
+                icon = R.drawable.nature_people_24,
+                title = CommonStringRes.activities,
+                sectionCtaData = SectionCtaData(
+                    icon = CommonDrawableRes.add_24,
+                    title = com.minhhnn18898.core.R.string.add,
+                    onClick = {
+                        onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
+                    }
+                ),
+                modifier = modifier)
         }
 
-        Spacer(Modifier.height(16.dp))
+        renderTripActivitySection(
+            activityInfoContentState = viewModel.activityInfoContentState,
+            onClickCreateTripActivity = {
+                onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
+            },
+            onClickActivityItem = { activityId ->
+                onNavigateEditTripActivityScreen.invoke(viewModel.tripId, activityId)
+            },
+            modifier = modifier
+        )
     }
 }
 
@@ -323,6 +328,18 @@ private fun DetailSection(
     @DrawableRes icon: Int,
     @StringRes title: Int,
     modifier: Modifier = Modifier,
+    sectionCtaData: SectionCtaData? = null
+) {
+    DetailSection(icon, title, modifier, sectionCtaData) {
+        // empty content
+    }
+}
+
+@Composable
+private fun DetailSection(
+    @DrawableRes icon: Int,
+    @StringRes title: Int,
+    modifier: Modifier = Modifier,
     sectionCtaData: SectionCtaData? = null,
     content: @Composable () -> Unit
 ) {
@@ -332,7 +349,7 @@ private fun DetailSection(
             horizontalArrangement  =  Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
         ) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {

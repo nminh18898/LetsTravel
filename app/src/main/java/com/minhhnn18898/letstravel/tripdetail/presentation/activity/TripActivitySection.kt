@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,62 +31,59 @@ import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.letstravel.tripdetail.presentation.trip.TripActivityDisplayInfo
 import com.minhhnn18898.ui_components.R
+import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
 
-@Composable
-fun TripActivitySection(
+fun LazyListScope.renderTripActivitySection(
     activityInfoContentState: UiState<List<TripActivityDisplayInfo>, UiState.UndefinedError>,
     onClickCreateTripActivity: () -> Unit,
     onClickActivityItem: (Long) -> Unit,
     modifier: Modifier
 ) {
-
-    if(activityInfoContentState is UiState.Loading) {
-
-    } else if(activityInfoContentState is UiState.Error) {
-        ErrorTextView(
-            error = stringResource(id = com.minhhnn18898.core.R.string.can_not_load_info),
-            modifier = modifier
-        )
-    } else if(activityInfoContentState is UiState.Success) {
+    if(activityInfoContentState is UiState.Error) {
+        item {
+            ErrorTextView(
+                error = stringResource(id = com.minhhnn18898.core.R.string.can_not_load_info),
+                modifier = modifier
+            )
+        }
+    }
+    else if(activityInfoContentState is UiState.Success) {
         val isEmpty = activityInfoContentState.data.isEmpty()
 
         if(isEmpty) {
-            DefaultEmptyView(
-                text = stringResource(id = com.minhhnn18898.letstravel.R.string.add_your_activities),
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth(),
-                onClick = onClickCreateTripActivity
-            )
-        } else {
-            ListActivity(
-                listActivity = activityInfoContentState.data,
-                onItemClick = onClickActivityItem
-            )
-        }
-    }
-}
+            item {
+                DefaultEmptyView(
+                    text = stringResource(id = com.minhhnn18898.letstravel.R.string.add_your_activities),
+                    modifier = Modifier
+                        .height(100.dp)
+                        .fillMaxWidth(),
+                    onClick = onClickCreateTripActivity
+                )
+            }
 
-@Composable
-private fun ListActivity(
-    listActivity: List<TripActivityDisplayInfo>,
-    onItemClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.padding(start = 16.dp, end = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        listActivity.forEach {
-            ActivityItemView(
-                activityDisplayInfo = it,
-                onClick = onItemClick
-            )
+        } else {
+            items(activityInfoContentState.data) { displayInfo ->
+                ActivityItemView(
+                    activityDisplayInfo = displayInfo,
+                    onClick = onClickActivityItem
+                )
+            }
+
+            if(activityInfoContentState.data.size >= 3) {
+                item {
+                    CreateNewDefaultButton(
+                        text = stringResource(id = com.minhhnn18898.letstravel.R.string.add_new_activity),
+                        modifier = modifier.padding(start = 16.dp, top = 8.dp),
+                        onClick = onClickCreateTripActivity
+                    )
+                }
+            }
         }
     }
+
 }
 
 @Composable

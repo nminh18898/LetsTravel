@@ -49,6 +49,8 @@
     <string name="pick_your_photo">Pick your photo</string>
     <string name="check_in_date">Check-in date</string>
     <string name="check_out_date">Check-out date</string>
+    <string name="check_in">Check-in</string>
+    <string name="check_out">Check-out</string>
     <plurals name="numberOfNights">
         <item quantity="one">%d night</item>
         <item quantity="other">%d nights</item>
