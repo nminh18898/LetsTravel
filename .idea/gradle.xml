@@ -16,7 +16,7 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/discover" />
             <option value="$PROJECT_DIR$/firebase" />
-            <option value="$PROJECT_DIR$/trip_detail" />
+            <option value="$PROJECT_DIR$/manage_trip" />
             <option value="$PROJECT_DIR$/ui-components" />
           </set>
         </option>
