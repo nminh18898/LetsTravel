@@ -53,7 +53,6 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.homescreen.SectionCtaData
 import com.minhhnn18898.letstravel.tripdetail.presentation.activity.renderTripActivitySection
 import com.minhhnn18898.letstravel.tripdetail.presentation.flight.FlightDetailBody
 import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.HotelDetailBody
@@ -64,6 +63,7 @@ import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.PieChartData
 import com.minhhnn18898.ui_components.base_components.PieChartItem
 import com.minhhnn18898.ui_components.base_components.PieChartWithLabel
+import com.minhhnn18898.ui_components.base_components.SectionCtaData
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes

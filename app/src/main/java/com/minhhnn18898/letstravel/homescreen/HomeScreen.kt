@@ -43,6 +43,7 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.discover.presentation.DiscoverScreen
+import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.CreateNewTripCtaDisplay
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.EmptySavedTripView
 import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
@@ -57,6 +58,7 @@ import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.RoundedPolygonShape
+import com.minhhnn18898.ui_components.base_components.SectionCtaData
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
@@ -76,10 +78,10 @@ fun HomeScreen(
     ) {
         viewModel.contentState.let { contentState ->
             TripListingScreenSection(
-                icon = com.minhhnn18898.letstravel.R.drawable.your_trips_24,
+                icon = R.drawable.your_trips_24,
                 title = CommonStringRes.saved_trips,
                 sectionCtaData = SectionCtaData(
-                    icon = com.minhhnn18898.letstravel.R.drawable.chevron_right_24,
+                    icon = R.drawable.chevron_right_24,
                     title = CommonStringRes.show_all,
                     onClick = onClickShowAllSavedTrips
                 )
@@ -111,7 +113,7 @@ fun HomeScreen(
         }
 
         TripListingScreenSection(
-            icon = com.minhhnn18898.letstravel.R.drawable.travel_explore_24,
+            icon = R.drawable.travel_explore_24,
             title = CommonStringRes.explore,
             modifier = modifier
         ) {
@@ -347,9 +349,3 @@ private fun TripListingScreenSection(
         content()
     }
 }
-
-data class SectionCtaData (
-    @DrawableRes val icon: Int,
-    @StringRes val title: Int,
-    val onClick: () -> Unit
-)
