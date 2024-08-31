@@ -35,6 +35,8 @@ import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
@@ -84,9 +86,11 @@ fun EditHotelInfoScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.eventTriggerer.collect { event ->
-                if(event == EditHotelInfoViewModel.Event.CloseScreen) {
-                    navigateUp.invoke()
+            withContext(Dispatchers.Main.immediate){
+                viewModel.eventTriggerer.collect { event ->
+                    if(event == EditHotelInfoViewModel.Event.CloseScreen) {
+                        navigateUp.invoke()
+                    }
                 }
             }
         }
