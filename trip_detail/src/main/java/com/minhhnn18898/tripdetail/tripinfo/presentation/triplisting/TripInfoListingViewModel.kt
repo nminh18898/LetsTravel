@@ -1,4 +1,4 @@
-package com.minhhnn18898.letstravel.homescreen
+package com.minhhnn18898.tripdetail.tripinfo.presentation.triplisting
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class TripInfoListingViewModel @Inject constructor(
     private val getListTripInfoUseCase: GetListTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider
 ): ViewModel() {
@@ -50,9 +50,10 @@ class HomeScreenViewModel @Inject constructor(
         flowData.collect { item ->
             val data = mutableListOf<TripInfoItemDisplay>()
             val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }
-            data.addAll(userTrips.take(2))
             data.add(CreateNewTripCtaDisplay)
+            data.addAll(userTrips)
             contentState = GetSavedTripInfoContentResult(data)
         }
     }
+
 }

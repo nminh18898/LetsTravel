@@ -17,12 +17,12 @@ import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestinat
 import com.minhhnn18898.app_navigation.destination.SignInScreenDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
 import com.minhhnn18898.letstravel.homescreen.HomeScreen
-import com.minhhnn18898.letstravel.tripdetail.presentation.activity.EditTripActivityScreen
-import com.minhhnn18898.letstravel.tripdetail.presentation.flight.EditFlightInfoScreen
-import com.minhhnn18898.letstravel.tripdetail.presentation.hotel.EditHotelInfoScreen
-import com.minhhnn18898.letstravel.tripdetail.presentation.trip.TripDetailScreen
-import com.minhhnn18898.letstravel.tripinfo.presentation.edittripinfo.EditTripScreen
-import com.minhhnn18898.letstravel.tripinfo.presentation.triplisting.TripInfoListingScreen
+import com.minhhnn18898.tripdetail.tripdetail.presentation.activity.EditTripActivityScreen
+import com.minhhnn18898.tripdetail.tripdetail.presentation.flight.EditFlightInfoScreen
+import com.minhhnn18898.tripdetail.tripdetail.presentation.hotel.EditHotelInfoScreen
+import com.minhhnn18898.tripdetail.tripdetail.presentation.trip.TripDetailScreen
+import com.minhhnn18898.tripdetail.tripinfo.presentation.edittripinfo.EditTripScreen
+import com.minhhnn18898.tripdetail.tripinfo.presentation.triplisting.TripInfoListingScreen
 
 @Composable
 fun AppNavHost(

@@ -44,16 +44,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.discover.presentation.DiscoverScreen
 import com.minhhnn18898.letstravel.R
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.CreateNewTripCtaDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.EmptySavedTripView
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripCustomCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripDefaultCoverDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.TripInfoItemDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.UserTripDisplay
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.getResult
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.hasError
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.hasResult
-import com.minhhnn18898.letstravel.tripinfo.presentation.base.isContentLoading
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.CreateNewTripCtaDisplay
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.EmptySavedTripView
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.TripCustomCoverDisplay
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.TripDefaultCoverDisplay
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.TripInfoItemDisplay
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.UserTripDisplay
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.getResult
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.hasError
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.hasResult
+import com.minhhnn18898.tripdetail.tripinfo.presentation.base.isContentLoading
 import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
@@ -81,7 +81,7 @@ fun HomeScreen(
                 icon = R.drawable.your_trips_24,
                 title = CommonStringRes.saved_trips,
                 sectionCtaData = SectionCtaData(
-                    icon = R.drawable.chevron_right_24,
+                    icon = CommonDrawableRes.chevron_right_24,
                     title = CommonStringRes.show_all,
                     onClick = onClickShowAllSavedTrips
                 )
