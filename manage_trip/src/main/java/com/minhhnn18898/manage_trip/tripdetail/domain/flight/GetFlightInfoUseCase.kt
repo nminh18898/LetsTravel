@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetFlightInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<GetFlightInfoUseCase.Param, Flow<Result<FlightWithAirportInfo>>>() {
+class GetFlightInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<GetFlightInfoUseCase.Param, Flow<Result<Flow<FlightWithAirportInfo?>>>>() {
 
-    override fun run(params: Param): Flow<Result<FlightWithAirportInfo>> = flow {
+    override fun run(params: Param): Flow<Result<Flow<FlightWithAirportInfo?>>> = flow {
         emit(Result.Loading)
         val result = repository.getFlightInfo(params.flightId)
         emit(Result.Success(result))

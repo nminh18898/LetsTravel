@@ -53,12 +53,12 @@ fun FlightInfoModel.toFlightInfo(): FlightInfo {
 }
 
 data class FlightInfo(
-    val flightId: Long,
-    val flightNumber: String,
-    val operatedAirlines: String,
-    val departureTime: Long,
-    val arrivalTime: Long,
-    val price: Long
+    val flightId: Long = 0L,
+    val flightNumber: String = "",
+    val operatedAirlines: String = "",
+    val departureTime: Long = 0L,
+    val arrivalTime: Long = 0L,
+    val price: Long = 0L
 )
 
 data class FlightWithAirportInfo(

@@ -24,6 +24,7 @@ import com.minhhnn18898.manage_trip.tripdetail.domain.flight.UpdateFlightInfoUse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -114,25 +115,32 @@ class EditFlightInfoViewModel @Inject constructor(
         }
     }
 
-    private fun handleResultLoadFlightInfo(flightInfoWithAirport: FlightWithAirportInfo) {
-        val flightInfo = flightInfoWithAirport.flightInfo
-        onFlightNumberUpdated(flightInfo.flightNumber)
-        onAirlinesUpdated(flightInfo.operatedAirlines)
-        onPricesUpdated(flightInfo.price.toString())
-        onFlightDateUpdated(ItineraryType.DEPARTURE, flightInfo.departureTime)
-        onFlightTimeUpdated(ItineraryType.DEPARTURE, baseDateTimeFormatter.getHourMinute(flightInfo.departureTime))
-        onFlightDateUpdated(ItineraryType.ARRIVAL, flightInfo.arrivalTime, showWarningInvalidRange = false)
-        onFlightTimeUpdated(ItineraryType.ARRIVAL, baseDateTimeFormatter.getHourMinute(flightInfo.arrivalTime), showWarningInvalidRange = false)
+    private suspend fun handleResultLoadFlightInfo(flightInfoWithAirportFlow: Flow<FlightWithAirportInfo?>) {
+        flightInfoWithAirportFlow.collect { flightInfoWithAirport ->
+            if(flightInfoWithAirport != null) {
+                val flightInfo = flightInfoWithAirport.flightInfo
+                onFlightNumberUpdated(flightInfo.flightNumber)
+                onAirlinesUpdated(flightInfo.operatedAirlines)
+                onPricesUpdated(flightInfo.price.toString())
+                onFlightDateUpdated(ItineraryType.DEPARTURE, flightInfo.departureTime)
+                onFlightTimeUpdated(ItineraryType.DEPARTURE, baseDateTimeFormatter.getHourMinute(flightInfo.departureTime))
+                onFlightDateUpdated(ItineraryType.ARRIVAL, flightInfo.arrivalTime, showWarningInvalidRange = false)
+                onFlightTimeUpdated(ItineraryType.ARRIVAL, baseDateTimeFormatter.getHourMinute(flightInfo.arrivalTime), showWarningInvalidRange = false)
 
-        val departAirport = flightInfoWithAirport.departAirport
-        onAirportCodeUpdated(ItineraryType.DEPARTURE, departAirport.code)
-        onAirportNameUpdated(ItineraryType.DEPARTURE, departAirport.airportName)
-        onAirportCityUpdated(ItineraryType.DEPARTURE, departAirport.city)
+                val departAirport = flightInfoWithAirport.departAirport
+                onAirportCodeUpdated(ItineraryType.DEPARTURE, departAirport.code)
+                onAirportNameUpdated(ItineraryType.DEPARTURE, departAirport.airportName)
+                onAirportCityUpdated(ItineraryType.DEPARTURE, departAirport.city)
 
-        val destinationAirport = flightInfoWithAirport.destinationAirport
-        onAirportCodeUpdated(ItineraryType.ARRIVAL, destinationAirport.code)
-        onAirportNameUpdated(ItineraryType.ARRIVAL, destinationAirport.airportName)
-        onAirportCityUpdated(ItineraryType.ARRIVAL, destinationAirport.city)
+                val destinationAirport = flightInfoWithAirport.destinationAirport
+                onAirportCodeUpdated(ItineraryType.ARRIVAL, destinationAirport.code)
+                onAirportNameUpdated(ItineraryType.ARRIVAL, destinationAirport.airportName)
+                onAirportCityUpdated(ItineraryType.ARRIVAL, destinationAirport.city)
+            }
+            else {
+                _eventChannel.send(Event.CloseScreen)
+            }
+        }
     }
 
     fun onFlightNumberUpdated(value: String) {

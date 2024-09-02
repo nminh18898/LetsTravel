@@ -20,9 +20,9 @@ interface FlightInfoDao {
     @Query("DELETE FROM flight_info WHERE flight_id = :flightId")
     suspend fun delete(flightId: Long): Int
 
-    @Query("SELECT * FROM flight_info WHERE trip_id=:tripId")
+    @Query("SELECT * FROM flight_info WHERE trip_id=:tripId ORDER BY departure_time ASC")
     fun getFlights(tripId: Long): Flow<List<FlightInfoModel>>
 
     @Query("SELECT * FROM flight_info WHERE flight_id=:flightId")
-    fun getFlight(flightId: Long): FlightInfoModel
+    fun getFlight(flightId: Long): Flow<FlightInfoModel?>
 }

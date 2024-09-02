@@ -19,10 +19,9 @@ interface ActivityInfoDao {
     @Query("DELETE FROM trip_activity_info WHERE activity_id = :activityId")
     suspend fun delete(activityId: Long): Int
 
-    @Query("SELECT * FROM trip_activity_info WHERE trip_id=:tripId")
+    @Query("SELECT * FROM trip_activity_info WHERE trip_id=:tripId ORDER BY time_from ASC")
     fun getTripActivities(tripId: Long): Flow<List<TripActivityInfoModel>>
 
     @Query("SELECT * FROM trip_activity_info WHERE activity_id=:activityId")
-    fun getTripActivity(activityId: Long): TripActivityInfoModel
-
+    fun getTripActivity(activityId: Long): Flow<TripActivityInfoModel?>
 }

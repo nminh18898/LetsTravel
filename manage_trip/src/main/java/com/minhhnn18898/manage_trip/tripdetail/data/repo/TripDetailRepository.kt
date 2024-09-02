@@ -103,17 +103,24 @@ class TripDetailRepository @Inject constructor(
                 }
             }
 
-    suspend fun getFlightInfo(flightId: Long): FlightWithAirportInfo = withContext(ioDispatcher) {
-        val flightInfo = flightInfoDao.getFlight(flightId)
-        val departAirport = airportInfoDao.get(flightInfo.departAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = flightInfo.departAirportCode)
-        val destinationAirport = airportInfoDao.get(flightInfo.destinationAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = flightInfo.destinationAirportCode)
-
-        FlightWithAirportInfo(
-            flightInfo = flightInfo.toFlightInfo(),
-            departAirport = departAirport,
-            destinationAirport = destinationAirport
-        )
-    }
+    suspend fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?> =
+        flightInfoDao.getFlight(flightId)
+            .map { flightInfo ->
+                if (flightInfo != null) {
+                    FlightWithAirportInfo(
+                        flightInfo = flightInfo.toFlightInfo(),
+                        departAirport = airportInfoDao.get(flightInfo.departAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = flightInfo.departAirportCode),
+                        destinationAirport = airportInfoDao.get(flightInfo.destinationAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = flightInfo.destinationAirportCode)
+                    )
+                }
+                else {
+                    FlightWithAirportInfo(
+                        flightInfo = FlightInfo(),
+                        departAirport= AirportInfo(),
+                        destinationAirport = AirportInfo()
+                    )
+                }
+            }
 
     suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
         val hotelInfoModel = hotelInfo
@@ -195,21 +202,15 @@ class TripDetailRepository @Inject constructor(
     fun getSortedActivityInfo(tripId: Long): Flow<Map<Long?, List<TripActivityInfo>>> {
         return getAllActivityInfo(tripId)
             .map { listActivity ->
-                listActivity.sortedBy {
-                    it.timeFrom
-                }.groupBy {
+                listActivity.groupBy {
                     if(it.timeFrom != null) baseDateTimeFormatter.getStartOfDayInMillis(it.timeFrom) else null
                 }
             }
     }
 
-    suspend fun getActivityInfo(activityId: Long): TripActivityInfo = withContext(ioDispatcher) {
+    fun getActivityInfo(activityId: Long): Flow<TripActivityInfo?> =
         activityInfoDao
-            .getTripActivity(activityId)
-            .toTripActivityInfo()
-    }
-}
-
-private fun Map<String, AirportInfoModel>.findAirportInfo(code: String): AirportInfoModel {
-    return this[code] ?: AirportInfoModel("", "", "")
+            .getTripActivity(activityId).map {
+                it?.toTripActivityInfo()
+            }
 }

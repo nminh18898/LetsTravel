@@ -73,7 +73,7 @@ class HotelInfoDaoTest {
         val loaded = database.hotelInfoDao().getHotel(1L).first()
 
         // Then
-        assertTripInfoEqual(hotelInfoModel, loaded)
+        assertHotelInfoEqual(hotelInfoModel, loaded)
     }
 
     @Test
@@ -107,7 +107,7 @@ class HotelInfoDaoTest {
         val loaded = database.hotelInfoDao().getHotel(1L).first()
 
         // Then
-        assertTripInfoEqual(updatedValue, loaded)
+        assertHotelInfoEqual(updatedValue, loaded)
     }
 
     @Test
@@ -136,7 +136,7 @@ class HotelInfoDaoTest {
     }
 
     @Test
-    fun getHotelsByTripId() = runTest {
+    fun getHotelsByTripId_sortedByCheckInTime() = runTest {
         // Given
         val firstHotelInfoModel = HotelInfoModel(
             hotelId = 0,
@@ -168,7 +168,8 @@ class HotelInfoDaoTest {
 
         // insert trip info for foreign key constraint
         insertTripInfo()
-        // insert with auto generated id
+
+        // insert hotel with auto generated id
         database.hotelInfoDao().insert(firstHotelInfoModel)
         database.hotelInfoDao().insert(secondHotelInfoModel)
         database.hotelInfoDao().insert(thirdHotelInfoModel)
@@ -178,12 +179,12 @@ class HotelInfoDaoTest {
 
         // Then - verify that hotel with the earlier check-in date is placed before
         Truth.assertThat(loaded).hasSize(3)
-        assertTripInfoEqual(secondHotelInfoModel, loaded[0])
-        assertTripInfoEqual(firstHotelInfoModel, loaded[1])
-        assertTripInfoEqual(thirdHotelInfoModel, loaded[2])
+        assertHotelInfoEqual(secondHotelInfoModel, loaded[0])
+        assertHotelInfoEqual(firstHotelInfoModel, loaded[1])
+        assertHotelInfoEqual(thirdHotelInfoModel, loaded[2])
     }
 
-    private fun assertTripInfoEqual(expected: HotelInfoModel, target: HotelInfoModel?) {
+    private fun assertHotelInfoEqual(expected: HotelInfoModel, target: HotelInfoModel?) {
         Truth.assertThat(target).isNotNull()
         Truth.assertThat(target?.tripId).isEqualTo(expected.tripId)
         Truth.assertThat(target?.hotelName).isEqualTo(expected.hotelName)

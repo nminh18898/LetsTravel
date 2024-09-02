@@ -17,6 +17,7 @@ import com.minhhnn18898.manage_trip.tripdetail.domain.activity.UpdateTripActivit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -66,15 +67,24 @@ class EditTripActivityViewModel @Inject constructor(
                 onShowLoadingState = it == Result.Loading
 
                 when(it) {
-                    is Result.Success -> {
-                        uiState.value = it.data.toTripActivityUiState()
-                        checkAllowSaveContent()
-                    }
+                    is Result.Success -> handelResultLoadActivityInfo(it.data)
                     is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_ACTIVITY_INFO)
                     else -> {
                         // do nothing
                     }
                 }
+            }
+        }
+    }
+
+    private suspend fun handelResultLoadActivityInfo(tripActivityInfoFlow: Flow<TripActivityInfo?>) {
+        tripActivityInfoFlow.collect { tripInfo ->
+            if(tripInfo != null) {
+                uiState.value = tripInfo.toTripActivityUiState()
+                checkAllowSaveContent()
+            }
+            else {
+                _eventChannel.send(Event.CloseScreen)
             }
         }
     }
