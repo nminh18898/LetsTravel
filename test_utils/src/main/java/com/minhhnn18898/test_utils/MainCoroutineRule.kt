@@ -1,4 +1,4 @@
-package com.minhhnn18898.core.utils
+package com.minhhnn18898.test_utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

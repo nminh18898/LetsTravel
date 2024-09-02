@@ -1,4 +1,4 @@
-package com.minhhnn18898.core.utils
+package com.minhhnn18898.test_utils
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

@@ -9,6 +9,7 @@ import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
 import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfo
 import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfoModel
+import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -26,12 +27,14 @@ class TripInfoRepositoryTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    var mainCoroutineRule = MainDispatcherRule()
+
     private lateinit var repository: TripInfoRepository
     private lateinit var database: UserTripDatabase
 
     @Before
     fun setup() {
-        // Using an in-memory database for testing, because it doesn't survive killing the process.
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             UserTripDatabase::class.java

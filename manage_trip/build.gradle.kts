@@ -74,6 +74,7 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.google.truth)
+    testImplementation(project(":test_utils"))
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,4 +82,5 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.core.testing)
     androidTestImplementation(libs.google.truth)
+    androidTestImplementation(project(":test_utils"))
 }
