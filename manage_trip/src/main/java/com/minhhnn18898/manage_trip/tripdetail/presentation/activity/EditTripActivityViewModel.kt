@@ -14,6 +14,7 @@ import com.minhhnn18898.manage_trip.tripdetail.domain.activity.CreateTripActivit
 import com.minhhnn18898.manage_trip.tripdetail.domain.activity.DeleteTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.tripdetail.domain.activity.GetTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.tripdetail.domain.activity.UpdateTripActivityInfoUseCase
+import com.minhhnn18898.manage_trip.tripdetail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -29,7 +30,7 @@ class EditTripActivityViewModel @Inject constructor(
     private val getTripActivityInfoUseCase: GetTripActivityInfoUseCase,
     private val updateTripActivityInfoUseCase: UpdateTripActivityInfoUseCase,
     private val deleteTripActivityInfoUseCase: DeleteTripActivityInfoUseCase,
-    private val dateTimeFormatter: TripActivityDateTimeFormatter
+    private val dateTimeFormatter: TripDetailDateTimeFormatter
 ): ViewModel() {
 
     private var tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -256,7 +257,7 @@ class EditTripActivityViewModel @Inject constructor(
     }
 
     private fun getDateTimeMillis(date: Long, time: Pair<Int, Int>): Long {
-        return dateTimeFormatter.convertToLocalDateTimeMillis(date, time.first, time.second)
+        return dateTimeFormatter.combineActivityDateTimeToMillis(date, time.first, time.second)
     }
 
     enum class ErrorType {

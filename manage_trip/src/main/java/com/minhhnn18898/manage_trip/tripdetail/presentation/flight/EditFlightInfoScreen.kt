@@ -46,9 +46,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
-import com.minhhnn18898.core.utils.BaseDateTimeFormatter
+import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
+import com.minhhnn18898.manage_trip.tripdetail.presentation.trip.TripDetailDateTimeFormatterImpl
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow
 import com.minhhnn18898.ui_components.base_components.InputTextRow
@@ -419,11 +420,11 @@ fun DatePickerWithDialog(
     )
 
     val millisToLocalDate = date?.let {
-        BaseDateTimeFormatter().convertMillisToLocalDate(it)
+        BaseDateTimeFormatterImpl().millisToLocalDate(it)
     }
 
     val dateToString = millisToLocalDate?.let {
-        BaseDateTimeFormatter().dateToString(millisToLocalDate)
+        TripDetailDateTimeFormatterImpl(BaseDateTimeFormatterImpl()).getFormattedFlightDateString(millisToLocalDate)
     } ?: stringResource(id = CommonStringRes.choose_date)
 
     var showDialog by remember { mutableStateOf(false) }
@@ -512,7 +513,7 @@ fun TimePickerWithDialog(
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = BaseDateTimeFormatter().formatTime(time.first, time.second),
+            text = BaseDateTimeFormatterImpl().formatHourMinute(time.first, time.second),
             style = MaterialTheme.typography.bodyLarge
         )
     }

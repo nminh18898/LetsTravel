@@ -33,15 +33,14 @@ class TripDetailRepositoryTest {
             .allowMainThreadQueries()
             .build()
 
-      /*  repository =
+       /* repository =
             TripDetailRepository(
-               ioDispatcher = Dispatchers.Main,
-        airportInfoDao: AirportInfoDao,
-       flightInfoDao: FlightInfoDao,
-        hotelInfoDao: HotelInfoDao,
-       activityInfoDao: ActivityInfoDao,
-       baseDateTimeFormatter: BaseDateTimeFormatter
-
+                ioDispatcher = Dispatchers.Main,
+                airportInfoDao =  database.airportInfoDao(),
+                flightInfoDao = database.flightInfoDao(),
+                hotelInfoDao = database.hotelInfoDao(),
+                activityInfoDao = database.activityInfoDao(),
+                dateTimeFormatter =
             )*/
     }
 

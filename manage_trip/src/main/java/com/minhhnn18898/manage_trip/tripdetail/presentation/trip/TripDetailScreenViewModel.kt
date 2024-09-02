@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.manage_trip.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.tripdetail.data.model.FlightWithAirportInfo
@@ -18,7 +17,6 @@ import com.minhhnn18898.manage_trip.tripdetail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.tripdetail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.tripdetail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.tripdetail.domain.hotel.GetListHotelInfoUseCase
-import com.minhhnn18898.manage_trip.tripdetail.presentation.activity.TripActivityDateTimeFormatter
 import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfo
 import com.minhhnn18898.manage_trip.tripinfo.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.tripinfo.presentation.base.CoverDefaultResourceProvider
@@ -39,10 +37,9 @@ class TripDetailScreenViewModel @Inject constructor(
     private val activityDateSeparatorResourceProvider: TripActivityDateSeparatorResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,
     private val getListFlightInfoUseCase: GetListFlightInfoUseCase,
-    private val baseDateTimeFormatter: BaseDateTimeFormatter,
-    private val activityDateTimeFormatter: TripActivityDateTimeFormatter,
     private val getListHotelInfoUseCase: GetListHotelInfoUseCase,
-    private val getSortedListTripActivityInfoUseCase: GetSortedListTripActivityInfoUseCase
+    private val getSortedListTripActivityInfoUseCase: GetSortedListTripActivityInfoUseCase,
+    private val dateTimeFormatter: TripDetailDateTimeFormatterImpl
 ): ViewModel() {
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -161,7 +158,7 @@ class TripDetailScreenViewModel @Inject constructor(
                 if (date != null) {
                     itemRender.add(
                         TripActivityDateGroupHeader(
-                            title = activityDateTimeFormatter.getFormattedDateSeparatorString(date),
+                            title = dateTimeFormatter.getActivityFormattedDateSeparatorString(date),
                             dateOrdering = countDay,
                             resId = activityDateSeparatorResourceProvider.getResource(countDay)
                         )
@@ -178,11 +175,11 @@ class TripDetailScreenViewModel @Inject constructor(
     }
 
     private fun calculateFlightDuration(from: Long, to: Long): String {
-        return baseDateTimeFormatter.getDurationInHourMinuteDisplayString(from, to)
+        return dateTimeFormatter.findFlightDurationFormattedString(from, to)
     }
 
     private fun calculateHotelStayDuration(from: Long, to: Long): Int {
-        return baseDateTimeFormatter.getNightDuration(from, to).toInt()
+        return dateTimeFormatter.getHotelNights(from, to).toInt()
     }
 
     private fun onUpdateFlightBudget(flightInfo: List<FlightWithAirportInfo>) {
@@ -220,8 +217,8 @@ class TripDetailScreenViewModel @Inject constructor(
             departAirport = departAirport.toAirportDisplayInfo(),
             destinationAirport = destinationAirport.toAirportDisplayInfo(),
             operatedAirlines = flightInfo.operatedAirlines,
-            departureTime = baseDateTimeFormatter.getFormatFlightDateTimeString(flightInfo.departureTime),
-            arrivalTime = baseDateTimeFormatter.getFormatFlightDateTimeString(flightInfo.arrivalTime),
+            departureTime = dateTimeFormatter.getFormattedFlightDateTimeString(flightInfo.departureTime),
+            arrivalTime = dateTimeFormatter.getFormattedFlightDateTimeString(flightInfo.arrivalTime),
             duration = calculateFlightDuration(flightInfo.departureTime, flightInfo.arrivalTime),
             price = flightInfo.price.formatWithCommas()
         )
@@ -232,17 +229,17 @@ class TripDetailScreenViewModel @Inject constructor(
             hotelId = this.hotelId,
             hotelName = this.hotelName,
             address = this.address,
-            checkInDate = baseDateTimeFormatter.millisToDateString(this.checkInDate),
-            checkOutDate = baseDateTimeFormatter.millisToDateString(this.checkOutDate),
+            checkInDate = dateTimeFormatter.millisToHotelFormattedString(this.checkInDate),
+            checkOutDate = dateTimeFormatter.millisToHotelFormattedString(this.checkOutDate),
             duration = calculateHotelStayDuration(this.checkInDate, this.checkOutDate),
             price = this.price.formatWithCommas()
         )
     }
 
     private fun TripActivityInfo.toActivityDisplayInfo(): TripActivityDisplayInfo {
-        val dateString = if(this.timeFrom != null) activityDateTimeFormatter.millisToDateString(this.timeFrom) else ""
-        val startTimeString =  if(this.timeFrom != null) activityDateTimeFormatter.getHourMinuteFormatted(this.timeFrom) else ""
-        val endTimeString = if(this.timeTo != null) activityDateTimeFormatter.getHourMinuteFormatted(this.timeTo) else ""
+        val dateString = if(this.timeFrom != null) dateTimeFormatter.millisToActivityFormattedString(this.timeFrom) else ""
+        val startTimeString =  if(this.timeFrom != null) dateTimeFormatter.formatHourMinutes(this.timeFrom) else ""
+        val endTimeString = if(this.timeTo != null) dateTimeFormatter.formatHourMinutes(this.timeTo) else ""
 
         return TripActivityDisplayInfo(
             activityId = this.activityId,

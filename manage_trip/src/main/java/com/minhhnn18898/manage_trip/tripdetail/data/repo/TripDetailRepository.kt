@@ -1,7 +1,6 @@
 package com.minhhnn18898.manage_trip.tripdetail.data.repo
 
 import com.minhhnn18898.core.di.IODispatcher
-import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.manage_trip.tripdetail.data.dao.ActivityInfoDao
 import com.minhhnn18898.manage_trip.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.manage_trip.tripdetail.data.dao.FlightInfoDao
@@ -19,6 +18,7 @@ import com.minhhnn18898.manage_trip.tripdetail.data.model.toHotelInfo
 import com.minhhnn18898.manage_trip.tripdetail.data.model.toHotelInfoModel
 import com.minhhnn18898.manage_trip.tripdetail.data.model.toTripActivityInfo
 import com.minhhnn18898.manage_trip.tripdetail.data.model.toTripActivityModel
+import com.minhhnn18898.manage_trip.tripdetail.presentation.trip.TripDetailDateTimeFormatter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -33,7 +33,7 @@ class TripDetailRepository @Inject constructor(
     private val flightInfoDao: FlightInfoDao,
     private val hotelInfoDao: HotelInfoDao,
     private val activityInfoDao: ActivityInfoDao,
-    private val baseDateTimeFormatter: BaseDateTimeFormatter
+    private val dateTimeFormatter: TripDetailDateTimeFormatter
 ) {
 
     suspend fun insertFlightInfo(
@@ -203,7 +203,7 @@ class TripDetailRepository @Inject constructor(
         return getAllActivityInfo(tripId)
             .map { listActivity ->
                 listActivity.groupBy {
-                    if(it.timeFrom != null) baseDateTimeFormatter.getStartOfDayInMillis(it.timeFrom) else null
+                    if(it.timeFrom != null) dateTimeFormatter.getStartOfTheDay(it.timeFrom) else null
                 }
             }
     }

@@ -1,8 +1,5 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.minhhnn18898.manage_trip.tripdetail.presentation.flight
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.manage_trip.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.manage_trip.tripdetail.data.model.FlightInfo
@@ -21,6 +17,7 @@ import com.minhhnn18898.manage_trip.tripdetail.domain.flight.CreateNewFlightInfo
 import com.minhhnn18898.manage_trip.tripdetail.domain.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.tripdetail.domain.flight.GetFlightInfoUseCase
 import com.minhhnn18898.manage_trip.tripdetail.domain.flight.UpdateFlightInfoUseCase
+import com.minhhnn18898.manage_trip.tripdetail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -36,7 +33,7 @@ class EditFlightInfoViewModel @Inject constructor(
     private val getFlightInfoUseCase: GetFlightInfoUseCase,
     private val updateFlightInfoUseCase: UpdateFlightInfoUseCase,
     private val deleteFlightInfoUseCase: DeleteFlightInfoUseCase,
-    private val baseDateTimeFormatter: BaseDateTimeFormatter = BaseDateTimeFormatter()
+    private val dateTimeFormatter: TripDetailDateTimeFormatter
 ): ViewModel() {
 
     private val tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
@@ -123,9 +120,9 @@ class EditFlightInfoViewModel @Inject constructor(
                 onAirlinesUpdated(flightInfo.operatedAirlines)
                 onPricesUpdated(flightInfo.price.toString())
                 onFlightDateUpdated(ItineraryType.DEPARTURE, flightInfo.departureTime)
-                onFlightTimeUpdated(ItineraryType.DEPARTURE, baseDateTimeFormatter.getHourMinute(flightInfo.departureTime))
+                onFlightTimeUpdated(ItineraryType.DEPARTURE, dateTimeFormatter.getHourMinute(flightInfo.departureTime))
                 onFlightDateUpdated(ItineraryType.ARRIVAL, flightInfo.arrivalTime, showWarningInvalidRange = false)
-                onFlightTimeUpdated(ItineraryType.ARRIVAL, baseDateTimeFormatter.getHourMinute(flightInfo.arrivalTime), showWarningInvalidRange = false)
+                onFlightTimeUpdated(ItineraryType.ARRIVAL, dateTimeFormatter.getHourMinute(flightInfo.arrivalTime), showWarningInvalidRange = false)
 
                 val departAirport = flightInfoWithAirport.departAirport
                 onAirportCodeUpdated(ItineraryType.DEPARTURE, departAirport.code)
@@ -338,7 +335,7 @@ class EditFlightInfoViewModel @Inject constructor(
         val localDate = flightDate[type]?.value ?: 0L
         val timeHourMinutes = flightTime[type]?.value ?: Pair(0, 0)
 
-        return baseDateTimeFormatter.convertToLocalDateTimeMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
+        return dateTimeFormatter.combineActivityDateTimeToMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
     }
 
     private fun Map<ItineraryType, MutableState<String>>.getStringValue(key: ItineraryType): String {
