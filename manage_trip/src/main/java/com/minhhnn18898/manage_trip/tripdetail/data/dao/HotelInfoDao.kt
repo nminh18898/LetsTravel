@@ -19,9 +19,9 @@ interface HotelInfoDao {
     @Query("DELETE FROM hotel_info WHERE hotel_id = :hotelId")
     suspend fun delete(hotelId: Long): Int
 
-    @Query("SELECT * FROM hotel_info WHERE trip_id=:tripId")
+    @Query("SELECT * FROM hotel_info WHERE trip_id=:tripId ORDER BY check_in_date ASC")
     fun getHotels(tripId: Long): Flow<List<HotelInfoModel>>
 
     @Query("SELECT * FROM hotel_info WHERE hotel_id=:hotelId")
-    fun getHotel(hotelId: Long): HotelInfoModel
+    fun getHotel(hotelId: Long): Flow<HotelInfoModel?>
 }

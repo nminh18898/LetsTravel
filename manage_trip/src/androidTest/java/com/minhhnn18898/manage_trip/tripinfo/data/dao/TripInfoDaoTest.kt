@@ -28,8 +28,6 @@ class TripInfoDaoTest {
 
     @Before
     fun setup() {
-        // Using an in-memory database for testing so that the information stored here disappears when the
-        // process is killed.
         database = Room.inMemoryDatabaseBuilder(
             getApplicationContext(),
             UserTripDatabase::class.java

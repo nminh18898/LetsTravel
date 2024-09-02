@@ -16,7 +16,7 @@ data class AirportInfoModel(
 
 data class AirportInfo(
     val code: String,
-    val city: String,
+    val city: String = "",
     val airportName: String = ""
 )
 

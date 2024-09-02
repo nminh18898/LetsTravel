@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetHotelInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<GetHotelInfoUseCase.Param, Flow<Result<HotelInfo>>>() {
+class GetHotelInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<GetHotelInfoUseCase.Param, Flow<Result<Flow<HotelInfo?>>>>() {
 
-    override fun run(params: Param): Flow<Result<HotelInfo>> = flow {
+    override fun run(params: Param): Flow<Result<Flow<HotelInfo?>>> = flow {
         emit(Result.Loading)
         val result = repository.getHotelInfo(params.hotelId)
         emit(Result.Success(result))

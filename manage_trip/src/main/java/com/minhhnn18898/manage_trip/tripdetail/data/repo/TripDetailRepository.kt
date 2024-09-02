@@ -6,9 +6,9 @@ import com.minhhnn18898.manage_trip.tripdetail.data.dao.ActivityInfoDao
 import com.minhhnn18898.manage_trip.tripdetail.data.dao.AirportInfoDao
 import com.minhhnn18898.manage_trip.tripdetail.data.dao.FlightInfoDao
 import com.minhhnn18898.manage_trip.tripdetail.data.dao.HotelInfoDao
+import com.minhhnn18898.manage_trip.tripdetail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.tripdetail.data.model.AirportInfoModel
 import com.minhhnn18898.manage_trip.tripdetail.data.model.FlightInfo
-import com.minhhnn18898.manage_trip.tripdetail.data.model.FlightInfoModel
 import com.minhhnn18898.manage_trip.tripdetail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.tripdetail.data.model.HotelInfo
 import com.minhhnn18898.manage_trip.tripdetail.data.model.TripActivityInfo
@@ -21,7 +21,7 @@ import com.minhhnn18898.manage_trip.tripdetail.data.model.toTripActivityInfo
 import com.minhhnn18898.manage_trip.tripdetail.data.model.toTripActivityModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -93,12 +93,20 @@ class TripDetailRepository @Inject constructor(
     fun getListFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> =
         flightInfoDao
             .getFlights(tripId)
-            .mapWithAirportInfo(airportInfoDao.getAll())
+            .map { flightInfoModelList ->
+                flightInfoModelList.map {
+                    FlightWithAirportInfo(
+                        flightInfo = it.toFlightInfo(),
+                        departAirport = airportInfoDao.get(it.departAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = it.departAirportCode),
+                        destinationAirport = airportInfoDao.get(it.destinationAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = it.destinationAirportCode)
+                    )
+                }
+            }
 
     suspend fun getFlightInfo(flightId: Long): FlightWithAirportInfo = withContext(ioDispatcher) {
         val flightInfo = flightInfoDao.getFlight(flightId)
-        val departAirport = airportInfoDao.get(flightInfo.departAirportCode).toAirportInfo()
-        val destinationAirport = airportInfoDao.get(flightInfo.destinationAirportCode).toAirportInfo()
+        val departAirport = airportInfoDao.get(flightInfo.departAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = flightInfo.departAirportCode)
+        val destinationAirport = airportInfoDao.get(flightInfo.destinationAirportCode).first()?.toAirportInfo() ?: AirportInfo(code = flightInfo.destinationAirportCode)
 
         FlightWithAirportInfo(
             flightInfo = flightInfo.toFlightInfo(),
@@ -133,10 +141,12 @@ class TripDetailRepository @Inject constructor(
                 it.toHotelInfo()
             }
 
-    suspend fun getHotelInfo(hotelId: Long): HotelInfo = withContext(ioDispatcher) {
+    suspend fun getHotelInfo(hotelId: Long): Flow<HotelInfo?> = withContext(ioDispatcher) {
         hotelInfoDao
             .getHotel(hotelId)
-            .toHotelInfo()
+            .map {
+                it?.toHotelInfo()
+            }
     }
 
     suspend fun deleteHotelInfo(hotelId: Long) = withContext(ioDispatcher) {
@@ -203,16 +213,3 @@ class TripDetailRepository @Inject constructor(
 private fun Map<String, AirportInfoModel>.findAirportInfo(code: String): AirportInfoModel {
     return this[code] ?: AirportInfoModel("", "", "")
 }
-
-private fun Flow<List<FlightInfoModel>>.mapWithAirportInfo(airportFlow: Flow<List<AirportInfoModel>>): Flow<List<FlightWithAirportInfo>> =
-    combine(airportFlow) { flightInfos, airportInfos ->
-        val airportMap = airportInfos.associateBy( { it.code }, { it } )
-        flightInfos.map { flightInfoItem ->
-            FlightWithAirportInfo(
-                flightInfoItem.toFlightInfo(),
-                airportMap.findAirportInfo(flightInfoItem.departAirportCode).toAirportInfo(),
-                airportMap.findAirportInfo(flightInfoItem.destinationAirportCode).toAirportInfo()
-            )
-        }
-    }
-

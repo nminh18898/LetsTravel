@@ -21,8 +21,5 @@ interface AirportInfoDao {
     suspend fun delete(airportCode: String): Int
 
     @Query("SELECT * FROM airport_info WHERE airport_code=:code")
-    fun get(code: String): AirportInfoModel
-
-    @Query("SELECT * FROM airport_info")
-    fun getAll(): Flow<List<AirportInfoModel>>
+    fun get(code: String): Flow<AirportInfoModel?>
 }

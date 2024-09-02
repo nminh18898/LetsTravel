@@ -17,6 +17,7 @@ import com.minhhnn18898.manage_trip.tripdetail.domain.hotel.UpdateHotelInfoUseCa
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -67,14 +68,25 @@ class EditHotelInfoViewModel @Inject constructor(
 
                 when(it) {
                     is Result.Success -> {
-                        uiState.value = it.data.toEditHotelUiState()
-                        checkAllowSaveContent()
+                        handelResultLoadHotelInfo(it.data)
                     }
                     is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_HOTEL_INFO)
                     else -> {
                         // do nothing
                     }
                 }
+            }
+        }
+    }
+
+    private suspend fun handelResultLoadHotelInfo(hotelInfoFlow: Flow<HotelInfo?>) {
+        hotelInfoFlow.collect { hotelInfo ->
+            if(hotelInfo != null) {
+                uiState.value = hotelInfo.toEditHotelUiState()
+                checkAllowSaveContent()
+            }
+            else {
+                _eventChannel.send(Event.CloseScreen)
             }
         }
     }
