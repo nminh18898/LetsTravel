@@ -63,8 +63,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.coil.compose)
+    implementation(project(":ui_components"))
 
-    implementation(project(":ui-components"))
     implementation(project(":app_navigation"))
     implementation(project(":core"))
     implementation(project(":architecture"))

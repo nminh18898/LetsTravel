@@ -61,8 +61,8 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(project(":ui_components"))
 
-    implementation(project(":ui-components"))
     implementation(project(":app_navigation"))
     implementation(project(":core"))
     implementation(project(":architecture"))

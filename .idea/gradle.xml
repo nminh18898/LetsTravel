@@ -17,7 +17,8 @@
             <option value="$PROJECT_DIR$/discover" />
             <option value="$PROJECT_DIR$/firebase" />
             <option value="$PROJECT_DIR$/manage_trip" />
-            <option value="$PROJECT_DIR$/ui-components" />
+            <option value="$PROJECT_DIR$/test_utils" />
+            <option value="$PROJECT_DIR$/ui_components" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

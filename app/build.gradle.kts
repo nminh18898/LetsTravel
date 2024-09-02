@@ -85,7 +85,7 @@ dependencies {
 
     implementation(project(":architecture"))
     implementation(project(":account"))
-    implementation(project(":ui-components"))
+    implementation(project(":ui_components"))
     implementation(project(":app_navigation"))
     implementation(project(":core"))
     implementation(project(":discover"))

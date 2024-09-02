@@ -47,7 +47,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(project(":core"))
-    implementation(project(":ui-components"))
+    implementation(project(":ui_components"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -23,7 +23,7 @@ rootProject.name = "Let's Travel"
 include(":app")
 include(":architecture")
 include(":account")
-include(":ui-components")
+include(":ui_components")
 include(":app_navigation")
 include(":core")
 include(":discover")
