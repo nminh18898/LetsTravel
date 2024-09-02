@@ -43,12 +43,12 @@ data class FlightInfoModel(
 
 fun FlightInfoModel.toFlightInfo(): FlightInfo {
     return FlightInfo(
-        this.flightId,
-        this.flightNumber,
-        this.operatedAirlines,
-        this.departureTime,
-        this.arrivalTime,
-        this.price
+        flightId = this.flightId,
+        flightNumber = this.flightNumber,
+        operatedAirlines = this.operatedAirlines,
+        departureTime = this.departureTime,
+        arrivalTime = this.arrivalTime,
+        price = this.price
     )
 }
 

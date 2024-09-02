@@ -114,11 +114,7 @@ class TripDetailRepository @Inject constructor(
                     )
                 }
                 else {
-                    FlightWithAirportInfo(
-                        flightInfo = FlightInfo(),
-                        departAirport= AirportInfo(),
-                        destinationAirport = AirportInfo()
-                    )
+                    null
                 }
             }
 
@@ -191,8 +187,7 @@ class TripDetailRepository @Inject constructor(
         }
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>> =
+    private fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>> =
         activityInfoDao
             .getTripActivities(tripId)
             .map {

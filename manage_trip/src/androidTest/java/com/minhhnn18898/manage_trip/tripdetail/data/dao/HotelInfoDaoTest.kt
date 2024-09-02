@@ -18,6 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@Suppress("SpellCheckingInspection")
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @SmallTest
@@ -58,11 +59,11 @@ class HotelInfoDaoTest {
         val hotelInfoModel = HotelInfoModel(
             hotelId = 0,
             tripId = 1,
-            hotelName =  "Liberty Central Riverside Hotel",
+            hotelName = "Liberty Central Riverside Hotel",
             address =  "District 1, Ho Chi Minh City",
             price = 2_000_000,
-            checkInDate =  100000000,
-            checkOutDate = 120000000
+            checkInDate =  1_000_000,
+            checkOutDate = 1_200_000
         )
         // insert trip info for foreign key constraint
         insertTripInfo()
@@ -82,7 +83,7 @@ class HotelInfoDaoTest {
         val hotelInfoModel = HotelInfoModel(
             hotelId = 0,
             tripId = 1,
-            hotelName =  "Liberty Central Riverside Hotel",
+            hotelName = "Liberty Central Riverside Hotel",
             address =  "District 1, Ho Chi Minh City",
             price = 2_000_000,
             checkInDate =  100000000,
@@ -97,7 +98,7 @@ class HotelInfoDaoTest {
         val updatedValue = HotelInfoModel(
             hotelId = 1,
             tripId = 1,
-            hotelName =  "Liberty Central Riverside Hotel - new",
+            hotelName = "Liberty Central Riverside Hotel - new",
             address =  "District 1, Ho Chi Minh City - new",
             price = 2_500_000,
             checkInDate =  150000000,
@@ -116,7 +117,7 @@ class HotelInfoDaoTest {
         val hotelInfoModel = HotelInfoModel(
             hotelId = 0,
             tripId = 1,
-            hotelName =  "Liberty Central Riverside Hotel",
+            hotelName = "Liberty Central Riverside Hotel",
             address =  "District 1, Ho Chi Minh City",
             price = 2_000_000,
             checkInDate =  100000000,
@@ -141,7 +142,7 @@ class HotelInfoDaoTest {
         val firstHotelInfoModel = HotelInfoModel(
             hotelId = 0,
             tripId = 1,
-            hotelName =  "Liberty Central Riverside Hotel",
+            hotelName = "Liberty Central Riverside Hotel",
             address =  "District 1, Ho Chi Minh City",
             price = 2_000_000,
             checkInDate =  150_000_000,
@@ -150,7 +151,7 @@ class HotelInfoDaoTest {
         val secondHotelInfoModel = HotelInfoModel(
             hotelId = 0,
             tripId = 1,
-            hotelName =  "Eastin Grand Hotel",
+            hotelName = "Eastin Grand Hotel",
             address =  "Phu Nhuan District, Ho Chi Minh City",
             price = 3_000_000,
             checkInDate =  100_000_000,
@@ -159,7 +160,7 @@ class HotelInfoDaoTest {
         val thirdHotelInfoModel = HotelInfoModel(
             hotelId = 0,
             tripId = 1,
-            hotelName =  "Holiday Inn & Suites Saigon Airport",
+            hotelName = "Holiday Inn & Suites Saigon Airport",
             address =  "18E Cong Hoa, Ho Chi Minh City",
             price = 2_700_000,
             checkInDate =  180_000_000,
