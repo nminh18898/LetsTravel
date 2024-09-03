@@ -12,12 +12,12 @@ import com.minhhnn18898.app_navigation.destination.EditTripActivityInfoDestinati
 import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
-import com.minhhnn18898.manage_trip.tripdetail.presentation.activity.EditTripActivityScreen
-import com.minhhnn18898.manage_trip.tripdetail.presentation.flight.EditFlightInfoScreen
-import com.minhhnn18898.manage_trip.tripdetail.presentation.hotel.EditHotelInfoScreen
-import com.minhhnn18898.manage_trip.tripdetail.presentation.trip.TripDetailScreen
-import com.minhhnn18898.manage_trip.tripinfo.presentation.edittripinfo.EditTripScreen
-import com.minhhnn18898.manage_trip.tripinfo.presentation.triplisting.TripInfoListingScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.activity.EditTripActivityScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.EditFlightInfoScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.EditHotelInfoScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailScreen
+import com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo.EditTripScreen
+import com.minhhnn18898.manage_trip.trip_info.presentation.triplisting.TripInfoListingScreen
 
 fun NavGraphBuilder.manageTripFeatureComposable(
     navController: NavHostController,

@@ -3,11 +3,11 @@ package com.minhhnn18898.manage_trip.di
 import android.content.Context
 import androidx.room.Room
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.ActivityInfoDao
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.AirportInfoDao
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.FlightInfoDao
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.HotelInfoDao
-import com.minhhnn18898.manage_trip.tripinfo.data.dao.TripInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
+import com.minhhnn18898.manage_trip.trip_info.data.dao.TripInfoDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

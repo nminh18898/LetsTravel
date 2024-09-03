@@ -1,9 +1,9 @@
 package com.minhhnn18898.manage_trip.di
 
 import com.minhhnn18898.core.di.IODispatcher
-import com.minhhnn18898.manage_trip.tripinfo.data.dao.TripInfoDao
-import com.minhhnn18898.manage_trip.tripinfo.data.repo.TripInfoRepository
-import com.minhhnn18898.manage_trip.tripinfo.data.repo.TripInfoRepositoryImpl
+import com.minhhnn18898.manage_trip.trip_info.data.dao.TripInfoDao
+import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepository
+import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

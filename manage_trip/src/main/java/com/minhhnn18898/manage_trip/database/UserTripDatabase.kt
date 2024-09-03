@@ -2,16 +2,16 @@ package com.minhhnn18898.manage_trip.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.ActivityInfoDao
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.AirportInfoDao
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.FlightInfoDao
-import com.minhhnn18898.manage_trip.tripdetail.data.dao.HotelInfoDao
-import com.minhhnn18898.manage_trip.tripdetail.data.model.AirportInfoModel
-import com.minhhnn18898.manage_trip.tripdetail.data.model.FlightInfoModel
-import com.minhhnn18898.manage_trip.tripdetail.data.model.HotelInfoModel
-import com.minhhnn18898.manage_trip.tripdetail.data.model.TripActivityInfoModel
-import com.minhhnn18898.manage_trip.tripinfo.data.dao.TripInfoDao
-import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfoModel
+import com.minhhnn18898.manage_trip.trip_info.data.dao.TripInfoDao
+import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 
 @Database(entities = [
         AirportInfoModel::class,
