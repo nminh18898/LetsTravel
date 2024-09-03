@@ -16,6 +16,7 @@ import com.minhhnn18898.manage_trip.tripdetail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.tripdetail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.tripinfo.data.repo.TripInfoRepository
+import com.minhhnn18898.manage_trip.tripinfo.data.repo.TripInfoRepositoryImpl
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,8 +65,8 @@ class TripDetailRepositoryTest {
             .build()
 
         // repository to create trip info
-        tripInfoRepository =
-            TripInfoRepository(
+        tripInfoRepository  =
+            TripInfoRepositoryImpl(
                 tripInfoDao = database.tripInfoDao(),
                 ioDispatcher = Dispatchers.Main
             )

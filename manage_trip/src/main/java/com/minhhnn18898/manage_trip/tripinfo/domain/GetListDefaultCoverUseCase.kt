@@ -1,13 +1,12 @@
 package com.minhhnn18898.manage_trip.tripinfo.domain
 
-import com.minhhnn18898.architecture.usecase.UseCase
 import com.minhhnn18898.manage_trip.tripinfo.data.repo.DefaultCoverElement
 import com.minhhnn18898.manage_trip.tripinfo.data.repo.TripInfoRepository
 import javax.inject.Inject
 
-class GetListDefaultCoverUseCase @Inject constructor(private val repository: TripInfoRepository): UseCase<Unit, List<DefaultCoverElement>>() {
+class GetListDefaultCoverUseCase @Inject constructor(private val repository: TripInfoRepository) {
 
-    override fun run(params: Unit): List<DefaultCoverElement> {
+    fun run(): List<DefaultCoverElement> {
         return repository.getListDefaultCoverElements()
     }
 }

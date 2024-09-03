@@ -144,10 +144,10 @@ class EditTripViewModel @Inject constructor(
     }
 
     private fun initDefaultCoverList() {
-        val list: List<DefaultCoverElement> = getListDefaultCoverUseCase.execute(Unit)?.map { coverElement ->
+        val list: List<DefaultCoverElement> = getListDefaultCoverUseCase.run().map { coverElement ->
             val uiRes = defaultCoverResourceProvider.getDefaultCoverList()[coverElement] ?: 0
             DefaultCoverElement(coverElement.type, isSelected = false, uiRes)
-        } ?: emptyList()
+        }
 
         listCoverItems = list.toMutableStateList()
     }

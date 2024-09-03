@@ -9,6 +9,7 @@ import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
 import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfo
 import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfoModel
+import com.minhhnn18898.manage_trip.tripinfo.utils.assertTripInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,14 +24,14 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @MediumTest
-class TripInfoRepositoryTest {
+class TripInfoRepositoryImplTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     var mainCoroutineRule = MainDispatcherRule()
 
-    private lateinit var repository: TripInfoRepository
+    private lateinit var repository: TripInfoRepositoryImpl
     private lateinit var database: UserTripDatabase
 
     @Before
@@ -43,7 +44,7 @@ class TripInfoRepositoryTest {
             .build()
 
         repository =
-            TripInfoRepository(
+            TripInfoRepositoryImpl(
                 database.tripInfoDao(),
                 Dispatchers.Main
             )
@@ -201,13 +202,5 @@ class TripInfoRepositoryTest {
                 DefaultCoverElement.COVER_DEFAULT_THEME_SEA_DIVING,
             )
         )
-    }
-
-    private fun assertTripInfoEqual(expected: TripInfo, target: TripInfo?) {
-        Truth.assertThat(target).isNotNull()
-        Truth.assertThat(target?.title).isEqualTo(expected.title)
-        Truth.assertThat(target?.coverType).isEqualTo(expected.coverType)
-        Truth.assertThat(target?.defaultCoverId).isEqualTo(expected.defaultCoverId)
-        Truth.assertThat(target?.customCoverPath).isEqualTo(expected.customCoverPath)
     }
 }

@@ -8,6 +8,7 @@ import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
 import com.minhhnn18898.manage_trip.tripinfo.data.model.TripInfoModel
+import com.minhhnn18898.manage_trip.tripinfo.utils.assertTripInfoModelEqual
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -54,7 +55,7 @@ class TripInfoDaoTest {
         val loaded = database.tripInfoDao().getTripInfo(1L).first()
 
         // Then
-        assertTripInfoEqual(tripInfo, loaded)
+        assertTripInfoModelEqual(tripInfo, loaded)
     }
 
     @Test
@@ -82,7 +83,7 @@ class TripInfoDaoTest {
         val loaded = database.tripInfoDao().getTripInfo(1L).first()
 
         // Then
-        assertTripInfoEqual(updatedValue, loaded)
+        assertTripInfoModelEqual(updatedValue, loaded)
     }
 
     @Test
@@ -132,15 +133,7 @@ class TripInfoDaoTest {
 
         // Then - verify sorting order that the newest value is placed first
         Truth.assertThat(loaded).hasSize(2)
-        assertTripInfoEqual(loaded[0], secondTrip)
-        assertTripInfoEqual(loaded[1], firstTrip)
-    }
-
-    private fun assertTripInfoEqual(expected: TripInfoModel, target: TripInfoModel?) {
-        Truth.assertThat(target).isNotNull()
-        Truth.assertThat(target?.title).isEqualTo(expected.title)
-        Truth.assertThat(target?.coverType).isEqualTo(expected.coverType)
-        Truth.assertThat(target?.defaultCoverId).isEqualTo(expected.defaultCoverId)
-        Truth.assertThat(target?.customCoverPath).isEqualTo(expected.customCoverPath)
+        assertTripInfoModelEqual(loaded[0], secondTrip)
+        assertTripInfoModelEqual(loaded[1], firstTrip)
     }
 }

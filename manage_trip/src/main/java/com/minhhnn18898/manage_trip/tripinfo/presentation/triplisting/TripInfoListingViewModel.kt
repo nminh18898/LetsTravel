@@ -36,7 +36,7 @@ class TripInfoListingViewModel @Inject constructor(
 
     private fun loadListTripInfo() {
         viewModelScope.launch {
-            getListTripInfoUseCase.execute(Unit)?.collect {
+            getListTripInfoUseCase.execute()?.collect {
                 when(it) {
                     is Result.Loading -> contentState = GetSavedTripInfoContentLoading()
                     is Result.Success -> handleResultLoadListTripInfo(it.data)
