@@ -7,14 +7,24 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 
-private fun assertFlightAndAirportEqual(expected: FlightWithAirportInfo, target: FlightWithAirportInfo?) {
-    Truth.assertThat(target).isNotNull()
-    assertFlightInfo(expected.flightInfo, target?.flightInfo)
-    assertAirportInfo(expected.departAirport, target?.departAirport)
-    assertAirportInfo(expected.destinationAirport, target?.destinationAirport)
+fun assertFlightAndAirportEqual(listExpected: List<FlightWithAirportInfo>, listTarget: List<FlightWithAirportInfo?>) {
+    Truth.assertThat(listExpected).hasSize(listTarget.size)
+
+    for(i in listExpected.indices) {
+        val expected = listExpected[i]
+        val target = listTarget[i]
+        assertFlightAndAirportEqual(expected = expected, target = target)
+    }
 }
 
-fun assertFlightInfo(expected: FlightInfo, target: FlightInfo?) {
+fun assertFlightAndAirportEqual(expected: FlightWithAirportInfo, target: FlightWithAirportInfo?) {
+    Truth.assertThat(target).isNotNull()
+    assertFlightInfoEqual(expected.flightInfo, target?.flightInfo)
+    assertAirportInfoEqual(expected.departAirport, target?.departAirport)
+    assertAirportInfoEqual(expected.destinationAirport, target?.destinationAirport)
+}
+
+fun assertFlightInfoEqual(expected: FlightInfo, target: FlightInfo?) {
     Truth.assertThat(target).isNotNull()
     Truth.assertThat(target?.flightNumber).isEqualTo(expected.flightNumber)
     Truth.assertThat(target?.operatedAirlines).isEqualTo(expected.operatedAirlines)
@@ -23,14 +33,14 @@ fun assertFlightInfo(expected: FlightInfo, target: FlightInfo?) {
     Truth.assertThat(target?.price).isEqualTo(expected.price)
 }
 
-fun assertAirportInfo(expected: AirportInfo, target: AirportInfo?) {
+fun assertAirportInfoEqual(expected: AirportInfo, target: AirportInfo?) {
     Truth.assertThat(target).isNotNull()
     Truth.assertThat(target?.code).isEqualTo(expected.code)
     Truth.assertThat(target?.city).isEqualTo(expected.city)
     Truth.assertThat(target?.airportName).isEqualTo(expected.airportName)
 }
 
-fun assertHotelInfo(expected: HotelInfo, target: HotelInfo?) {
+fun assertHotelInfoEqual(expected: HotelInfo, target: HotelInfo?) {
     Truth.assertThat(target).isNotNull()
     Truth.assertThat(target?.hotelName).isEqualTo(expected.hotelName)
     Truth.assertThat(target?.address).isEqualTo(expected.address)
@@ -39,7 +49,7 @@ fun assertHotelInfo(expected: HotelInfo, target: HotelInfo?) {
     Truth.assertThat(target?.price).isEqualTo(expected.price)
 }
 
-fun assertActivityInfo(expected: TripActivityInfo, target: TripActivityInfo?) {
+fun assertActivityInfoEqual(expected: TripActivityInfo, target: TripActivityInfo?) {
     Truth.assertThat(target).isNotNull()
     Truth.assertThat(target?.title).isEqualTo(expected.title)
     Truth.assertThat(target?.description).isEqualTo(expected.description)

@@ -18,10 +18,6 @@ fun assertTripInfoEqual(listExpected: List<TripInfo>, listTarget: List<TripInfo?
         val expected = listExpected[i]
         val target = listTarget[i]
 
-        Truth.assertThat(target).isNotNull()
-        Truth.assertThat(target?.title).isEqualTo(expected.title)
-        Truth.assertThat(target?.coverType).isEqualTo(expected.coverType)
-        Truth.assertThat(target?.defaultCoverId).isEqualTo(expected.defaultCoverId)
-        Truth.assertThat(target?.customCoverPath).isEqualTo(expected.customCoverPath)
+        assertTripInfoEqual(expected = expected, target = target)
     }
 }

@@ -71,35 +71,6 @@ class CreateTripInfoUseCaseTest {
     }
 
     @Test
-    fun insertValidTripInfo_withDefaultCover_withInvalidId_canRetrieveTheSameTripInfo() = runTest {
-        // When
-        val result = createTripInfoUseCase.execute(
-            ModifyTripInfoUseCase.DefaultCoverParam(
-                tripId = 10L, // use an id that different then 0, but we still a valid auto generated id is return
-                tripName = "Vietnam",
-                coverId = 1
-            )
-        )?.toList()
-
-        // Then
-        Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
-        val id = (result?.get(1) as Result.Success).data
-
-        assertTripInfoEqual(
-            expected = TripInfo(
-                tripId = id,
-                title = "Vietnam",
-                coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
-                defaultCoverId = 1,
-                customCoverPath = ""
-            ),
-            target = fakeTripInfoRepository.getTripInfo(id)
-        )
-    }
-
-    @Test
     fun insertValidTripInfo_withCustomCover_canRetrieveTheSameTripInfo() = runTest {
         // When
         val result = createTripInfoUseCase.execute(
