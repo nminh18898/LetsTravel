@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.CreateNewFlightInfoUseCase
@@ -247,7 +247,7 @@ class EditFlightInfoViewModel @Inject constructor(
         return flightId > 0L
     }
 
-    private suspend fun createNewFlightInfo(flightInfo: FlightInfo, departAirport: AirportInfoModel, arrivalAirport: AirportInfoModel) {
+    private suspend fun createNewFlightInfo(flightInfo: FlightInfo, departAirport: AirportInfo, arrivalAirport: AirportInfo) {
         createNewFlightInfoUseCase.execute(
             CreateNewFlightInfoUseCase.Param(
                 tripId,
@@ -268,7 +268,7 @@ class EditFlightInfoViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateFlightInfo(flightInfo: FlightInfo, departAirport: AirportInfoModel, arrivalAirport: AirportInfoModel) {
+    private suspend fun updateFlightInfo(flightInfo: FlightInfo, departAirport: AirportInfo, arrivalAirport: AirportInfo) {
         updateFlightInfoUseCase.execute(
             UpdateFlightInfoUseCase.Param(
                 tripId,
@@ -323,8 +323,8 @@ class EditFlightInfoViewModel @Inject constructor(
         }
     }
 
-    private fun extractAirportInfoFromInput(type: ItineraryType): AirportInfoModel {
-        return AirportInfoModel(
+    private fun extractAirportInfoFromInput(type: ItineraryType): AirportInfo {
+        return AirportInfo(
             airportCodes.getStringValue(type),
             airportCities.getStringValue(type),
             airportNames.getStringValue(type)

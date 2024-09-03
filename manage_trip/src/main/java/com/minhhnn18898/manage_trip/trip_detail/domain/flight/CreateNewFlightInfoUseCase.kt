@@ -2,7 +2,7 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.flight
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,7 @@ class CreateNewFlightInfoUseCase @Inject constructor(private val repository: Tri
     class Param(
         val tripId: Long,
         val flightInfo: FlightInfo,
-        val departAirport: AirportInfoModel,
-        val destinationAirport: AirportInfoModel
+        val departAirport: AirportInfo,
+        val destinationAirport: AirportInfo
     )
 }

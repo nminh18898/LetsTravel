@@ -27,3 +27,11 @@ fun AirportInfoModel.toAirportInfo(): AirportInfo {
         airportName = this.airportName
     )
 }
+
+fun AirportInfo.toAirportInfoModel(): AirportInfoModel {
+    return AirportInfoModel(
+        code = this.code,
+        city = this.city,
+        airportName = this.airportName
+    )
+}

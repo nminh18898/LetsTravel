@@ -8,7 +8,6 @@ import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfoModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
@@ -36,7 +35,7 @@ import org.mockito.MockitoAnnotations
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @MediumTest
-class TripDetailRepositoryTest {
+class TripDetailRepositoryImplTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -47,7 +46,7 @@ class TripDetailRepositoryTest {
     private lateinit var mockAnnotations: AutoCloseable
 
     private lateinit var tripInfoRepository: TripInfoRepository
-    private lateinit var repository: TripDetailRepository
+    private lateinit var repository: TripDetailRepositoryImpl
     private lateinit var database: UserTripDatabase
 
     @Mock
@@ -74,7 +73,7 @@ class TripDetailRepositoryTest {
 
         // repository under test
        repository =
-            TripDetailRepository(
+            TripDetailRepositoryImpl(
                 ioDispatcher = Dispatchers.Main,
                 airportInfoDao =  database.airportInfoDao(),
                 flightInfoDao = database.flightInfoDao(),
@@ -114,13 +113,13 @@ class TripDetailRepositoryTest {
             price = 2_000_000
         )
 
-        val departAirport = AirportInfoModel(
+        val departAirport = AirportInfo(
             code = "SGN",
             city = "Ho Chi Minh City",
             airportName = "Tan Son Nhat"
         )
 
-        val destinationAirport = AirportInfoModel(
+        val destinationAirport = AirportInfo(
             code = "SIN",
             city = "Singapore",
             airportName = "Changi"
@@ -167,13 +166,13 @@ class TripDetailRepositoryTest {
             price = 2_000_000
         )
 
-        val departAirport = AirportInfoModel(
+        val departAirport = AirportInfo(
             code = "SGN",
             city = "Ho Chi Minh City",
             airportName = "Tan Son Nhat"
         )
 
-        val destinationAirport = AirportInfoModel(
+        val destinationAirport = AirportInfo(
             code = "SIN",
             city = "Singapore",
             airportName = "Changi"
@@ -196,13 +195,13 @@ class TripDetailRepositoryTest {
             price = 2_300_000
         )
 
-        val departAirportUpdated = AirportInfoModel(
+        val departAirportUpdated = AirportInfo(
             code = "HAN",
             city = "Ha Noi",
             airportName = "Noi Bai"
         )
 
-        val destinationAirportUpdated = AirportInfoModel(
+        val destinationAirportUpdated = AirportInfo(
             code = "SIN",
             city = "Singapore City",
             airportName = "Changi Airport"
@@ -246,13 +245,13 @@ class TripDetailRepositoryTest {
             price = 2_000_000
         )
 
-        val departAirport = AirportInfoModel(
+        val departAirport = AirportInfo(
             code = "SGN",
             city = "Ho Chi Minh City",
             airportName = "Tan Son Nhat"
         )
 
-        val destinationAirport = AirportInfoModel(
+        val destinationAirport = AirportInfo(
             code = "SIN",
             city = "Singapore",
             airportName = "Changi"
@@ -287,12 +286,12 @@ class TripDetailRepositoryTest {
                 arrivalTime = 1_800_000,
                 price = 2_000_000
             ),
-            departAirport = AirportInfoModel(
+            departAirport = AirportInfo(
                 code = "SGN",
                 city = "Ho Chi Minh City",
                 airportName = "Tan Son Nhat"
             ),
-            destinationAirport = AirportInfoModel(
+            destinationAirport = AirportInfo(
                 code = "SIN",
                 city = "Singapore",
                 airportName = "Changi Airport"
@@ -310,12 +309,12 @@ class TripDetailRepositoryTest {
                 arrivalTime = 1_300_000,
                 price = 2_500_000
             ),
-            departAirport = AirportInfoModel(
+            departAirport = AirportInfo(
                 code = "SIN",
                 city = "Singapore",
                 airportName = "Changi Airport"
             ),
-            destinationAirport = AirportInfoModel(
+            destinationAirport = AirportInfo(
                 code = "BKK",
                 city = "Bangkok",
                 airportName = "Suvarnabhumi Airport"
@@ -333,12 +332,12 @@ class TripDetailRepositoryTest {
                 arrivalTime = 2_500_000,
                 price = 2_100_000
             ),
-            departAirport = AirportInfoModel(
+            departAirport = AirportInfo(
                 code = "BKK",
                 city = "Bangkok",
                 airportName = "Suvarnabhumi Airport"
             ),
-            destinationAirport = AirportInfoModel(
+            destinationAirport = AirportInfo(
                 code = "HAN",
                 city = "Ha Noi",
                 airportName = "Noi Bai"
@@ -433,13 +432,13 @@ class TripDetailRepositoryTest {
             price = 2_000_000
         )
 
-        val departAirport = AirportInfoModel(
+        val departAirport = AirportInfo(
             code = "SGN",
             city = "Ho Chi Minh City",
             airportName = "Tan Son Nhat"
         )
 
-        val destinationAirport = AirportInfoModel(
+        val destinationAirport = AirportInfo(
             code = "SIN",
             city = "Singapore",
             airportName = "Changi"
