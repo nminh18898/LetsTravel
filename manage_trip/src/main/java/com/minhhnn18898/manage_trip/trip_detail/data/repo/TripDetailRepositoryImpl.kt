@@ -41,7 +41,7 @@ class TripDetailRepositoryImpl @Inject constructor(
         flightInfo: FlightInfo,
         departAirport: AirportInfo,
         destinationAirport: AirportInfo
-    ) = withContext(ioDispatcher) {
+    ): Long = withContext(ioDispatcher) {
 
         val flightInfoModel = flightInfo.toFlightInfoModel(
             tripId = tripId,
@@ -58,6 +58,8 @@ class TripDetailRepositoryImpl @Inject constructor(
         if(resultCodeInsertDepartAirport == -1L && resultCodeInsertDestinationAirport == -1L && resultCode == -1L) {
             throw ExceptionInsertFlightInfo()
         }
+
+        resultCode
     }
 
     override suspend fun updateFlightInfo(
@@ -118,7 +120,7 @@ class TripDetailRepositoryImpl @Inject constructor(
                 }
             }
 
-    override suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
+    override suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo): Long = withContext(ioDispatcher) {
         val hotelInfoModel = hotelInfo
             .toHotelInfoModel(tripId)
             .copy(hotelId = 0L)
@@ -127,6 +129,8 @@ class TripDetailRepositoryImpl @Inject constructor(
         if(resultCode == -1L) {
             throw ExceptionInsertHotelInfo()
         }
+
+        resultCode
     }
 
     override suspend fun updateHotelInfo(tripId: Long, hotelInfo: HotelInfo) = withContext(ioDispatcher) {
@@ -160,7 +164,7 @@ class TripDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertActivityInfo(tripId: Long, activityInfo: TripActivityInfo) = withContext(ioDispatcher) {
+    override suspend fun insertActivityInfo(tripId: Long, activityInfo: TripActivityInfo): Long = withContext(ioDispatcher) {
         val tripActivityInfoModel = activityInfo
             .toTripActivityModel(tripId)
             .copy(activityId = 0L)
@@ -169,6 +173,8 @@ class TripDetailRepositoryImpl @Inject constructor(
         if(resultCode == -1L) {
             throw ExceptionInsertTripActivityInfo()
         }
+
+        resultCode
     }
 
     override suspend fun updateActivityInfo(tripId: Long, activityInfo: TripActivityInfo) = withContext(ioDispatcher) {

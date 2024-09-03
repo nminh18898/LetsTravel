@@ -13,7 +13,7 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
+import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepository
 import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepositoryImpl
 import com.minhhnn18898.test_utils.MainDispatcherRule
@@ -85,7 +85,7 @@ class TripDetailRepositoryImplTest {
 
     private fun insertTripInfo() = runTest {
         tripInfoRepository.insertTripInfo(
-            TripInfoModel(
+            TripInfo(
                 tripId = 0,
                 title = "Vietnam",
                 coverType = 1,

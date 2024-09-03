@@ -8,7 +8,6 @@ import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.utils.assertTripInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +57,7 @@ class TripInfoRepositoryImplTest {
     @Test
     fun saveTrip_retrieveTrip() = runTest {
         // Given
-        val tripInfo = TripInfoModel(
+        val tripInfo = TripInfo(
             tripId = 0,
             title = "Vietnam",
             coverType = 1,
@@ -84,7 +83,7 @@ class TripInfoRepositoryImplTest {
     @Test
     fun updateTrip_retrieveTrip() = runTest {
         // Given
-        val tripInfo = TripInfoModel(
+        val tripInfo = TripInfo(
             tripId = 0,
             title = "Vietnam",
             coverType = 1,
@@ -118,7 +117,7 @@ class TripInfoRepositoryImplTest {
     @Test
     fun deleteTrip_retrieveTrip() = runTest {
         // Given
-        val tripInfo = TripInfoModel(
+        val tripInfo = TripInfo(
             tripId = 0,
             title = "Vietnam",
             coverType = 1,
@@ -138,14 +137,14 @@ class TripInfoRepositoryImplTest {
     @Test
     fun getAllTrips() = runTest {
         // Given
-        val firstTrip = TripInfoModel(
+        val firstTrip = TripInfo(
             tripId = 0,
             title = "Vietnam",
             coverType = 1,
             defaultCoverId = 1,
             customCoverPath = "https://testing.com/vietnam"
         )
-        val secondTrip = TripInfoModel(
+        val secondTrip = TripInfo(
             tripId = 0,
             title = "Thailand",
             coverType = 1,

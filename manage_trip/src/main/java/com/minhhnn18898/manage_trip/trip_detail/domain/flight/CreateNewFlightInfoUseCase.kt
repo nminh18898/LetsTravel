@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class CreateNewFlightInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<CreateNewFlightInfoUseCase.Param, Flow<Result<Unit>>>() {
+class CreateNewFlightInfoUseCase @Inject constructor(private val repository: TripDetailRepository): UseCase<CreateNewFlightInfoUseCase.Param, Flow<Result<Long>>>() {
 
-    override fun run(params: Param):  Flow<Result<Unit>> = flow {
+    override fun run(params: Param):  Flow<Result<Long>> = flow {
         emit(Result.Loading)
-        repository.insertFlightInfo(params.tripId, params.flightInfo, params.departAirport, params.destinationAirport)
-        emit(Result.Success(Unit))
+        val result = repository.insertFlightInfo(params.tripId, params.flightInfo, params.departAirport, params.destinationAirport)
+        emit(Result.Success(result))
     }.catch {
         emit(Result.Error(it))
     }

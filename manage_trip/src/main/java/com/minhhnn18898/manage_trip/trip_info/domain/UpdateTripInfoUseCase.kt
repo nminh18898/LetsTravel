@@ -11,7 +11,7 @@ class UpdateTripInfoUseCase @Inject constructor(private val repository: TripInfo
 
     override fun run(params: ModifyTripInfoUseCase.Param): Flow<Result<Long>> = flow {
         emit(Result.Loading)
-        val tripId = repository.updateTripInfo(createTripInfoModel(params))
+        val tripId = repository.updateTripInfo(createTripInfo(params))
         emit(Result.Success(tripId))
     }.catch {
         emit(Result.Error(it))

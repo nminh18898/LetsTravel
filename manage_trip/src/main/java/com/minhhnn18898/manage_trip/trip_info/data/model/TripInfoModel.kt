@@ -40,3 +40,13 @@ fun TripInfoModel.toTripInfo(): TripInfo {
         customCoverPath = customCoverPath
     )
 }
+
+fun TripInfo.toTripInfoModel(): TripInfoModel {
+    return TripInfoModel(
+        tripId = tripId,
+        title = title,
+        coverType = coverType,
+        defaultCoverId = defaultCoverId,
+        customCoverPath = customCoverPath
+    )
+}

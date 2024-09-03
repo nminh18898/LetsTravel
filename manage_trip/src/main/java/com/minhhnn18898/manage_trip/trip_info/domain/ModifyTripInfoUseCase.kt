@@ -2,6 +2,7 @@ package com.minhhnn18898.manage_trip.trip_info.domain
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
+import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import kotlinx.coroutines.flow.Flow
 
@@ -13,9 +14,9 @@ abstract class ModifyTripInfoUseCase: UseCase<ModifyTripInfoUseCase.Param, Flow<
 
     data class CustomCoverParam(override val tripId: Long, override val tripName: String, val uri: String): Param(tripId, tripName)
 
-    protected fun createTripInfoModel(param: Param): TripInfoModel {
+    protected fun createTripInfo(param: Param): TripInfo {
         return when(param) {
-            is DefaultCoverParam -> TripInfoModel(
+            is DefaultCoverParam -> TripInfo(
                 tripId = param.tripId,
                 title = param.tripName,
                 coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
@@ -23,7 +24,7 @@ abstract class ModifyTripInfoUseCase: UseCase<ModifyTripInfoUseCase.Param, Flow<
                 customCoverPath = ""
             )
 
-            is CustomCoverParam -> TripInfoModel(
+            is CustomCoverParam -> TripInfo(
                 tripId = param.tripId,
                 title = param.tripName,
                 coverType = TripInfoModel.TRIP_COVER_TYPE_CUSTOM,

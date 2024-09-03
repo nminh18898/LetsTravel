@@ -18,7 +18,7 @@ interface TripDetailRepository {
         flightInfo: FlightInfo,
         departAirport: AirportInfo,
         destinationAirport: AirportInfo
-    )
+    ): Long
 
     suspend fun updateFlightInfo(
         tripId: Long,
@@ -34,7 +34,7 @@ interface TripDetailRepository {
 
     suspend fun getHotelInfo(hotelId: Long): Flow<HotelInfo?>
 
-    suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo)
+    suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo): Long
 
     suspend fun updateHotelInfo(tripId: Long, hotelInfo: HotelInfo)
 
@@ -45,7 +45,7 @@ interface TripDetailRepository {
 
     fun getActivityInfo(activityId: Long): Flow<TripActivityInfo?>
 
-    suspend fun insertActivityInfo(tripId: Long, activityInfo: TripActivityInfo)
+    suspend fun insertActivityInfo(tripId: Long, activityInfo: TripActivityInfo): Long
 
     suspend fun updateActivityInfo(tripId: Long, activityInfo: TripActivityInfo)
 

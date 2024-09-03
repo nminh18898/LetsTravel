@@ -8,6 +8,7 @@ import com.minhhnn18898.manage_trip.trip_info.data.model.ExceptionUpdateTripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.data.model.toTripInfo
+import com.minhhnn18898.manage_trip.trip_info.data.model.toTripInfoModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -51,20 +52,20 @@ class TripInfoRepositoryImpl @Inject constructor(
 
     override fun getListDefaultCoverElements(): List<DefaultCoverElement> = defaultCoverIdList
 
-    override suspend fun insertTripInfo(tripInfoModel: TripInfoModel): Long = withContext(ioDispatcher) {
-        val resultCode = tripInfoDao.insert(tripInfoModel.copy(tripId = 0L))
+    override suspend fun insertTripInfo(tripInfo: TripInfo): Long = withContext(ioDispatcher) {
+        val resultCode = tripInfoDao.insert(tripInfo.toTripInfoModel().copy(tripId = 0L))
         if(resultCode == -1L) {
             throw ExceptionInsertTripInfo()
         }
         resultCode
     }
 
-    override suspend fun updateTripInfo(tripInfoModel: TripInfoModel): Long = withContext(ioDispatcher) {
-        val resultCode = tripInfoDao.update(tripInfoModel)
+    override suspend fun updateTripInfo(tripInfo: TripInfo): Long = withContext(ioDispatcher) {
+        val resultCode = tripInfoDao.update(tripInfo.toTripInfoModel())
         if(resultCode <= 0) {
             throw ExceptionUpdateTripInfo()
         }
-        tripInfoModel.tripId
+        tripInfo.tripId
     }
 
     override suspend fun deleteTripInfo(tripId: Long) = withContext(ioDispatcher) {
