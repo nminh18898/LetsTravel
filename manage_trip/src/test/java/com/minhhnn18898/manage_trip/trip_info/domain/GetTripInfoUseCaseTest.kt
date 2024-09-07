@@ -122,7 +122,7 @@ class GetTripInfoUseCaseTest {
     }
 
     @Test
-    fun geTripInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
+    fun getHotelInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
         // Given - add valid trip info so that it can be retrieved, but throw exception from repository
         fakeTripInfoRepository.addTripInfo(TripInfo(
             tripId = 1L,

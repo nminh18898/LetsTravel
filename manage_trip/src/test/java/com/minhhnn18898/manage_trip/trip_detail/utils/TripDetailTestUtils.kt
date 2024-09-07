@@ -40,6 +40,16 @@ fun assertAirportInfoEqual(expected: AirportInfo, target: AirportInfo?) {
     Truth.assertThat(target?.airportName).isEqualTo(expected.airportName)
 }
 
+fun assertHotelInfoEqual(listExpected: List<HotelInfo>, listTarget: List<HotelInfo?>) {
+    Truth.assertThat(listExpected).hasSize(listTarget.size)
+
+    for(i in listExpected.indices) {
+        val expected = listExpected[i]
+        val target = listTarget[i]
+        assertHotelInfoEqual(expected = expected, target = target)
+    }
+}
+
 fun assertHotelInfoEqual(expected: HotelInfo, target: HotelInfo?) {
     Truth.assertThat(target).isNotNull()
     Truth.assertThat(target?.hotelName).isEqualTo(expected.hotelName)
@@ -48,6 +58,17 @@ fun assertHotelInfoEqual(expected: HotelInfo, target: HotelInfo?) {
     Truth.assertThat(target?.checkOutDate).isEqualTo(expected.checkOutDate)
     Truth.assertThat(target?.price).isEqualTo(expected.price)
 }
+
+fun assertActivityInfoEqual(listExpected: List<TripActivityInfo>, listTarget: List<TripActivityInfo?>) {
+    Truth.assertThat(listExpected).hasSize(listTarget.size)
+
+    for(i in listExpected.indices) {
+        val expected = listExpected[i]
+        val target = listTarget[i]
+        assertActivityInfoEqual(expected = expected, target = target)
+    }
+}
+
 
 fun assertActivityInfoEqual(expected: TripActivityInfo, target: TripActivityInfo?) {
     Truth.assertThat(target).isNotNull()
