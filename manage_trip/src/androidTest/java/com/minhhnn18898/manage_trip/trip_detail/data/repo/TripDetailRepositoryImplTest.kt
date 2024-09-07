@@ -796,7 +796,7 @@ class TripDetailRepositoryImplTest {
         val firstDateActivities = result[1_000_000]
         val secondDateActivities = result[2_000_000]
 
-        // expecte: first date has two activities, and the second day has one
+        // expected: first date has two activities, and the second day has one
         Truth.assertThat(firstDateActivities).hasSize(2)
         Truth.assertThat(secondDateActivities).hasSize(1)
 

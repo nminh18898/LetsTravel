@@ -137,7 +137,7 @@ class GetListHotelInfoUseCaseTest {
     }
 
     @Test
-    fun geTripInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
+    fun getTripInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
         // Given - add some valid trip info so that it can be retrieved later, but throw exception from repository
         fakeTripDetailRepository.apply {
             addHotelInfo(
