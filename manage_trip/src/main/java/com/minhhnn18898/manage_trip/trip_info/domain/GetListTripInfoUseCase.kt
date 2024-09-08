@@ -1,22 +1,12 @@
 package com.minhhnn18898.manage_trip.trip_info.domain
 
 import com.minhhnn18898.architecture.usecase.NoParamUseCase
-import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetListTripInfoUseCase @Inject constructor(private val repository: TripInfoRepository): NoParamUseCase<Flow<Result<Flow<List<TripInfo>>>>>() {
+class GetListTripInfoUseCase @Inject constructor(private val repository: TripInfoRepository): NoParamUseCase<Flow<List<TripInfo>>>() {
 
-    override fun run(): Flow<Result<Flow<List<TripInfo>>>> = flow {
-        emit(Result.Loading)
-        val result = repository.getAllTrips()
-        emit(Result.Success(result))
-    }.catch {
-        emit(Result.Error(it))
-    }
-
+    override fun run(): Flow<List<TripInfo>> = repository.getAllTrips()
 }

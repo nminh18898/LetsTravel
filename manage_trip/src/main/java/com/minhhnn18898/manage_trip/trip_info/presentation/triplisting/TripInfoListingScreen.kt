@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CreateNewTripCtaDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.EmptySavedTripView
@@ -56,32 +58,30 @@ fun TripInfoListingScreen(
     Column(
         modifier = modifier.padding(vertical = 16.dp)
     ) {
-        viewModel.contentState.let { contentState ->
+        val contentState by viewModel.contentState.collectAsStateWithLifecycle()
 
-            if (contentState.isContentLoading()) {
-                BasicLoadingView(modifier)
+        if (contentState.isContentLoading()) {
+            BasicLoadingView(modifier)
+        }
+
+        if(contentState.hasError()) {
+            DefaultErrorView(modifier = modifier)
+        }
+
+        if (contentState.hasResult()) {
+            val items = contentState.getResult()
+            val hasUserTrip = items.any { it is UserTripDisplay }
+
+            if (hasUserTrip) {
+                ContentListTripItem(
+                    modifier = modifier.padding(horizontal = 16.dp),
+                    listUserTripItem = items,
+                    onClickCreateNew = onClickCreateNew,
+                    onClickTripItem = onClickTripItem
+                )
+            } else {
+                EmptySavedTripView(onClick = onClickEmptyView)
             }
-
-            if(contentState.hasError()) {
-                DefaultErrorView(modifier = modifier)
-            }
-
-            if (contentState.hasResult()) {
-                val items = contentState.getResult()
-                val hasUserTrip = items.any { it is UserTripDisplay }
-
-                if (hasUserTrip) {
-                    ContentListTripItem(
-                        modifier = modifier.padding(horizontal = 16.dp),
-                        listUserTripItem = items,
-                        onClickCreateNew = onClickCreateNew,
-                        onClickTripItem = onClickTripItem
-                    )
-                } else {
-                    EmptySavedTripView(onClick = onClickEmptyView)
-                }
-            }
-
         }
     }
 }

@@ -27,7 +27,7 @@ class GetListFlightInfoUseCaseTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainDispatcherRule()
+    val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var getListFlightInfoUseCase: GetListFlightInfoUseCase
 

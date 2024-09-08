@@ -1,59 +1,43 @@
 package com.minhhnn18898.manage_trip.trip_info.presentation.triplisting
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.domain.GetListTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CreateNewTripCtaDisplay
-import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentError
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentLoading
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentResult
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentState
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripInfoItemDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class TripInfoListingViewModel @Inject constructor(
-    private val getListTripInfoUseCase: GetListTripInfoUseCase,
+    getListTripInfoUseCase: GetListTripInfoUseCase,
     private val defaultCoverResourceProvider: CoverDefaultResourceProvider
 ): ViewModel() {
 
-    var contentState: GetSavedTripInfoContentState by mutableStateOf(GetSavedTripInfoContentLoading())
-        private set
+    val contentState: StateFlow<GetSavedTripInfoContentState> =
+        getListTripInfoUseCase.execute().map {
+            GetSavedTripInfoContentResult(it.makeListTripDisplayItemWithCreateItem())
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = GetSavedTripInfoContentLoading()
+        )
 
-    init {
-        loadListTripInfo()
+    private fun List<TripInfo>.makeListTripDisplayItemWithCreateItem(): List<TripInfoItemDisplay> {
+        val data = mutableListOf<TripInfoItemDisplay>()
+        val userTrips = this.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }
+        data.add(CreateNewTripCtaDisplay)
+        data.addAll(userTrips)
+        return data
     }
-
-    private fun loadListTripInfo() {
-        viewModelScope.launch {
-            getListTripInfoUseCase.execute()?.collect {
-                when(it) {
-                    is Result.Loading -> contentState = GetSavedTripInfoContentLoading()
-                    is Result.Success -> handleResultLoadListTripInfo(it.data)
-                    is Result.Error -> contentState = GetSavedTripInfoContentError()
-                }
-            }
-        }
-    }
-
-    private suspend fun handleResultLoadListTripInfo(flowData: Flow<List<TripInfo>>) {
-        flowData.collect { item ->
-            val data = mutableListOf<TripInfoItemDisplay>()
-            val userTrips = item.map { tripInfo -> tripInfo.toTripItemDisplay(defaultCoverResourceProvider) }
-            data.add(CreateNewTripCtaDisplay)
-            data.addAll(userTrips)
-            contentState = GetSavedTripInfoContentResult(data)
-        }
-    }
-
 }

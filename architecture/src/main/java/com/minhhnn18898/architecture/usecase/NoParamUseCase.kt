@@ -1,9 +1,9 @@
 package com.minhhnn18898.architecture.usecase
 
 abstract class NoParamUseCase<R> {
-    fun execute(): R? {
+    fun execute(): R {
         return run()
     }
 
-    protected abstract fun run(): R?
+    protected abstract fun run(): R
 }

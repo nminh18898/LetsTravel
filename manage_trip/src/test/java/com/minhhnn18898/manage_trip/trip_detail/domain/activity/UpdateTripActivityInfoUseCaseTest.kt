@@ -22,7 +22,7 @@ class UpdateTripActivityInfoUseCaseTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainDispatcherRule()
+    val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var updateTripActivityInfoUseCase: UpdateTripActivityInfoUseCase
 

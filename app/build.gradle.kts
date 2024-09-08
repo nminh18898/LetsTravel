@@ -71,6 +71,7 @@ dependencies {
 
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.lifecycle.runtime.compose.android)
     ksp(libs.androidx.room.compiler)
 
     implementation(platform(libs.firebase.bom))

@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.discover.presentation.DiscoverScreen
 import com.minhhnn18898.letstravel.R
@@ -76,38 +78,38 @@ fun HomeScreen(
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
-        viewModel.contentState.let { contentState ->
-            TripListingScreenSection(
-                icon = R.drawable.your_trips_24,
-                title = CommonStringRes.saved_trips,
-                sectionCtaData = SectionCtaData(
-                    icon = CommonDrawableRes.chevron_right_24,
-                    title = CommonStringRes.show_all,
-                    onClick = onClickShowAllSavedTrips
-                )
-            ) {
-                if (contentState.isContentLoading()) {
-                    BasicLoadingView(modifier)
-                }
+        val contentState by viewModel.contentState.collectAsStateWithLifecycle()
 
-                if(contentState.hasError()) {
-                    DefaultErrorView(modifier = modifier)
-                }
+        TripListingScreenSection(
+            icon = R.drawable.your_trips_24,
+            title = CommonStringRes.saved_trips,
+            sectionCtaData = SectionCtaData(
+                icon = CommonDrawableRes.chevron_right_24,
+                title = CommonStringRes.show_all,
+                onClick = onClickShowAllSavedTrips
+            )
+        ) {
+            if (contentState.isContentLoading()) {
+                BasicLoadingView(modifier)
+            }
 
-                if (contentState.hasResult()) {
-                    val items = contentState.getResult()
-                    val hasUserTrip = items.any { it is UserTripDisplay }
+            if(contentState.hasError()) {
+                DefaultErrorView(modifier = modifier)
+            }
 
-                    if (hasUserTrip) {
-                        ContentListTripItem(
-                            modifier = modifier,
-                            listUserTripItem = items,
-                            onClickTripItem = onClickTripItem,
-                            onClickCreateNew = onClickCreateNew
-                        )
-                    } else {
-                        EmptySavedTripView(onClick = onClickEmptyView)
-                    }
+            if (contentState.hasResult()) {
+                val items = contentState.getResult()
+                val hasUserTrip = items.any { it is UserTripDisplay }
+
+                if (hasUserTrip) {
+                    ContentListTripItem(
+                        modifier = modifier,
+                        listUserTripItem = items,
+                        onClickTripItem = onClickTripItem,
+                        onClickCreateNew = onClickCreateNew
+                    )
+                } else {
+                    EmptySavedTripView(onClick = onClickEmptyView)
                 }
             }
         }
