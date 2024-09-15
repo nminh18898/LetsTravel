@@ -70,9 +70,8 @@ fun TripInfoListingScreen(
 
         if (contentState.hasResult()) {
             val items = contentState.getResult()
-            val hasUserTrip = items.any { it is UserTripDisplay }
 
-            if (hasUserTrip) {
+            if (items.isNotEmpty()) {
                 ContentListTripItem(
                     modifier = modifier.padding(horizontal = 16.dp),
                     listUserTripItem = items,

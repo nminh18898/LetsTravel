@@ -13,7 +13,7 @@ abstract class TripCoverDisplay
 data class TripDefaultCoverDisplay(@DrawableRes val defaultCoverRes: Int): TripCoverDisplay()
 data class TripCustomCoverDisplay(val coverPath: String): TripCoverDisplay()
 
-fun TripInfo.toTripItemDisplay(defaultCoverResourceProvider: CoverDefaultResourceProvider): UserTripDisplay {
+fun TripInfo.toTripItemDisplay(defaultCoverResourceProvider: ICoverDefaultResourceProvider): UserTripDisplay {
     val coverDisplay: TripCoverDisplay = when(this.coverType) {
         TripInfoModel.TRIP_COVER_TYPE_DEFAULT -> TripDefaultCoverDisplay(defaultCoverResourceProvider.getCoverResource(this.defaultCoverId))
         TripInfoModel.TRIP_COVER_TYPE_CUSTOM -> TripCustomCoverDisplay(this.customCoverPath)

@@ -5,7 +5,7 @@ import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
 import javax.inject.Inject
 
-class CoverDefaultResourceProvider @Inject constructor() {
+class CoverDefaultResourceProvider @Inject constructor(): ICoverDefaultResourceProvider {
 
     private val defaultCoverList = mapOf(
         DefaultCoverElement.COVER_DEFAULT_THEME_SPRING to R.drawable.trip_cover_default_spring,
@@ -23,11 +23,11 @@ class CoverDefaultResourceProvider @Inject constructor() {
     private val defaultCoverListBaseValue = defaultCoverList.mapKeys { it.key.type }
 
     @DrawableRes
-    fun getCoverResource(coverId: Int): Int {
+    override fun getCoverResource(coverId: Int): Int {
         return defaultCoverListBaseValue[coverId] ?: 0
     }
 
-    fun getDefaultCoverList(): Map<DefaultCoverElement, Int> {
+    override fun getDefaultCoverList(): Map<DefaultCoverElement, Int> {
         return defaultCoverList
     }
 }

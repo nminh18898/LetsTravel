@@ -48,6 +48,7 @@ import com.minhhnn18898.discover.presentation.DiscoverScreen
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CreateNewTripCtaDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.EmptySavedTripView
+import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentResult
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripInfoItemDisplay
@@ -79,29 +80,32 @@ fun HomeScreen(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
         val contentState by viewModel.contentState.collectAsStateWithLifecycle()
+        val hasTrip = (contentState as? GetSavedTripInfoContentResult)?.listTripItem?.isNotEmpty() ?: false
 
         TripListingScreenSection(
             icon = R.drawable.your_trips_24,
             title = CommonStringRes.saved_trips,
-            sectionCtaData = SectionCtaData(
-                icon = CommonDrawableRes.chevron_right_24,
-                title = CommonStringRes.show_all,
-                onClick = onClickShowAllSavedTrips
-            )
+            sectionCtaData =
+                if (hasTrip)
+                    SectionCtaData(
+                        icon = CommonDrawableRes.chevron_right_24,
+                        title = CommonStringRes.show_all,
+                        onClick = onClickShowAllSavedTrips
+                    )
+                else null
         ) {
             if (contentState.isContentLoading()) {
                 BasicLoadingView(modifier)
             }
 
-            if(contentState.hasError()) {
+            if (contentState.hasError()) {
                 DefaultErrorView(modifier = modifier)
             }
 
             if (contentState.hasResult()) {
                 val items = contentState.getResult()
-                val hasUserTrip = items.any { it is UserTripDisplay }
 
-                if (hasUserTrip) {
+                if (items.isNotEmpty()) {
                     ContentListTripItem(
                         modifier = modifier,
                         listUserTripItem = items,

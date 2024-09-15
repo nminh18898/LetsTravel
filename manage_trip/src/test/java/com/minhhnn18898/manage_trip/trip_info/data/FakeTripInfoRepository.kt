@@ -29,11 +29,11 @@ class FakeTripInfoRepository: TripInfoRepository {
             throw Exception("Internal Error. Can not get trip info")
         }
 
-        if(tripInfoMap.isNotEmpty()) {
-            return tripInfosFlow
+        if(tripInfoMap.isEmpty()) {
+            return tripInfosFlow.apply { tryEmit(emptyList()) }
         }
 
-        return flow { emit(emptyList()) }
+        return tripInfosFlow
     }
 
     override fun getTrip(id: Long): Flow<TripInfo?> {
@@ -104,6 +104,14 @@ class FakeTripInfoRepository: TripInfoRepository {
     @TestOnly
     fun addTripInfo(tripInfo: TripInfo) {
         tripInfoMap[tripInfo.tripId] = tripInfo
+        tripInfosFlow.tryEmit(tripInfoMap.values.toList())
+    }
+
+    @TestOnly
+    fun addListTripInfo(listTripInfo: List<TripInfo>) {
+        listTripInfo.forEach { tripInfo ->
+            tripInfoMap[tripInfo.tripId] = tripInfo
+        }
         tripInfosFlow.tryEmit(tripInfoMap.values.toList())
     }
 }
