@@ -46,10 +46,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
-import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.manage_trip.R
@@ -59,7 +59,6 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.HotelDetailBo
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay
-import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.PieChartData
 import com.minhhnn18898.ui_components.base_components.PieChartItem
 import com.minhhnn18898.ui_components.base_components.PieChartWithLabel
@@ -115,9 +114,15 @@ fun TripDetailScreen(
         }
     }
 
+    val tripInfoContentState by viewModel.tripInfoContentState.collectAsStateWithLifecycle()
+
     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
-            TripDetailHeader(modifier, viewModel.tripInfoContentState)
+            TripDetailHeader(
+                modifier = modifier,
+                uiState = tripInfoContentState,
+                navigateUp = navigateUp
+            )
         }
 
         item {
@@ -201,18 +206,19 @@ fun TripDetailScreen(
 @Composable
 private fun TripDetailHeader(
     modifier: Modifier = Modifier,
-    tripInfoState: UiState<UserTripDisplay, UiState.UndefinedError>) {
+    uiState: TripDetailScreenTripInfoUiState,
+    navigateUp: () -> Unit) {
 
-    if(tripInfoState is UiState.Loading) {
+    if(uiState.isLoading) {
         TripDetailHeaderLoading()
+    } else if(uiState.tripDisplay != null) {
+        TripDetailHeaderContent(tripInfoItemDisplay = uiState.tripDisplay, modifier = modifier)
     }
 
-    if(tripInfoState is UiState.Error) {
-        DefaultErrorView(modifier = modifier)
-    }
-
-    if(tripInfoState is UiState.Success) {
-        TripDetailHeaderContent(tripInfoItemDisplay = tripInfoState.data, modifier = modifier)
+    LaunchedEffect(uiState.isNotFound) {
+        if(uiState.isNotFound) {
+            navigateUp()
+        }
     }
 }
 

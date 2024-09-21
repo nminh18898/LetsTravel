@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
+import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
@@ -17,7 +18,6 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripActivityDateSeparatorResourceProvider
@@ -26,9 +26,18 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDispla
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class TripDetailScreenTripInfoUiState(
+    val tripDisplay: UserTripDisplay? = null,
+    val isLoading: Boolean = false,
+    val isNotFound: Boolean = false
+)
 
 @HiltViewModel
 class TripDetailScreenViewModel @Inject constructor(
@@ -43,9 +52,6 @@ class TripDetailScreenViewModel @Inject constructor(
 ): ViewModel() {
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
-
-    var tripInfoContentState: UiState<UserTripDisplay, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
-        private set
 
     var flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
         private set
@@ -67,34 +73,29 @@ class TripDetailScreenViewModel @Inject constructor(
     val eventTriggerer = _eventChannel.receiveAsFlow()
 
     init {
-        loadTripInfo(tripId)
         loadFlightInfo(tripId)
         loadHotelInfo(tripId)
         loadActivityInfo(tripId)
     }
 
-    private fun loadTripInfo(tripId: Long) {
-        viewModelScope.launch {
-            getTripInfoUseCase.execute(GetTripInfoUseCase.Param(tripId))?.collect {
-                when(it) {
-                    is Result.Loading -> tripInfoContentState = UiState.Loading
-                    is Result.Success -> handleResultLoadTripInfo(it.data)
-                    is Result.Error -> tripInfoContentState = UiState.Error(UiState.UndefinedError)
-                }
+    val tripInfoContentState: StateFlow<TripDetailScreenTripInfoUiState> =
+        getTripInfoUseCase.execute(GetTripInfoUseCase.Param(tripId)).map {
+            if(it != null) {
+                TripDetailScreenTripInfoUiState(
+                    tripDisplay = it.toTripItemDisplay(defaultCoverResourceProvider = coverResourceProvider),
+                    isLoading = false
+                )
+            } else {
+                TripDetailScreenTripInfoUiState(
+                    isLoading = false,
+                    isNotFound = true
+                )
             }
-        }
-    }
-
-    private suspend fun handleResultLoadTripInfo(flowData: Flow<TripInfo?>) {
-        flowData.collect { item ->
-            if(item != null) {
-                tripInfoContentState = UiState.Success(item.toTripItemDisplay(coverResourceProvider))
-            }
-            else {
-                _eventChannel.send(Event.CloseScreen)
-           }
-        }
-    }
+        }.stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = TripDetailScreenTripInfoUiState(isLoading = true)
+        )
 
     private fun loadFlightInfo(tripId: Long) {
         viewModelScope.launch {

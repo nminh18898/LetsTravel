@@ -2,6 +2,7 @@ package com.minhhnn18898.manage_trip.trip_info.presentation.triplisting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.domain.GetListTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CreateNewTripCtaDisplay
@@ -12,7 +13,6 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultRes
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripInfoItemDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -29,7 +29,7 @@ class TripInfoListingViewModel @Inject constructor(
             GetSavedTripInfoContentResult(it.makeListTripDisplayItemWithCreateItem())
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = WhileUiSubscribed,
             initialValue = GetSavedTripInfoContentLoading()
         )
 

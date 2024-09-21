@@ -28,7 +28,7 @@ class GetListDefaultCoverUseCaseTest {
     @Test
     fun getListDefaultCover() {
         // When
-        val result = getListDefaultCoverUseCase.run()
+        val result = getListDefaultCoverUseCase.execute()
 
         // Then
         Truth.assertThat(result).isEqualTo(listOf(

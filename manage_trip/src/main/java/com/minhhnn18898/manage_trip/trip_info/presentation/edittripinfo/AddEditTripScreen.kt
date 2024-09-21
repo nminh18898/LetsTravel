@@ -32,18 +32,17 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
@@ -54,8 +53,6 @@ import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
@@ -65,13 +62,15 @@ fun EditTripScreen(
     navigateUp: () -> Unit,
     onNavigateToTripDetailScreen: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EditTripViewModel = hiltViewModel()
+    viewModel: AddEditTripViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
             AppBarActionsState(
                 actions = {
-                    if(viewModel.canDeleteInfo) {
+                    if(uiState.canDeleteTrip) {
                         IconButton(
                             onClick = {
                                 viewModel.onDeleteClick()
@@ -89,12 +88,12 @@ fun EditTripScreen(
                         onClick = {
                             viewModel.onSaveClick()
                         },
-                        enabled = viewModel.allowSaveContent
+                        enabled = uiState.allowSaveContent
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.save_as_24),
                             contentDescription = "",
-                            tint = if(viewModel.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
+                            tint = if(uiState.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
                         )
                     }
                 }
@@ -102,17 +101,22 @@ fun EditTripScreen(
         )
     }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
-                viewModel.eventTriggerer.collect { event ->
-                    when (event) {
-                        is EditTripViewModel.Event.CloseScreen -> navigateUp.invoke()
-                        is EditTripViewModel.Event.NavigateToTripDetailScreen -> onNavigateToTripDetailScreen.invoke(event.tripId)
-                    }
-                }
-            }
+    LaunchedEffect(uiState.isTripDeleted) {
+        if(uiState.isTripDeleted) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.isTripUpdated) {
+        if(uiState.isTripUpdated) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.newCreatedTripUiState) {
+        uiState.newCreatedTripUiState?.let {
+            navigateUp()
+            onNavigateToTripDetailScreen(it.tripId)
         }
     }
 
@@ -125,7 +129,7 @@ fun EditTripScreen(
         InputTextRow(
             iconRes = R.drawable.trip_24,
             label = stringResource(id = CommonStringRes.trip_name),
-            inputText = viewModel.tripTitle,
+            inputText = uiState.tripTitle,
             onTextChanged = {
                 viewModel.onTripTitleUpdated(it)
             })
@@ -142,7 +146,7 @@ fun EditTripScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         DefaultCoverCollectionGrid(
-            listCoverDefault = viewModel.listCoverItems,
+            listCoverDefault = uiState.listCoverItems,
             onItemClick = {
                 viewModel.onCoverSelected(it)
             }
@@ -174,11 +178,11 @@ fun EditTripScreen(
         }
     }
 
-    AnimatedVisibility(viewModel.onShowLoadingState) {
+    AnimatedVisibility(uiState.isLoading) {
         ProgressDialog()
     }
 
-    AnimatedVisibility(viewModel.onShowDialogDeleteConfirmation) {
+    AnimatedVisibility(uiState.isShowDeleteConfirmation) {
         DeleteConfirmationDialog(
             onConfirmation = viewModel::onDeleteConfirm,
             onDismissRequest = viewModel::onDeleteDismiss
@@ -186,15 +190,15 @@ fun EditTripScreen(
     }
 
     TopMessageBar(
-        shown = viewModel.errorType.isShow(),
-        text = getMessageError(LocalContext.current, viewModel.errorType)
+        shown = uiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, uiState.showError)
     )
 }
 
 @Composable
 fun DefaultCoverCollectionGrid(
-    listCoverDefault: List<EditTripViewModel.CoverUIElement>,
-    onItemClick: (EditTripViewModel.CoverUIElement) -> Unit,
+    listCoverDefault: List<AddEditTripViewModel.CoverUIElement>,
+    onItemClick: (AddEditTripViewModel.CoverUIElement) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyHorizontalGrid(
@@ -211,8 +215,8 @@ fun DefaultCoverCollectionGrid(
 
 @Composable
 fun DefaultCoverCollectionCard(
-    coverUIElement: EditTripViewModel.CoverUIElement,
-    onClick: (EditTripViewModel.CoverUIElement) -> Unit,
+    coverUIElement: AddEditTripViewModel.CoverUIElement,
+    onClick: (AddEditTripViewModel.CoverUIElement) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -224,14 +228,14 @@ fun DefaultCoverCollectionCard(
             .height(100.dp)
             .width(200.dp)
     ) {
-        if(coverUIElement is EditTripViewModel.DefaultCoverElement) {
+        if(coverUIElement is AddEditTripViewModel.DefaultCoverElement) {
             Image(
                 painter = painterResource(coverUIElement.resId),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
             )
         }
-        else if(coverUIElement is EditTripViewModel.CustomCoverPhotoElement) {
+        else if(coverUIElement is AddEditTripViewModel.CustomCoverPhotoElement) {
             AsyncImage(
                 model = coverUIElement.uri,
                 contentDescription = "",
@@ -271,16 +275,16 @@ fun DefaultCoverCollectionCard(
     }
 }
 
-private fun getMessageError(context: Context, errorType: EditTripViewModel.ErrorType): String {
+private fun getMessageError(context: Context, errorType: AddEditTripViewModel.ErrorType): String {
     return when(errorType) {
-        EditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_create_trip)
-        EditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_load_trip)
-        EditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_update_trip)
-        EditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_trip)
+        AddEditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_create_trip)
+        AddEditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_load_trip)
+        AddEditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_update_trip)
+        AddEditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_TRIP_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_trip)
         else -> ""
     }
 }
 
-private fun EditTripViewModel.ErrorType.isShow(): Boolean {
-    return this != EditTripViewModel.ErrorType.ERROR_MESSAGE_NONE
+private fun AddEditTripViewModel.ErrorType.isShow(): Boolean {
+    return this != AddEditTripViewModel.ErrorType.ERROR_MESSAGE_NONE
 }

@@ -6,7 +6,11 @@ import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
 
 interface TripInfoItemDisplay
-data class UserTripDisplay(val tripId: Long, val tripName: String, val coverDisplay: TripCoverDisplay): TripInfoItemDisplay
+data class UserTripDisplay(
+    val tripId: Long,
+    val tripName: String,
+    val coverDisplay: TripCoverDisplay
+): TripInfoItemDisplay
 data object CreateNewTripCtaDisplay: TripInfoItemDisplay
 
 abstract class TripCoverDisplay

@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class GetListDefaultCoverUseCase @Inject constructor(private val repository: TripInfoRepository) {
 
-    fun run(): List<DefaultCoverElement> {
+    fun execute(): List<DefaultCoverElement> {
         return repository.getListDefaultCoverElements()
     }
 }

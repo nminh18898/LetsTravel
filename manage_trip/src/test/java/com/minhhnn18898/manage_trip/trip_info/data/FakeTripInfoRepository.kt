@@ -25,10 +25,6 @@ class FakeTripInfoRepository: TripInfoRepository {
     var forceError = false
 
     override fun getAllTrips(): Flow<List<TripInfo>> {
-        if(forceError) {
-            throw Exception("Internal Error. Can not get trip info")
-        }
-
         if(tripInfoMap.isEmpty()) {
             return tripInfosFlow.apply { tryEmit(emptyList()) }
         }
@@ -37,10 +33,6 @@ class FakeTripInfoRepository: TripInfoRepository {
     }
 
     override fun getTrip(id: Long): Flow<TripInfo?> {
-        if(forceError) {
-            throw Exception("Internal Error. Can not get trip info")
-        }
-
         if(tripInfoMap.containsKey(id)) {
             return tripInfosFlow.map { tripInfoMap[id] }
         }
