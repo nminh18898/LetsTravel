@@ -42,13 +42,15 @@ class DeleteTripInfoUseCaseTest {
     @Test
     fun deleteValidTripInfo_withDefaultCover_dataNotExistRepositoryThen() = runTest {
         // Given - add valid trip info so that it can be deleted later
-        fakeTripInfoRepository.addTripInfo(TripInfo(
-            tripId = 1L,
-            title = "Vietnam",
-            coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
-            defaultCoverId = 1,
-            customCoverPath = ""
-        ))
+        fakeTripInfoRepository.addTrip(
+            TripInfo(
+                tripId = 1L,
+                title = "Vietnam",
+                coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
+                defaultCoverId = 1,
+                customCoverPath = ""
+            )
+        )
 
         // When
         val result = deleteTripInfoUseCase.execute(DeleteTripInfoUseCase.Param(tripId = 1L))?.toList()
@@ -63,13 +65,14 @@ class DeleteTripInfoUseCaseTest {
     @Test
     fun deleteValidTripInfo_withCustomCover_dataNotExistRepositoryThen() = runTest {
         // Given - add valid trip info so that it can be deleted later
-        fakeTripInfoRepository.addTripInfo(TripInfo(
-            tripId = 1L,
-            title = "Vietnam",
-            coverType = TripInfoModel.TRIP_COVER_TYPE_CUSTOM,
-            defaultCoverId = 0,
-            customCoverPath = "/sdcard/something.jpg"
-        ))
+        fakeTripInfoRepository.addTrip(
+            TripInfo(
+                tripId = 1L,
+                title = "Vietnam",
+                coverType = TripInfoModel.TRIP_COVER_TYPE_CUSTOM,
+                defaultCoverId = 0,
+                customCoverPath = "/sdcard/something.jpg")
+        )
 
         // When
         val result = deleteTripInfoUseCase.execute(DeleteTripInfoUseCase.Param(tripId = 1L))?.toList()
@@ -100,7 +103,7 @@ class DeleteTripInfoUseCaseTest {
     @Test
     fun deleteValidTripInfo_throwExceptionDeleteTripInfoFromRepository_canReturnError() = runTest {
         // Given - add valid trip info so that it can be deleted, but throw exception from repository
-        fakeTripInfoRepository.addTripInfo(
+        fakeTripInfoRepository.addTrip(
             TripInfo(
             tripId = 1L,
             title = "Vietnam",

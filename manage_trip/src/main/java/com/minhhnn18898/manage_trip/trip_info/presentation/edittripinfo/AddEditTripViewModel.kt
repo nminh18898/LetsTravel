@@ -13,7 +13,7 @@ import com.minhhnn18898.manage_trip.trip_info.domain.GetListDefaultCoverUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.ModifyTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.UpdateTripInfoUseCase
-import com.minhhnn18898.manage_trip.trip_info.presentation.base.CoverDefaultResourceProvider
+import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
@@ -48,7 +48,7 @@ class AddEditTripViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getListDefaultCoverUseCase: GetListDefaultCoverUseCase,
     private val createTripInfoUseCase: CreateTripInfoUseCase,
-    private val defaultCoverResourceProvider: CoverDefaultResourceProvider,
+    private val defaultCoverResourceProvider: ICoverDefaultResourceProvider,
     private val getTripInfoUseCase: GetTripInfoUseCase,
     private val updateTripInfoUseCase: UpdateTripInfoUseCase,
     private val deleteTripInfoUseCase: DeleteTripInfoUseCase
@@ -84,6 +84,7 @@ class AddEditTripViewModel @Inject constructor(
                             tripTitle = tripInfo.title,
                             listCoverItems = getListCoverFromTrip(tripInfo),
                             isLoading = false,
+                            isNotFound = false,
                             canDeleteTrip = true
                         )
                     }
@@ -92,7 +93,8 @@ class AddEditTripViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isNotFound = true
+                            isNotFound = true,
+                            canDeleteTrip = false
                         )
                     }
                 }

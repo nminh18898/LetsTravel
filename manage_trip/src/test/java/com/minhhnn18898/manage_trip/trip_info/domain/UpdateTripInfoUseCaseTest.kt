@@ -44,13 +44,15 @@ class UpdateTripInfoUseCaseTest {
     @Test
     fun updateValidTripInfo_withDefaultCover_canRetrieveNewTripInfo() = runTest {
         // Given - add valid trip info so that it can be updated later
-        fakeTripInfoRepository.addTripInfo(TripInfo(
-            tripId = 1L,
-            title = "Vietnam",
-            coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
-            defaultCoverId = 1,
-            customCoverPath = ""
-        ))
+        fakeTripInfoRepository.addTrip(
+            TripInfo(
+                tripId = 1L,
+                title = "Vietnam",
+                coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
+                defaultCoverId = 1,
+                customCoverPath = ""
+            )
+        )
 
         // When
         val result = updateTripInfoUseCase.execute(
@@ -82,13 +84,15 @@ class UpdateTripInfoUseCaseTest {
     @Test
     fun updateValidTripInfo_withCustomCover_canRetrieveNewTripInfo() = runTest {
         // Given - add valid trip info so that it can be updated later
-        fakeTripInfoRepository.addTripInfo(TripInfo(
-            tripId = 1L,
-            title = "Vietnam",
-            coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
-            defaultCoverId = 1,
-            customCoverPath = ""
-        ))
+        fakeTripInfoRepository.addTrip(
+            TripInfo(
+                tripId = 1L,
+                title = "Vietnam",
+                coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
+                defaultCoverId = 1,
+                customCoverPath = ""
+            )
+        )
 
         // When
         val result = updateTripInfoUseCase.execute(
@@ -142,13 +146,15 @@ class UpdateTripInfoUseCaseTest {
     @Test
     fun updateValidTripInfo_throwExceptionUpdateTripInfoFromRepository_canReturnError() = runTest {
         // Given - add valid trip info so that it can be updated, but throw exception from repository
-        fakeTripInfoRepository.addTripInfo(TripInfo(
-            tripId = 1L,
-            title = "Vietnam",
-            coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
-            defaultCoverId = 1,
-            customCoverPath = ""
-        ))
+        fakeTripInfoRepository.addTrip(
+            TripInfo(
+                tripId = 1L,
+                title = "Vietnam",
+                coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
+                defaultCoverId = 1,
+                customCoverPath = ""
+            )
+        )
 
         fakeTripInfoRepository.forceError = true
 

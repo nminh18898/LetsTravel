@@ -44,7 +44,7 @@ class GetListTripInfoUseCaseTest {
     @Test
     fun getExistedTripInfo_andUpdateNewValue_returnCorrectValue() = runTest {
         // Given - add some valid trip info so that it can be retrieved later
-        fakeTripInfoRepository.addTripInfo(
+        fakeTripInfoRepository.addTrip(
             TripInfo(
                 tripId = 1L,
                 title = "Vietnam",
@@ -54,7 +54,7 @@ class GetListTripInfoUseCaseTest {
             )
         )
 
-        fakeTripInfoRepository.addTripInfo(
+        fakeTripInfoRepository.addTrip(
             TripInfo(
                 tripId = 2L,
                 title = "Thailand",

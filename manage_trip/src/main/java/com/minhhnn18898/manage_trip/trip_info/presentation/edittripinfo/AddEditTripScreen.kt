@@ -48,6 +48,7 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
@@ -120,61 +121,65 @@ fun EditTripScreen(
         }
     }
 
-    Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
-    ) {
-
-        InputTextRow(
-            iconRes = R.drawable.trip_24,
-            label = stringResource(id = CommonStringRes.trip_name),
-            inputText = uiState.tripTitle,
-            onTextChanged = {
-                viewModel.onTripTitleUpdated(it)
-            })
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text =  stringResource(id = CommonStringRes.choose_cover),
-            style = typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-            maxLines = 1
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        DefaultCoverCollectionGrid(
-            listCoverDefault = uiState.listCoverItems,
-            onItemClick = {
-                viewModel.onCoverSelected(it)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        val context = LocalContext.current
-        val imagePicker = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.PickVisualMedia(),
-            onResult = { uri ->
-                uri?.let {
-                    val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    context.contentResolver.takePersistableUriPermission(uri, flag)
-                    viewModel.onNewPhotoPicked(uri.toString())
-                }
-            }
-        )
-
-        CreateNewDefaultButton(
-            text = stringResource(id = com.minhhnn18898.core.R.string.pick_your_photo),
-            modifier = Modifier.padding(top = 8.dp)
+    if(uiState.isNotFound) {
+        DefaultErrorView(modifier = modifier)
+    } else {
+        Column(
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
-            imagePicker.launch(
-                PickVisualMediaRequest(
-                    ActivityResultContracts.PickVisualMedia.ImageOnly
-                )
+
+            InputTextRow(
+                iconRes = R.drawable.trip_24,
+                label = stringResource(id = CommonStringRes.trip_name),
+                inputText = uiState.tripTitle,
+                onTextChanged = {
+                    viewModel.onTripTitleUpdated(it)
+                })
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text =  stringResource(id = CommonStringRes.choose_cover),
+                style = typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            DefaultCoverCollectionGrid(
+                listCoverDefault = uiState.listCoverItems,
+                onItemClick = {
+                    viewModel.onCoverSelected(it)
+                }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val context = LocalContext.current
+            val imagePicker = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.PickVisualMedia(),
+                onResult = { uri ->
+                    uri?.let {
+                        val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        context.contentResolver.takePersistableUriPermission(uri, flag)
+                        viewModel.onNewPhotoPicked(uri.toString())
+                    }
+                }
+            )
+
+            CreateNewDefaultButton(
+                text = stringResource(id = com.minhhnn18898.core.R.string.pick_your_photo),
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                imagePicker.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                    )
+                )
+            }
         }
     }
 

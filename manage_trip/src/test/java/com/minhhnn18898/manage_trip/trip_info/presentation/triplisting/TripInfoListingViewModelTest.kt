@@ -105,7 +105,7 @@ class TripInfoListingViewModelTest {
     @Test
     fun getContentState_caseHasData() = runTest {
         // Given
-        fakeTripInfoRepository.addListTripInfo(tripInfoInput)
+        fakeTripInfoRepository.addTrip(*tripInfoInput.toTypedArray())
 
         // When
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {

@@ -43,13 +43,15 @@ class GetTripInfoUseCaseTest {
     @Test
     fun getExistedTripInfo_andUpdateNewValue_returnCorrectValue() = runTest {
         // Given - add valid trip info so that it can be retrieved later
-        fakeTripInfoRepository.addTripInfo(TripInfo(
-            tripId = 1L,
-            title = "Vietnam",
-            coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
-            defaultCoverId = 1,
-            customCoverPath = ""
-        ))
+        fakeTripInfoRepository.addTrip(
+            TripInfo(
+                tripId = 1L,
+                title = "Vietnam",
+                coverType = TripInfoModel.TRIP_COVER_TYPE_DEFAULT,
+                defaultCoverId = 1,
+                customCoverPath = ""
+            )
+        )
 
         // When - 1: get current data from repository
         val dataResult = mutableListOf<TripInfo?>()
