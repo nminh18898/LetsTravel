@@ -75,9 +75,9 @@ class GetSortedListTripActivityInfoUseCaseTest {
         )
 
         fakeTripDetailRepository.apply {
-            addActivityInfo(tripId = 1L, activityInfo = firstActivity)
-            addActivityInfo(tripId = 1L, activityInfo = secondActivity)
-            addActivityInfo(tripId = 1L, activityInfo = thirdActivity)
+            upsertActivityInfo(tripId = 1L, firstActivity)
+            upsertActivityInfo(tripId = 1L, secondActivity)
+            upsertActivityInfo(tripId = 1L, thirdActivity)
         }
 
         // When - 1: get current data from repository
@@ -114,7 +114,7 @@ class GetSortedListTripActivityInfoUseCaseTest {
             timeTo = 2_200_000,
             price = 2_500_000
         )
-        fakeTripDetailRepository.updateActivityInfoForTesting(tripId = 1L, activityInfo = thirdActivityUpdated)
+        fakeTripDetailRepository.upsertActivityInfo(tripId = 1L, thirdActivityUpdated)
 
         // Then - 2:
         // list activity that map by the start of day
@@ -182,9 +182,9 @@ class GetSortedListTripActivityInfoUseCaseTest {
         )
 
         fakeTripDetailRepository.apply {
-            addActivityInfo(tripId = 1L, activityInfo = firstActivity)
-            addActivityInfo(tripId = 1L, activityInfo = secondActivity)
-            addActivityInfo(tripId = 1L, activityInfo = thirdActivity)
+            upsertActivityInfo(tripId = 1L, firstActivity)
+            upsertActivityInfo(tripId = 1L, secondActivity)
+            upsertActivityInfo(tripId = 1L, thirdActivity)
         }
 
         fakeTripDetailRepository.forceError = true

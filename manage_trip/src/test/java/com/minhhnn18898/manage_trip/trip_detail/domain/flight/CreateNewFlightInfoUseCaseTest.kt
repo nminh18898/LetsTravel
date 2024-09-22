@@ -96,14 +96,14 @@ class CreateNewFlightInfoUseCaseTest {
     fun insertValidFlightInfo_withAirportInfoAlreadyExisted_canRetrieveFlightInfoWithNewAirportInfo() = runTest {
         // Given
         fakeTripDetailRepository.apply {
-            addAirportInfo(
+            upsertAirportInfo(
                 AirportInfo(
                     code = "SGN",
                     city = "Sai Gon",
                     airportName = "Tan Son Nhat"
                 )
             )
-            addAirportInfo(
+            upsertAirportInfo(
                 AirportInfo(
                     code = "SIN",
                     city = "Singapore",

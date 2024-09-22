@@ -89,14 +89,14 @@ class GetListFlightInfoUseCaseTest {
     @Test
     fun getExistedFlightInfo_andUpdateNewValue_returnCorrectValue() = runTest {
         // Given - add some valid flight info so that it can be retrieved later
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = firstFlightInfoTestData.first,
             departAirport = firstFlightInfoTestData.second,
             destinationAirport = firstFlightInfoTestData.third
         )
 
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = secondFlightInfoTestData.first,
             departAirport = secondFlightInfoTestData.second,
@@ -151,7 +151,7 @@ class GetListFlightInfoUseCaseTest {
             city = "Ha Noi City",
             airportName = "Noi Bai Airport"
         )
-        fakeTripDetailRepository.updateFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = flightInfoUpdated,
             departAirport = departAirportUpdated,
@@ -200,13 +200,13 @@ class GetListFlightInfoUseCaseTest {
     fun geTripInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
         // Given - add some valid flight info so that it can be retrieved later, but throw exception from repository
         fakeTripDetailRepository.apply {
-            addFlightAirportInfo(
+            upsertFlightInfo(
                 tripId = 1L,
                 flightInfo = firstFlightInfoTestData.first,
                 departAirport = firstFlightInfoTestData.second,
                 destinationAirport = firstFlightInfoTestData.third
             )
-            addFlightAirportInfo(
+            upsertFlightInfo(
                 tripId = 1L,
                 flightInfo = secondFlightInfoTestData.first,
                 departAirport = secondFlightInfoTestData.second,

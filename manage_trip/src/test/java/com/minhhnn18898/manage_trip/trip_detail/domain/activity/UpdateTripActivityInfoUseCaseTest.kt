@@ -42,9 +42,9 @@ class UpdateTripActivityInfoUseCaseTest {
     @Test
     fun updateValidActivity_canRetrieveNewActivityInfo() = runTest {
         // Given - add valid activity info so that it can be updated later
-        fakeTripDetailRepository.addActivityInfo(
+        fakeTripDetailRepository.upsertActivityInfo(
             tripId = 1L,
-            activityInfo = TripActivityInfo(
+            TripActivityInfo(
                 activityId = 1L,
                 title = "Discover the Delta's Charms",
                 description = "Mekong Delta Tour from HCM City",
@@ -116,9 +116,9 @@ class UpdateTripActivityInfoUseCaseTest {
     @Test
     fun updateValidActivity_throwExceptionFromRepository_canReturnError() = runTest {
         // Given - add valid activity info so that it can be updated, but throw exception from repository
-        fakeTripDetailRepository.addActivityInfo(
+        fakeTripDetailRepository.upsertActivityInfo(
             tripId = 1L,
-            activityInfo = TripActivityInfo(
+            TripActivityInfo(
                 activityId = 1L,
                 title = "Discover the Delta's Charms",
                 description = "Mekong Delta Tour from HCM City",

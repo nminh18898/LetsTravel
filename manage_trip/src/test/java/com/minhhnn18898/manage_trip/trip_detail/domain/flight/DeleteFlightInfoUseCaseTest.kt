@@ -44,7 +44,7 @@ class DeleteFlightInfoUseCaseTest {
     @Test
     fun deleteValidFlightInfo_verifyFlightInfoNotExistInRepository_verifyAirportInfoStillExist() = runTest {
         // Given - add valid flight info so that it can be updated later
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = FlightInfo(
                 flightId = 1L,
@@ -111,7 +111,7 @@ class DeleteFlightInfoUseCaseTest {
     @Test
     fun deleteValidFlightInfo_throwExceptionDeleteFlightInfoFromRepository_verifyInfoStillExist() = runTest {
         // Given - add valid flight info so that it can be updated later
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = FlightInfo(
                 flightId = 1L,
@@ -132,6 +132,7 @@ class DeleteFlightInfoUseCaseTest {
                 airportName = "Changi"
             )
         )
+
         fakeTripDetailRepository.forceError = true
 
         // When

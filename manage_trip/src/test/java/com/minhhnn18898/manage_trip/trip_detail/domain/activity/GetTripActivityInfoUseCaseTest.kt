@@ -53,16 +53,16 @@ class GetTripActivityInfoUseCaseTest {
             timeTo = 1_500_000,
             price = 2_000_000,
         )
-        fakeTripDetailRepository.addActivityInfo(
+        fakeTripDetailRepository.upsertActivityInfo(
             tripId = 1L,
-            activityInfo = activityInfo
+            activityInfo
         )
 
         // When - 1: get current data from repository
         val useCaseResult = mutableListOf<Result<Flow<TripActivityInfo?>>>()
         val dataResult = mutableListOf<TripActivityInfo?>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getTripActivityInfoUseCase.execute(GetTripActivityInfoUseCase.Param(activityId = 1L))?.toList(useCaseResult)
+            getTripActivityInfoUseCase.execute(GetTripActivityInfoUseCase.Param(activityId = 1L)).toList(useCaseResult)
             (useCaseResult[1] as Result.Success).data.toList(dataResult)
         }
 
@@ -87,9 +87,9 @@ class GetTripActivityInfoUseCaseTest {
             price = 2_000_000,
         )
 
-        fakeTripDetailRepository.updateActivityInfoForTesting(
+        fakeTripDetailRepository.upsertActivityInfo(
             tripId = 1L,
-            activityInfo = activityInfoUpdated
+            activityInfoUpdated
         )
 
         // Then - 2
@@ -108,7 +108,7 @@ class GetTripActivityInfoUseCaseTest {
         val useCaseResult = mutableListOf<Result<Flow<TripActivityInfo?>>>()
         val dataResult = mutableListOf<TripActivityInfo?>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getTripActivityInfoUseCase.execute(GetTripActivityInfoUseCase.Param(activityId = 1L))?.toList(useCaseResult)
+            getTripActivityInfoUseCase.execute(GetTripActivityInfoUseCase.Param(activityId = 1L)).toList(useCaseResult)
             (useCaseResult[1] as Result.Success).data.toList(dataResult)
         }
 
@@ -122,9 +122,9 @@ class GetTripActivityInfoUseCaseTest {
     @Test
     fun getActivityInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
         // Given - add valid trip info so that it can be retrieved, but throw exception from repository
-        fakeTripDetailRepository.addActivityInfo(
+        fakeTripDetailRepository.upsertActivityInfo(
             tripId = 1L,
-            activityInfo = TripActivityInfo(
+            TripActivityInfo(
                 activityId = 1L,
                 title = "Discover the Delta's Charms",
                 description = "Mekong Delta Tour from HCM City",
@@ -139,7 +139,7 @@ class GetTripActivityInfoUseCaseTest {
         // When
         val useCaseResult = mutableListOf<Result<Flow<TripActivityInfo?>>>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getTripActivityInfoUseCase.execute(GetTripActivityInfoUseCase.Param(activityId = 1L))?.toList(useCaseResult)
+            getTripActivityInfoUseCase.execute(GetTripActivityInfoUseCase.Param(activityId = 1L)).toList(useCaseResult)
         }
 
         // Then

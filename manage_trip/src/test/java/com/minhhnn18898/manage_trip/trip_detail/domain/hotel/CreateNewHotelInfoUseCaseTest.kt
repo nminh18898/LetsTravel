@@ -57,7 +57,7 @@ class CreateNewHotelInfoUseCaseTest {
                 tripId = 1L,
                 hotelInfo = hotelInfo
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)

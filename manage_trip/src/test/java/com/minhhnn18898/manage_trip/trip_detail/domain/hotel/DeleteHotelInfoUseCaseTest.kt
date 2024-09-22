@@ -42,9 +42,9 @@ class DeleteHotelInfoUseCaseTest {
     @Test
     fun deleteValidHotel_verifyHotelInfoNotExistInRepository() = runTest {
         // Given - add valid hotel info so that it can be deleted later
-        fakeTripDetailRepository.addHotelInfo(
+        fakeTripDetailRepository.upsertHotelInfo(
             tripId = 1L,
-            hotelInfo = HotelInfo(
+            HotelInfo(
                 hotelId = 1L,
                 hotelName = "Liberty Central Riverside Hotel",
                 address = "District 1, Ho Chi Minh City",
@@ -83,9 +83,9 @@ class DeleteHotelInfoUseCaseTest {
     @Test
     fun deleteHotel_throwExceptionFromRepository_canReturnError() = runTest {
         // Given - add valid hotel info so that it can be deleted, but throw exception from repository
-        fakeTripDetailRepository.addHotelInfo(
+        fakeTripDetailRepository.upsertHotelInfo(
             tripId = 1L,
-            hotelInfo = HotelInfo(
+            HotelInfo(
                 hotelId = 1L,
                 hotelName = "Liberty Central Riverside Hotel",
                 address = "District 1, Ho Chi Minh City",

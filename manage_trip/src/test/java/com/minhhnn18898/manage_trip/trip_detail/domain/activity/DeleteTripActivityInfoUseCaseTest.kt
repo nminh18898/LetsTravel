@@ -42,9 +42,9 @@ class DeleteTripActivityInfoUseCaseTest {
     @Test
     fun deleteValidActivity_canRetrieveNewActivityInfo() = runTest {
         // Given - add valid activity info so that it can be deleted later
-        fakeTripDetailRepository.addActivityInfo(
+        fakeTripDetailRepository.upsertActivityInfo(
             tripId = 1L,
-            activityInfo = TripActivityInfo(
+            TripActivityInfo(
                 activityId = 1L,
                 title = "Discover the Delta's Charms",
                 description = "Mekong Delta Tour from HCM City",
@@ -56,12 +56,12 @@ class DeleteTripActivityInfoUseCaseTest {
         )
 
         // When
-        val result = deleteTripActivityInfoUseCase.execute(DeleteTripActivityInfoUseCase.Param(activityId = 1L))?.toList()
+        val result = deleteTripActivityInfoUseCase.execute(DeleteTripActivityInfoUseCase.Param(activityId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
         Truth.assertThat(fakeTripDetailRepository.getActivityInfoForTesting(1L)).isNull()
     }
 
@@ -71,22 +71,22 @@ class DeleteTripActivityInfoUseCaseTest {
         fakeTripDetailRepository.reset()
 
         // When
-        val result = deleteTripActivityInfoUseCase.execute(DeleteTripActivityInfoUseCase.Param(activityId = 1L))?.toList()
+        val result = deleteTripActivityInfoUseCase.execute(DeleteTripActivityInfoUseCase.Param(activityId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionDeleteTripActivityInfo::class.java)
     }
 
     @Test
     fun deleteValidActivity_throwExceptionFromRepository_canReturnError() = runTest {
         // Given - add valid activity info so that it can be deleted, but throw exception from repository
-        fakeTripDetailRepository.addActivityInfo(
+        fakeTripDetailRepository.upsertActivityInfo(
             tripId = 1L,
-            activityInfo = TripActivityInfo(
+            TripActivityInfo(
                 activityId = 1L,
                 title = "Discover the Delta's Charms",
                 description = "Mekong Delta Tour from HCM City",
@@ -99,13 +99,13 @@ class DeleteTripActivityInfoUseCaseTest {
         fakeTripDetailRepository.forceError = true
 
         // When
-        val result = deleteTripActivityInfoUseCase.execute(DeleteTripActivityInfoUseCase.Param(activityId = 1L))?.toList()
+        val result = deleteTripActivityInfoUseCase.execute(DeleteTripActivityInfoUseCase.Param(activityId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionDeleteTripActivityInfo::class.java)
     }
 }

@@ -52,9 +52,9 @@ class GetHotelInfoUseCaseTest {
             checkOutDate = 1_200_000,
             price = 2_200_000
         )
-        fakeTripDetailRepository.addHotelInfo(
+        fakeTripDetailRepository.upsertHotelInfo(
             tripId = 1L,
-            hotelInfo = hotelInfo
+             hotelInfo
         )
 
         // When - 1: get current data from repository
@@ -85,9 +85,9 @@ class GetHotelInfoUseCaseTest {
             price = 2_500_000
         )
 
-        fakeTripDetailRepository.updateHotelInfoForTesting(
+        fakeTripDetailRepository.upsertHotelInfo(
             tripId = 1L,
-            hotelInfo = hotelInfoUpdated
+            hotelInfoUpdated
         )
 
         // Then - 2
@@ -119,9 +119,9 @@ class GetHotelInfoUseCaseTest {
     @Test
     fun getHotelInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
         // Given - add valid trip info so that it can be retrieved, but throw exception from repository
-        fakeTripDetailRepository.addHotelInfo(
+        fakeTripDetailRepository.upsertHotelInfo(
             tripId = 1L,
-            hotelInfo = HotelInfo(
+            HotelInfo(
                 hotelId = 1L,
                 hotelName = "Liberty Central Riverside Hotel",
                 address = "District 1, Ho Chi Minh City",

@@ -43,9 +43,9 @@ class UpdateHotelInfoUseCaseTest {
     @Test
     fun updateValidHotel_canRetrieveNewHotelInfo() = runTest {
         // Given - add valid hotel info so that it can be updated later
-        fakeTripDetailRepository.addHotelInfo(
+        fakeTripDetailRepository.upsertHotelInfo(
             tripId = 1L,
-            hotelInfo = HotelInfo(
+             HotelInfo(
                 hotelId = 1L,
                 hotelName = "Liberty Central Riverside Hotel",
                 address = "District 1, Ho Chi Minh City",
@@ -114,9 +114,9 @@ class UpdateHotelInfoUseCaseTest {
     @Test
     fun updateValidHotel_throwExceptionFromRepository_canReturnError() = runTest {
         // Given - add valid hotel info so that it can be updated, but throw exception from repository
-        fakeTripDetailRepository.addHotelInfo(
+        fakeTripDetailRepository.upsertHotelInfo(
             tripId = 1L,
-            hotelInfo = HotelInfo(
+            HotelInfo(
                 hotelId = 1L,
                 hotelName = "Liberty Central Riverside Hotel",
                 address = "District 1, Ho Chi Minh City",

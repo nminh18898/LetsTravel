@@ -46,7 +46,7 @@ class UpdateFlightInfoUseCaseTest {
     @Test
     fun updateValidFlightInfo_canRetrieveNewFlightInfo() = runTest {
         // Given - add valid flight info so that it can be updated later
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = FlightInfo(
                 flightId = 1L,
@@ -117,7 +117,7 @@ class UpdateFlightInfoUseCaseTest {
     fun updatedAirportInfo_canRetrieveNewAirportInfoForOldFlight() = runTest {
         // Given - add valid flight info and airport so that it can be updated later
         // add flight for trip 1
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = FlightInfo(
                 flightId = 1L,
@@ -140,7 +140,7 @@ class UpdateFlightInfoUseCaseTest {
         )
 
         // add flight for trip 2
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 2L,
             flightInfo = FlightInfo(
                 flightId = 2L,
@@ -271,7 +271,7 @@ class UpdateFlightInfoUseCaseTest {
     @Test
     fun updateValidFlightInfo_throwExceptionUpdateFlightInfoFromRepository_canReturnError() = runTest {
         // Given - add valid flight info so that it can be updated later, but throw exception from repository
-        fakeTripDetailRepository.addFlightAirportInfo(
+        fakeTripDetailRepository.upsertFlightInfo(
             tripId = 1L,
             flightInfo = FlightInfo(
                 flightId = 1L,
