@@ -19,11 +19,7 @@ class FakeTripInfoRepository: TripInfoRepository {
     private val _savedTrips = MutableStateFlow(LinkedHashMap<Long, TripInfo>())
 
     private val observableTrips: Flow<List<TripInfo>> = _savedTrips.map {
-        if (forceError) {
-            throw Exception("Test exception")
-        } else {
-            it.values.toList()
-        }
+        it.values.toList()
     }
 
     var forceError = false

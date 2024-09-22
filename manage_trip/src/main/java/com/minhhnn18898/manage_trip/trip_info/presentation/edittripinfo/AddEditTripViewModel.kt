@@ -171,12 +171,8 @@ class AddEditTripViewModel @Inject constructor(
         val tripName = uiState.value.tripTitle
         val selectedItem = uiState.value.listCoverItems.firstOrNull { it.isSelected }
 
-        if(selectedItem == null) {
-            _uiState.update {
-                it.copy(
-                    showError = ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO
-                )
-            }
+        if(selectedItem == null || tripName.isEmpty()) {
+            showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
             return
         }
 
