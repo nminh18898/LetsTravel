@@ -81,6 +81,10 @@ fun TripDetailScreen(
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
 
+    val flightContentState by viewModel.flightInfoContentState.collectAsStateWithLifecycle()
+    val hotelContentState by viewModel.hotelInfoContentState.collectAsStateWithLifecycle()
+    val activityContentState by viewModel.activityInfoContentState.collectAsStateWithLifecycle()
+
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
             AppBarActionsState(
@@ -142,7 +146,7 @@ fun TripDetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 FlightDetailBody(
-                    viewModel.flightInfoContentState,
+                    flightContentState,
                     modifier = modifier,
                     onClickCreateNewFlight = {
                         onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, 0L)
@@ -164,7 +168,7 @@ fun TripDetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 HotelDetailBody(
-                    hotelInfoContentState = viewModel.hotelInfoContentState,
+                    hotelInfoContentState = hotelContentState,
                     modifier = modifier,
                     onClickCreateHotelInfo = {
                         onNavigateEditHotelScreen.invoke(viewModel.tripId, 0L)
@@ -191,7 +195,7 @@ fun TripDetailScreen(
         }
 
         renderTripActivitySection(
-            activityInfoContentState = viewModel.activityInfoContentState,
+            activityInfoContentState = activityContentState,
             onClickCreateTripActivity = {
                 onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
             },

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
-import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
@@ -25,12 +24,10 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class TripDetailScreenTripInfoUiState(
@@ -53,14 +50,35 @@ class TripDetailScreenViewModel @Inject constructor(
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
-    var flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
-        private set
+    val flightInfoContentState: StateFlow<UiState<List<FlightDisplayInfo>, UiState.UndefinedError>> =
+        getListFlightInfoUseCase.execute(GetListFlightInfoUseCase.Param(tripId)).map { flightInfo ->
+            onUpdateFlightBudget(flightInfo)
+            UiState.Success(flightInfo.map { it.toFlightDisplayInfo() })
+        }.stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = UiState.Loading
+        )
 
-    var hotelInfoContentState: UiState<List<HotelDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
-        private set
+    val hotelInfoContentState: StateFlow<UiState<List<HotelDisplayInfo>, UiState.UndefinedError>> =
+        getListHotelInfoUseCase.execute(GetListHotelInfoUseCase.Param(tripId)).map { hotelInfo ->
+            onUpdateHotelBudget(hotelInfo)
+            UiState.Success(hotelInfo.map { it.toHotelDisplayInfo() })
+        }.stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = UiState.Loading
+        )
 
-    var activityInfoContentState: UiState<List<ITripActivityDisplay>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
-        private set
+    val activityInfoContentState: StateFlow<UiState<List<ITripActivityDisplay>, UiState.UndefinedError>> =
+        getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId)).map {
+            onUpdateActivityBudget(it.values.flatten())
+            UiState.Success(it.makeListTripActivityDisplay())
+        }.stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = UiState.Loading
+        )
 
     private var estimateBudget: MutableMap<BudgetType, Long> = mutableMapOf()
     var estimateBudgetDisplay by mutableStateOf("")
@@ -71,12 +89,6 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private val _eventChannel = Channel<Event>()
     val eventTriggerer = _eventChannel.receiveAsFlow()
-
-    init {
-        loadFlightInfo(tripId)
-        loadHotelInfo(tripId)
-        loadActivityInfo(tripId)
-    }
 
     val tripInfoContentState: StateFlow<TripDetailScreenTripInfoUiState> =
         getTripInfoUseCase.execute(GetTripInfoUseCase.Param(tripId)).map {
@@ -97,82 +109,8 @@ class TripDetailScreenViewModel @Inject constructor(
             initialValue = TripDetailScreenTripInfoUiState(isLoading = true)
         )
 
-    private fun loadFlightInfo(tripId: Long) {
-        viewModelScope.launch {
-            getListFlightInfoUseCase.execute(GetListFlightInfoUseCase.Param(tripId))?.collect {
-                when(it) {
-                    is Result.Loading -> flightInfoContentState = UiState.Loading
-                    is Result.Success -> handleResultLoadFlightInfo(it.data)
-                    is Result.Error -> flightInfoContentState = UiState.Error(UiState.UndefinedError)
-                }
-            }
-        }
-    }
-
-    private suspend fun handleResultLoadFlightInfo(flowData: Flow<List<FlightWithAirportInfo>>) {
-        flowData.collect { item ->
-            flightInfoContentState = UiState.Success(item.map { it.toFlightDisplayInfo() })
-            onUpdateFlightBudget(item)
-        }
-    }
-
     private fun AirportInfo.toAirportDisplayInfo(): AirportDisplayInfo {
         return AirportDisplayInfo(this.city, this.code, this.airportName)
-    }
-
-    private fun loadHotelInfo(tripId: Long) {
-        viewModelScope.launch {
-            getListHotelInfoUseCase.execute(GetListHotelInfoUseCase.Param(tripId))?.collect {
-                when(it) {
-                    is Result.Loading -> hotelInfoContentState = UiState.Loading
-                    is Result.Success -> handleResultLoadHotelInfo(it.data)
-                    is Result.Error -> hotelInfoContentState = UiState.Error(UiState.UndefinedError)
-                }
-            }
-        }
-    }
-
-    private suspend fun handleResultLoadHotelInfo(flowData: Flow<List<HotelInfo>>) {
-        flowData.collect { item ->
-            hotelInfoContentState = UiState.Success(item.map { it.toHotelDisplayInfo() })
-            onUpdateHotelBudget(item)
-        }
-    }
-
-    private fun loadActivityInfo(tripId: Long) {
-        viewModelScope.launch {
-            getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId))?.collect {
-                when(it) {
-                    is Result.Loading -> activityInfoContentState = UiState.Loading
-                    is Result.Success -> handleResultLoadActivityInfo(it.data)
-                    is Result.Error -> activityInfoContentState = UiState.Error(UiState.UndefinedError)
-                }
-            }
-        }
-    }
-
-    private suspend fun handleResultLoadActivityInfo(flowData: Flow<Map<Long?, List<TripActivityInfo>>>) {
-        flowData.collect { item ->
-            val itemRender = mutableListOf<ITripActivityDisplay>()
-            var countDay = 1
-            item.forEach { (date, activities) ->
-                if (date != null) {
-                    itemRender.add(
-                        TripActivityDateGroupHeader(
-                            title = dateTimeFormatter.getActivityFormattedDateSeparatorString(date),
-                            dateOrdering = countDay,
-                            resId = activityDateSeparatorResourceProvider.getResource(countDay)
-                        )
-                    )
-                    countDay++
-                }
-
-                itemRender.addAll(activities.toActivityDisplayInfo())
-            }
-
-            activityInfoContentState = UiState.Success(itemRender)
-            onUpdateActivityBudget(item.values.flatten())
-        }
     }
 
     private fun calculateFlightDuration(from: Long, to: Long): String {
@@ -256,6 +194,27 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private fun List<TripActivityInfo>.toActivityDisplayInfo(): List<TripActivityDisplayInfo> {
         return this.map { it.toActivityDisplayInfo() }
+    }
+
+    private fun Map<Long?, List<TripActivityInfo>>.makeListTripActivityDisplay(): List<ITripActivityDisplay> {
+        val itemRender = mutableListOf<ITripActivityDisplay>()
+        var countDay = 1
+        this.forEach { (date, activities) ->
+            if (date != null) {
+                itemRender.add(
+                    TripActivityDateGroupHeader(
+                        title = dateTimeFormatter.getActivityFormattedDateSeparatorString(date),
+                        dateOrdering = countDay,
+                        resId = activityDateSeparatorResourceProvider.getResource(countDay)
+                    )
+                )
+                countDay++
+            }
+
+            itemRender.addAll(activities.toActivityDisplayInfo())
+        }
+
+        return itemRender
     }
 }
 
