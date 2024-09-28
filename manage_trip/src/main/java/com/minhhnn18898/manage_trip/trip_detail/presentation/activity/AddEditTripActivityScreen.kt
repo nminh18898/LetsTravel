@@ -29,19 +29,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
@@ -53,24 +52,24 @@ import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
-fun EditTripActivityScreen(
+fun AddEditTripActivityScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EditTripActivityViewModel = hiltViewModel()
+    viewModel: AddEditTripActivityViewModel = hiltViewModel()
 ) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
             AppBarActionsState(
                 actions = {
-                    if(viewModel.canDeleteInfo) {
+                    if(uiState.canDelete) {
                         IconButton(
                             onClick = {
                                 viewModel.onDeleteClick()
@@ -88,12 +87,12 @@ fun EditTripActivityScreen(
                         onClick = {
                             viewModel.onSaveClick()
                         },
-                        enabled = viewModel.allowSaveContent
+                        enabled = uiState.allowSaveContent
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.save_as_24),
                             contentDescription = "",
-                            tint = if(viewModel.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
+                            tint = if(uiState.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
                         )
                     }
                 }
@@ -101,16 +100,21 @@ fun EditTripActivityScreen(
         )
     }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
-                viewModel.eventTriggerer.collect { event ->
-                    if (event == EditTripActivityViewModel.Event.CloseScreen) {
-                        navigateUp.invoke()
-                    }
-                }
-            }
+    LaunchedEffect(uiState.isDeleted) {
+        if(uiState.isDeleted) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.isUpdated) {
+        if(uiState.isUpdated) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.newlyCreatedActivityId) {
+        uiState.newlyCreatedActivityId?.let {
+            navigateUp()
         }
     }
 
@@ -132,7 +136,7 @@ fun EditTripActivityScreen(
         modifier = modifier
     ) {
         ActivityPhoto(
-            photoPath = viewModel.uiState.value.photo,
+            photoPath = uiState.tripActivityUiState.photo,
             onClick = {
                 imagePicker.launch(
                     PickVisualMediaRequest(
@@ -145,11 +149,11 @@ fun EditTripActivityScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         InputBasicActivityInfo(
-            name = viewModel.uiState.value.name,
+            name =  uiState.tripActivityUiState.name,
             onNameUpdated = viewModel::onNameUpdated,
-            description = viewModel.uiState.value.description,
+            description =  uiState.tripActivityUiState.description,
             onDescriptionUpdated = viewModel::onDescriptionUpdated,
-            prices = viewModel.uiState.value.prices,
+            prices =  uiState.tripActivityUiState.prices,
             onPricesUpdated = viewModel::onPricesUpdated,
             modifier = defaultModifier
         )
@@ -158,21 +162,21 @@ fun EditTripActivityScreen(
 
         InputDateTime(
             titleRes = CommonStringRes.schedule,
-            date = viewModel.uiState.value.date,
+            date =  uiState.tripActivityUiState.date,
             onDateSelected = viewModel::onDateUpdated,
-            timeFrom = viewModel.uiState.value.timeFrom,
+            timeFrom =  uiState.tripActivityUiState.timeFrom,
             onTimeFromSelected = viewModel::onTimeFromUpdated,
-            timeTo = viewModel.uiState.value.timeTo,
+            timeTo =  uiState.tripActivityUiState.timeTo,
             onTimeToSelected = viewModel::onTimeToUpdated,
             modifier = defaultModifier
         )
     }
 
-    AnimatedVisibility(viewModel.onShowLoadingState) {
+    AnimatedVisibility(uiState.isLoading) {
         ProgressDialog()
     }
 
-    AnimatedVisibility(viewModel.onShowDialogDeleteConfirmation) {
+    AnimatedVisibility(uiState.isShowDeleteConfirmation) {
         DeleteConfirmationDialog(
             onConfirmation = viewModel::onDeleteConfirm,
             onDismissRequest = viewModel::onDeleteDismiss
@@ -180,8 +184,8 @@ fun EditTripActivityScreen(
     }
 
     TopMessageBar(
-        shown = viewModel.errorType.isShow(),
-        text = getMessageError(LocalContext.current, viewModel.errorType)
+        shown = uiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, uiState.showError)
     )
 }
 
@@ -354,17 +358,17 @@ private fun ChangePhotoButton(
 }
 
 
-private fun getMessageError(context: Context, errorType: EditTripActivityViewModel.ErrorType): String {
+private fun getMessageError(context: Context, errorType: AddEditTripActivityViewModel.ErrorType): String {
     return when(errorType) {
-        EditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_create_activity)
-        EditTripActivityViewModel.ErrorType.ERROR_MESSAGE_ACTIVITY_SCHEDULE_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_activity_schedule_is_invalid)
-        EditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_load_activity)
-        EditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_update_activity)
-        EditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_activity)
+        AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_create_activity)
+        AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_ACTIVITY_SCHEDULE_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_activity_schedule_is_invalid)
+        AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_load_activity)
+        AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_update_activity)
+        AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_ACTIVITY_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_activity)
         else -> ""
     }
 }
 
-private fun EditTripActivityViewModel.ErrorType.isShow(): Boolean {
-    return this != EditTripActivityViewModel.ErrorType.ERROR_MESSAGE_NONE
+private fun AddEditTripActivityViewModel.ErrorType.isShow(): Boolean {
+    return this != AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_NONE
 }
