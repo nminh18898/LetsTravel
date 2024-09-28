@@ -105,7 +105,7 @@ class TripDetailRepositoryImpl @Inject constructor(
                 }
             }
 
-    override suspend fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?> =
+    override fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?> =
         flightInfoDao.getFlight(flightId)
             .map { flightInfo ->
                 if (flightInfo != null) {
@@ -148,13 +148,12 @@ class TripDetailRepositoryImpl @Inject constructor(
                 it.toHotelInfo()
             }
 
-    override suspend fun getHotelInfo(hotelId: Long): Flow<HotelInfo?> = withContext(ioDispatcher) {
+    override fun getHotelInfo(hotelId: Long): Flow<HotelInfo?> =
         hotelInfoDao
             .getHotel(hotelId)
             .map {
                 it?.toHotelInfo()
             }
-    }
 
     override suspend fun deleteHotelInfo(hotelId: Long) = withContext(ioDispatcher) {
         val result = hotelInfoDao.delete(hotelId)

@@ -62,7 +62,7 @@ class FakeTripDetailRepository: TripDetailRepository {
         }
     }
 
-    override suspend fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?> {
+    override fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?> {
         if(forceError) {
             throw Exception("Internal Error. Can not get flight info")
         }
@@ -136,7 +136,7 @@ class FakeTripDetailRepository: TripDetailRepository {
         return observableHotels.map { it.toHotelInfo() }
     }
 
-    override suspend fun getHotelInfo(hotelId: Long): Flow<HotelInfo?> {
+    override fun getHotelInfo(hotelId: Long): Flow<HotelInfo?> {
         if(forceError) {
             throw Exception("Can not load hotel info")
         }

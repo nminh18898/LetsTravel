@@ -11,7 +11,7 @@ interface TripDetailRepository {
     // Flight info
     fun getListFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>>
 
-    suspend fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?>
+    fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?>
 
     suspend fun insertFlightInfo(
         tripId: Long,
@@ -32,7 +32,7 @@ interface TripDetailRepository {
     // Hotel Info
     fun getAllHotelInfo(tripId: Long): Flow<List<HotelInfo>>
 
-    suspend fun getHotelInfo(hotelId: Long): Flow<HotelInfo?>
+    fun getHotelInfo(hotelId: Long): Flow<HotelInfo?>
 
     suspend fun insertHotelInfo(tripId: Long, hotelInfo: HotelInfo): Long
 
