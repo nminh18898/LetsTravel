@@ -33,12 +33,12 @@ data class TripActivityUiState(
 
 data class AddEditTripActivityUiState(
     val tripActivityUiState: TripActivityUiState = TripActivityUiState(),
-    val newlyCreatedActivityId: Long? = null,
     val isLoading: Boolean = false,
     val isNotFound: Boolean = false,
     val canDelete: Boolean = false,
     val isShowDeleteConfirmation: Boolean = false,
     val showError: AddEditTripActivityViewModel.ErrorType = AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_NONE,
+    val isCreated: Boolean = false,
     val isUpdated: Boolean = false,
     val isDeleted: Boolean = false,
     val allowSaveContent: Boolean = false
@@ -212,7 +212,7 @@ class AddEditTripActivityViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            newlyCreatedActivityId = result.data
+                            isCreated = true
                         )
                     }
                 }
@@ -224,8 +224,7 @@ class AddEditTripActivityViewModel @Inject constructor(
     private suspend fun updateActivityInfo(activityInfo: TripActivityInfo) {
         updateTripActivityInfoUseCase.execute(
             UpdateTripActivityInfoUseCase.Param(tripId, activityInfo)
-        ).collect {
-                result ->
+        ).collect { result ->
             when(result) {
                 is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
                 is Result.Success -> {
@@ -236,7 +235,7 @@ class AddEditTripActivityViewModel @Inject constructor(
                         )
                     }
                 }
-                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_ACTIVITY_INFO)
+                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_ACTIVITY_INFO)
             }
         }
     }

@@ -112,8 +112,8 @@ fun AddEditTripActivityScreen(
         }
     }
 
-    LaunchedEffect(uiState.newlyCreatedActivityId) {
-        uiState.newlyCreatedActivityId?.let {
+    LaunchedEffect(uiState.isCreated) {
+        if(uiState.isCreated) {
             navigateUp()
         }
     }

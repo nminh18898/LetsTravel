@@ -18,13 +18,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
@@ -35,24 +33,23 @@ import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
-fun EditHotelInfoScreen(
+fun AddEditHotelInfoScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EditHotelInfoViewModel = hiltViewModel()
+    viewModel: AddEditHotelInfoViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
             AppBarActionsState(
                 actions = {
-                    if(viewModel.canDeleteInfo) {
+                    if(uiState.canDelete) {
                         IconButton(
                             onClick = {
                                 viewModel.onDeleteClick()
@@ -70,12 +67,12 @@ fun EditHotelInfoScreen(
                         onClick = {
                             viewModel.onSaveClick()
                         },
-                        enabled = viewModel.allowSaveContent
+                        enabled = uiState.allowSaveContent
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.save_as_24),
                             contentDescription = "",
-                            tint = if(viewModel.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
+                            tint = if(uiState.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
                         )
                     }
                 }
@@ -83,16 +80,21 @@ fun EditHotelInfoScreen(
         )
     }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate){
-                viewModel.eventTriggerer.collect { event ->
-                    if(event == EditHotelInfoViewModel.Event.CloseScreen) {
-                        navigateUp.invoke()
-                    }
-                }
-            }
+    LaunchedEffect(uiState.isDeleted) {
+        if(uiState.isDeleted) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.isUpdated) {
+        if(uiState.isUpdated) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.isCreated) {
+        if(uiState.isCreated) {
+            navigateUp()
         }
     }
 
@@ -104,16 +106,21 @@ fun EditHotelInfoScreen(
             .verticalScroll(rememberScrollState())
     ) {
         EditHotelInfo(
-            viewModel = viewModel,
+            uiState = uiState.hotelUiState,
+            onHotelNameUpdated = viewModel::onHotelNameUpdated,
+            onAddressNameUpdated = viewModel::onAddressUpdated,
+            onPricesUpdated = viewModel::onPricesUpdated,
+            onCheckInDateUpdated = viewModel::onCheckInDateUpdated,
+            onCheckOutDateUpdated = viewModel::onCheckOutDateUpdated,
             modifier = defaultModifier
         )
     }
 
-    AnimatedVisibility(viewModel.onShowLoadingState) {
+    AnimatedVisibility(uiState.isLoading) {
         ProgressDialog()
     }
 
-    AnimatedVisibility(viewModel.onShowDialogDeleteConfirmation) {
+    AnimatedVisibility(uiState.isShowDeleteConfirmation) {
         DeleteConfirmationDialog(
             onConfirmation = viewModel::onDeleteConfirm,
             onDismissRequest = viewModel::onDeleteDismiss
@@ -121,25 +128,28 @@ fun EditHotelInfoScreen(
     }
 
     TopMessageBar(
-        shown = viewModel.errorType.isShow(),
-        text = getMessageError(LocalContext.current, viewModel.errorType)
+        shown = uiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, uiState.showError)
     )
 }
 
 @Composable
 fun EditHotelInfo(
-    viewModel: EditHotelInfoViewModel,
+    uiState: HotelUiState,
+    onHotelNameUpdated: (String) -> Unit,
+    onAddressNameUpdated: (String) -> Unit,
+    onPricesUpdated: (String) -> Unit,
+    onCheckInDateUpdated: (Long?) -> Unit,
+    onCheckOutDateUpdated: (Long?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    val uiState by viewModel.uiState
 
     Column(modifier = modifier) {
         InputTextRow(
             iconRes = R.drawable.home_24,
             label = "${stringResource(id = R.string.hotel_name)} ${StringUtils.getRequiredFieldIndicator()}",
             inputText = uiState.hotelName,
-            onTextChanged = viewModel::onHotelNameUpdated
+            onTextChanged = onHotelNameUpdated
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -148,7 +158,7 @@ fun EditHotelInfo(
             iconRes = R.drawable.home_pin_24,
             label = stringResource(id = CommonStringRes.address),
             inputText = uiState.address,
-            onTextChanged = viewModel::onAddressUpdated
+            onTextChanged = onAddressNameUpdated
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -157,7 +167,7 @@ fun EditHotelInfo(
             iconRes = R.drawable.payments_24,
             label = stringResource(id = CommonStringRes.prices),
             inputText = uiState.prices,
-            onTextChanged = viewModel::onPricesUpdated,
+            onTextChanged = onPricesUpdated,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -165,7 +175,7 @@ fun EditHotelInfo(
         InputDateTime(
             titleRes = CommonStringRes.check_in_date,
             date = uiState.checkInDate,
-            onDateSelected = viewModel::onCheckInDateUpdated,
+            onDateSelected = onCheckInDateUpdated,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -173,7 +183,7 @@ fun EditHotelInfo(
         InputDateTime(
             titleRes = CommonStringRes.check_out_date,
             date = uiState.checkOutDate,
-            onDateSelected = viewModel::onCheckOutDateUpdated,
+            onDateSelected = onCheckOutDateUpdated,
         )
     }
 }
@@ -203,17 +213,17 @@ fun InputDateTime(
     }
 }
 
-private fun getMessageError(context: Context, errorType: EditHotelInfoViewModel.ErrorType): String {
+private fun getMessageError(context: Context, errorType: AddEditHotelInfoViewModel.ErrorType): String {
     return when(errorType) {
-        EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_create_hotel_info)
-        EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_STAY_DURATION_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_hotel_stay_duration_is_invalid)
-        EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_load_hotel_info)
-        EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_update_hotel_info)
-        EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_hotel_info)
+        AddEditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_create_hotel_info)
+        AddEditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_STAY_DURATION_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_hotel_stay_duration_is_invalid)
+        AddEditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_load_hotel_info)
+        AddEditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_update_hotel_info)
+        AddEditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_HOTEL_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_hotel_info)
         else -> ""
     }
 }
 
-private fun EditHotelInfoViewModel.ErrorType.isShow(): Boolean {
-    return this != EditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_NONE
+private fun AddEditHotelInfoViewModel.ErrorType.isShow(): Boolean {
+    return this != AddEditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_NONE
 }
