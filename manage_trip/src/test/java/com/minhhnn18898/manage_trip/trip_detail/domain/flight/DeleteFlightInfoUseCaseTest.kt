@@ -67,12 +67,12 @@ class DeleteFlightInfoUseCaseTest {
         )
 
         // When
-        val result = deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId = 1L))?.toList()
+        val result = deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
         Truth.assertThat(fakeTripDetailRepository.getFlightAirportInfo(1L)).isNull()
         assertAirportInfoEqual(
             expected = AirportInfo(
@@ -98,13 +98,13 @@ class DeleteFlightInfoUseCaseTest {
         fakeTripDetailRepository.reset()
 
         // When
-        val result = deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId = 1L))?.toList()
+        val result = deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionDeleteFlightInfo::class.java)
     }
 
@@ -136,13 +136,13 @@ class DeleteFlightInfoUseCaseTest {
         fakeTripDetailRepository.forceError = true
 
         // When
-        val result = deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId = 1L))?.toList()
+        val result = deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionDeleteFlightInfo::class.java)
     }
 }

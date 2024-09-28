@@ -2,7 +2,6 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.flight
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
-import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.manage_trip.trip_detail.data.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
@@ -10,7 +9,6 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertFlightAndAirportEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -76,18 +74,12 @@ class GetFlightInfoUseCaseTest {
         )
 
         // When - 1: get current data from repository
-        val useCaseResult = mutableListOf<Result<Flow<FlightWithAirportInfo?>>>()
         val dataResult = mutableListOf<FlightWithAirportInfo?>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(flightId = 1L))?.toList(useCaseResult)
-            (useCaseResult[1] as Result.Success).data.toList(dataResult)
+            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(flightId = 1L)).toList(dataResult)
         }
 
         // Then - 1
-        Truth.assertThat(useCaseResult).hasSize(2)
-        Truth.assertThat(useCaseResult[0]).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(useCaseResult[1]).isInstanceOf(Result.Success::class.java)
-
         assertFlightAndAirportEqual(
             expected = FlightWithAirportInfo(
                 flightInfo = flightInfo,
@@ -141,58 +133,12 @@ class GetFlightInfoUseCaseTest {
         fakeTripDetailRepository.reset()
 
         // When - get current data from repository
-        val useCaseResult = mutableListOf<Result<Flow<FlightWithAirportInfo?>>>()
         val dataResult = mutableListOf<FlightWithAirportInfo?>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(flightId = 1L))?.toList(useCaseResult)
-            (useCaseResult[1] as Result.Success).data.toList(dataResult)
+            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(flightId = 1L)).toList(dataResult)
         }
 
         // Then
-        Truth.assertThat(useCaseResult).hasSize(2)
-        Truth.assertThat(useCaseResult[0]).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(useCaseResult[1]).isInstanceOf(Result.Success::class.java)
         Truth.assertThat(dataResult[0]).isNull()
-    }
-
-    @Test
-    fun getValidFlightInfo_throwExceptionFromRepository_returnCorrectError_returnNullValue() = runTest {
-        // Given -  add valid flight info so that it can be retrieved, but throw exception from repository
-        fakeTripDetailRepository.upsertFlightInfo(
-            tripId = 1L,
-            flightInfo = FlightInfo(
-                flightId = 1L,
-                flightNumber = "VN 363",
-                operatedAirlines = "Vietnam Airlines",
-                departureTime = 1_000_000,
-                arrivalTime = 1_200_000,
-                price = 2_000_000
-            ),
-            departAirport = AirportInfo(
-                code = "SGN",
-                city = "Ho Chi Minh City",
-                airportName = "Tan Son Nhat"
-            ),
-            destinationAirport = AirportInfo(
-                code = "SIN",
-                city = "Singapore",
-                airportName = "Changi"
-            )
-        )
-
-        fakeTripDetailRepository.forceError = true
-
-        // When - get current data from repository
-        val useCaseResult = mutableListOf<Result<Flow<FlightWithAirportInfo?>>>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(flightId = 1L))?.toList(useCaseResult)
-        }
-
-        // Then
-        Truth.assertThat(useCaseResult).hasSize(2)
-        Truth.assertThat(useCaseResult[0]).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(useCaseResult[1]).isInstanceOf(Result.Error::class.java)
-        val error = ((useCaseResult[1]) as Result.Error).exception
-        Truth.assertThat(error).isInstanceOf(Exception::class.java)
     }
 }

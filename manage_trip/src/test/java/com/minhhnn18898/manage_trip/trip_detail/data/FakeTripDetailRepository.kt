@@ -53,20 +53,12 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     override fun getListFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> {
-        if(forceError) {
-            throw Exception("Internal Error. Can not get flight info")
-        }
-
         return observableFlightInfo.map {
             it.toListFlightAirportInfo()
         }
     }
 
     override fun getFlightInfo(flightId: Long): Flow<FlightWithAirportInfo?> {
-        if(forceError) {
-            throw Exception("Internal Error. Can not get flight info")
-        }
-
         return observableFlightInfo.map { flights ->
             return@map flights.firstOrNull { it.flightId == flightId }?.toFlightAirportInfo()
         }
@@ -129,18 +121,10 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     override fun getAllHotelInfo(tripId: Long): Flow<List<HotelInfo>> {
-        if(forceError) {
-            throw Exception("Can not load hotel info")
-        }
-
         return observableHotels.map { it.toHotelInfo() }
     }
 
     override fun getHotelInfo(hotelId: Long): Flow<HotelInfo?> {
-        if(forceError) {
-            throw Exception("Can not load hotel info")
-        }
-
         return observableHotels.map { hotels ->
             return@map hotels.firstOrNull { it.hotelId == hotelId }?.toHotelInfo()
         }
@@ -179,10 +163,6 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     override fun getSortedActivityInfo(tripId: Long): Flow<Map<Long?, List<TripActivityInfo>>> {
-        if (forceError) {
-            throw Exception("Internal Error. Can not get activity info")
-        }
-
         return observableActivities.map { listActivity ->
             listActivity
                 .toTripActivityInfo()
@@ -196,10 +176,6 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     override fun getActivityInfo(activityId: Long): Flow<TripActivityInfo?> {
-        if(forceError) {
-            throw Exception("Internal Error. Can not get activity info")
-        }
-
         return observableActivities.map { activities ->
             return@map activities.firstOrNull { it.activityId == activityId }?.toTripActivityInfo()
         }

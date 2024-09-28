@@ -55,12 +55,12 @@ class DeleteHotelInfoUseCaseTest {
         )
 
         // When
-        val result = deleteHotelInfoUseCase.execute(DeleteHotelInfoUseCase.Param(hotelId = 1L))?.toList()
+        val result = deleteHotelInfoUseCase.execute(DeleteHotelInfoUseCase.Param(hotelId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
         Truth.assertThat(fakeTripDetailRepository.getHotelInfoForTesting(1L)).isNull()
     }
 
@@ -70,13 +70,13 @@ class DeleteHotelInfoUseCaseTest {
         fakeTripDetailRepository.forceError = true
 
         // When
-        val result = deleteHotelInfoUseCase.execute(DeleteHotelInfoUseCase.Param(hotelId = 1L))?.toList()
+        val result = deleteHotelInfoUseCase.execute(DeleteHotelInfoUseCase.Param(hotelId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionDeleteHotelInfo::class.java)
     }
 
@@ -97,13 +97,13 @@ class DeleteHotelInfoUseCaseTest {
         fakeTripDetailRepository.forceError = true
 
         // When
-        val result = deleteHotelInfoUseCase.execute(DeleteHotelInfoUseCase.Param(hotelId = 1L))?.toList()
+        val result = deleteHotelInfoUseCase.execute(DeleteHotelInfoUseCase.Param(hotelId = 1L)).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionDeleteHotelInfo::class.java)
     }
 }

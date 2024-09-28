@@ -96,12 +96,12 @@ class UpdateFlightInfoUseCaseTest {
                 departAirport = departAirportUpdated,
                 destinationAirport = destinationAirportUpdated
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
 
         assertFlightAndAirportEqual(
             expected = FlightWithAirportInfo(
@@ -190,12 +190,12 @@ class UpdateFlightInfoUseCaseTest {
                 departAirport = departAirportUpdated,
                 destinationAirport = destinationAirportUpdated
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
 
         // verify second flight has new info
         assertFlightAndAirportEqual(
@@ -258,13 +258,13 @@ class UpdateFlightInfoUseCaseTest {
                 departAirport = departAirportUpdated,
                 destinationAirport = destinationAirportUpdated
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionUpdateFlightInfo::class.java)
     }
 
@@ -322,13 +322,13 @@ class UpdateFlightInfoUseCaseTest {
                 departAirport = departAirportUpdated,
                 destinationAirport = destinationAirportUpdated
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionUpdateFlightInfo::class.java)
     }
 }

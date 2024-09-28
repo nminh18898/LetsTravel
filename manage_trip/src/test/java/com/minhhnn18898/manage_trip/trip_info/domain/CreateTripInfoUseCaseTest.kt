@@ -50,13 +50,13 @@ class CreateTripInfoUseCaseTest {
                 tripName = "Vietnam",
                 coverId = 1
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
-        val id = (result?.get(1) as Result.Success).data
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
+        val id = (result[1] as Result.Success).data
 
         assertTripInfoEqual(
             expected = TripInfo(
@@ -79,13 +79,13 @@ class CreateTripInfoUseCaseTest {
                 tripName = "Vietnam",
                 uri = "/sdcard/something.jpg"
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Success::class.java)
-        val id = (result?.get(1) as Result.Success).data
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
+        val id = (result[1] as Result.Success).data
 
         assertTripInfoEqual(
             expected = TripInfo(
@@ -111,13 +111,13 @@ class CreateTripInfoUseCaseTest {
                 tripName = "Vietnam",
                 coverId = 1
             )
-        )?.toList()
+        ).toList()
 
         // Then
         Truth.assertThat(result).hasSize(2)
-        Truth.assertThat(result?.get(0)).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(result?.get(1)).isInstanceOf(Result.Error::class.java)
-        val error = (result?.get(1) as Result.Error).exception
+        Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
+        Truth.assertThat(result[1]).isInstanceOf(Result.Error::class.java)
+        val error = (result[1] as Result.Error).exception
         Truth.assertThat(error).isInstanceOf(ExceptionInsertTripInfo::class.java)
     }
 }

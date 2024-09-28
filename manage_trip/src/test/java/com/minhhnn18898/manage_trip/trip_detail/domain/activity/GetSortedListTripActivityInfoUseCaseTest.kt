@@ -2,13 +2,11 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
-import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.manage_trip.trip_detail.data.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertActivityInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -81,18 +79,12 @@ class GetSortedListTripActivityInfoUseCaseTest {
         }
 
         // When - 1: get current data from repository
-        val useCaseResult = mutableListOf<Result<Flow<Map<Long?, List<TripActivityInfo>>>>>()
         val dataResult = mutableListOf<Map<Long?, List<TripActivityInfo>>>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId = 1L))?.toList(useCaseResult)
-            (useCaseResult[1] as Result.Success).data.toList(dataResult)
+            getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId = 1L)).toList(dataResult)
         }
 
         // Then - 1
-        Truth.assertThat(useCaseResult).hasSize(2)
-        Truth.assertThat(useCaseResult[0]).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(useCaseResult[1]).isInstanceOf(Result.Success::class.java)
-
         // list activity that map by the start of day
         val firstDateActivities = dataResult[0][1_000_000]
         val secondDateActivities = dataResult[0][2_000_000]
@@ -135,71 +127,12 @@ class GetSortedListTripActivityInfoUseCaseTest {
         fakeTripDetailRepository.reset()
 
         // When - get current data from repository
-        val useCaseResult = mutableListOf<Result<Flow<Map<Long?, List<TripActivityInfo>>>>>()
         val dataResult = mutableListOf<Map<Long?, List<TripActivityInfo>>>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId = 1L))?.toList(useCaseResult)
-            (useCaseResult[1] as Result.Success).data.toList(dataResult)
+            getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId = 1L)).toList(dataResult)
         }
 
         // Then
-        Truth.assertThat(useCaseResult).hasSize(2)
-        Truth.assertThat(useCaseResult[0]).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(useCaseResult[1]).isInstanceOf(Result.Success::class.java)
         Truth.assertThat(dataResult[0]).isEmpty()
-    }
-
-    @Test
-    fun getActivityInfo_throwExceptionFromRepository_returnCorrectError() = runTest {
-        // Given - add some valid activity info so that it can be retrieved, but throw exception from repository
-        val firstActivity = TripActivityInfo(
-            activityId = 1L,
-            title = "Discover the Delta's Charms",
-            description = "Mekong Delta Tour from HCM City",
-            photo = "https://testing.com/photo",
-            timeFrom = 1_000_000,
-            timeTo = 1_500_000,
-            price = 2_000_000,
-        )
-
-        val secondActivity = TripActivityInfo(
-            activityId = 2L,
-            title = "Saigon River Tour in Ho Chi Minh",
-            description = "Hop on board and join us on a luxury cruise on the Saigon River in the city center of Ho Chi Minh City",
-            photo = "https://testing.com/photo2",
-            timeFrom = 2_500_000,
-            timeTo = 2_800_000,
-            price = 2_900_000
-        )
-        val thirdActivity = TripActivityInfo(
-            activityId = 3L,
-            title = "Cu Chi Tunnels Tour",
-            description = "Used by the Viet Cong during the Vietnam War, the Cu Chi Tunnels are a network of underground tunnels stretching more than 124 miles (200 kilometers)",
-            photo = "https://testing.com/photo3",
-            timeFrom = 1_600_000,
-            timeTo = 1_800_000,
-            price = 2_200_000
-        )
-
-        fakeTripDetailRepository.apply {
-            upsertActivityInfo(tripId = 1L, firstActivity)
-            upsertActivityInfo(tripId = 1L, secondActivity)
-            upsertActivityInfo(tripId = 1L, thirdActivity)
-        }
-
-        fakeTripDetailRepository.forceError = true
-
-        // When - get current data from repository
-        val useCaseResult = mutableListOf<Result<Flow<Map<Long?, List<TripActivityInfo>>>>>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId = 1L))?.toList(useCaseResult)
-        }
-
-        // Then
-        Truth.assertThat(useCaseResult).hasSize(2)
-        Truth.assertThat(useCaseResult[0]).isInstanceOf(Result.Loading::class.java)
-        Truth.assertThat(useCaseResult[1]).isInstanceOf(Result.Error::class.java)
-        val error = ((useCaseResult[1]) as Result.Error).exception
-        Truth.assertThat(error).isInstanceOf(Exception::class.java)
     }
 }
