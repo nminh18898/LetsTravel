@@ -38,17 +38,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
+import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.EditFlightInfoViewModel.ItineraryType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatterImpl
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow
@@ -56,8 +55,6 @@ import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
@@ -67,11 +64,13 @@ fun EditFlightInfoScreen(
     modifier: Modifier = Modifier,
     viewModel: EditFlightInfoViewModel = hiltViewModel()) {
 
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
             AppBarActionsState(
                 actions = {
-                    if(viewModel.canDelete) {
+                    if(uiState.canDelete) {
                         IconButton(
                             onClick = {
                                 viewModel.onDeleteClick()
@@ -89,12 +88,12 @@ fun EditFlightInfoScreen(
                         onClick = {
                             viewModel.onSaveClick()
                         },
-                        enabled = viewModel.allowSaveContent
+                        enabled = uiState.allowSaveContent
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.save_as_24),
                             contentDescription = "",
-                            tint = if(viewModel.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
+                            tint = if(uiState.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
                         )
                     }
                 }
@@ -102,16 +101,21 @@ fun EditFlightInfoScreen(
         )
     }
 
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
-                viewModel.eventTriggerer.collect { event ->
-                    if(event == EditFlightInfoViewModel.Event.CloseScreen) {
-                        navigateUp.invoke()
-                    }
-                }
-            }
+    LaunchedEffect(uiState.isDeleted) {
+        if(uiState.isDeleted) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.isUpdated) {
+        if(uiState.isUpdated) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(uiState.isCreated) {
+        if(uiState.isCreated) {
+            navigateUp()
         }
     }
 
@@ -130,15 +134,23 @@ fun EditFlightInfoScreen(
         Spacer(modifier = Modifier.height(8.dp))
         EditFlightInfo(
             modifier = defaultModifier,
-            viewModel = viewModel
+            uiState = uiState.flightUiState,
+            onFlightNumberUpdated = viewModel::onFlightNumberUpdated,
+            onAirlinesUpdated = viewModel::onAirlinesUpdated,
+            onPricesUpdated = viewModel::onPricesUpdated,
+            onFlightDateUpdated = viewModel::onFlightDateUpdated,
+            onFlightTimeUpdated = viewModel::onFlightTimeUpdated,
+            onAirportCodeUpdated = viewModel::onAirportCodeUpdated,
+            onAirportCityUpdated = viewModel::onAirportCityUpdated,
+            onAirportNameUpdated = viewModel::onAirportNameUpdated
         )
     }
 
-    AnimatedVisibility(viewModel.onShowLoadingState) {
+    AnimatedVisibility(uiState.isLoading) {
         ProgressDialog()
     }
 
-    AnimatedVisibility(viewModel.onShowDialogDeleteConfirmation) {
+    AnimatedVisibility(uiState.isShowDeleteConfirmation) {
         DeleteConfirmationDialog(
             onConfirmation = viewModel::onDeleteConfirm,
             onDismissRequest = viewModel::onDeleteDismiss
@@ -146,14 +158,22 @@ fun EditFlightInfoScreen(
     }
 
     TopMessageBar(
-        shown = viewModel.errorType.isShow(),
-        text = getMessageError(LocalContext.current, viewModel.errorType)
+        shown = uiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, uiState.showError)
     )
 }
 
 @Composable
 fun EditFlightInfo(
-    viewModel: EditFlightInfoViewModel,
+    uiState: FlightInfoUiState,
+    onFlightNumberUpdated: (String) -> Unit,
+    onAirlinesUpdated: (String) -> Unit,
+    onPricesUpdated: (String) -> Unit,
+    onFlightDateUpdated: (itineraryType: ItineraryType, value: Long?) -> Unit,
+    onFlightTimeUpdated: (itineraryType: ItineraryType, value: Pair<Int, Int>) -> Unit,
+    onAirportCodeUpdated: (ItineraryType, String) -> Unit,
+    onAirportNameUpdated: (ItineraryType, String) -> Unit,
+    onAirportCityUpdated: (ItineraryType, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -161,9 +181,9 @@ fun EditFlightInfo(
         InputTextRow(
             iconRes = R.drawable.airplane_ticket_24,
             label = "${stringResource(id = CommonStringRes.flight_number)} ${StringUtils.getRequiredFieldIndicator()}",
-            inputText = viewModel.flightNumber,
+            inputText = uiState.flightNumber,
             onTextChanged = {
-                viewModel.onFlightNumberUpdated(it)
+                onFlightNumberUpdated(it)
             })
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -171,9 +191,9 @@ fun EditFlightInfo(
         InputTextRow(
             iconRes = R.drawable.airlines_24,
             label = stringResource(id = CommonStringRes.airlines),
-            inputText = viewModel.operatedAirlines,
+            inputText = uiState.operatedAirlines,
             onTextChanged = {
-                viewModel.onAirlinesUpdated(it)
+                onAirlinesUpdated(it)
             })
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -181,67 +201,67 @@ fun EditFlightInfo(
         InputPriceRow(
             iconRes = R.drawable.payments_24,
             label = stringResource(id = CommonStringRes.prices),
-            inputText = viewModel.prices,
+            inputText = uiState.prices,
             onTextChanged = {
-                viewModel.onPricesUpdated(it)
+               onPricesUpdated(it)
             }
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         InputFlightDateTimeSection(
-            dateFrom = viewModel.getFlightDate(EditFlightInfoViewModel.ItineraryType.DEPARTURE),
+            dateFrom = uiState.flightDate[ItineraryType.DEPARTURE],
             onDateFromSelected = {
-                viewModel.onFlightDateUpdated(EditFlightInfoViewModel.ItineraryType.DEPARTURE, it)
+                onFlightDateUpdated(ItineraryType.DEPARTURE, it)
             },
-            timeFrom = viewModel.getFlightTime(EditFlightInfoViewModel.ItineraryType.DEPARTURE),
+            timeFrom = uiState.flightTime[ItineraryType.DEPARTURE] ?: Pair(0, 0),
             onTimeFromSelected = {
-                viewModel.onFlightTimeUpdated(EditFlightInfoViewModel.ItineraryType.DEPARTURE, it)
+                onFlightTimeUpdated(ItineraryType.DEPARTURE, it)
             },
 
-            dateTo = viewModel.getFlightDate(EditFlightInfoViewModel.ItineraryType.ARRIVAL),
+            dateTo = uiState.flightDate[ItineraryType.ARRIVAL],
             onDateToSelected = {
-                viewModel.onFlightDateUpdated(EditFlightInfoViewModel.ItineraryType.ARRIVAL, it)
+                onFlightDateUpdated(ItineraryType.ARRIVAL, it)
             },
-            timeTo = viewModel.getFlightTime(EditFlightInfoViewModel.ItineraryType.ARRIVAL),
+            timeTo =  uiState.flightTime[ItineraryType.ARRIVAL] ?: Pair(0, 0),
             onTimeToSelected = {
-                viewModel.onFlightTimeUpdated(EditFlightInfoViewModel.ItineraryType.ARRIVAL, it)
+                onFlightTimeUpdated(ItineraryType.ARRIVAL, it)
             }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        val departureType = EditFlightInfoViewModel.ItineraryType.DEPARTURE
+        val departureType = ItineraryType.DEPARTURE
         EditAirportInfo(
             label = stringResource(id = CommonStringRes.from),
-            airportCode = viewModel.getAirportCode(departureType),
+            airportCode = uiState.airportCodes[departureType] ?: "",
             onAirportCodeUpdated = {
-                viewModel.onAirportCodeUpdated(departureType, it)
+                onAirportCodeUpdated(departureType, it)
             },
-            airportName = viewModel.getAirportName(departureType),
+            airportName = uiState.airportNames[departureType] ?: "",
             onAirportNameUpdated = {
-                viewModel.onAirportNameUpdated(departureType, it)
+                onAirportNameUpdated(departureType, it)
             },
-            city = viewModel.getAirportCity(departureType),
+            city = uiState.airportCities[departureType] ?: "",
             onCityUpdated = {
-                viewModel.onAirportCityUpdated(departureType, it)
+                onAirportCityUpdated(departureType, it)
             }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        val arrivalType = EditFlightInfoViewModel.ItineraryType.ARRIVAL
+        val arrivalType = ItineraryType.ARRIVAL
         EditAirportInfo(
             label = stringResource(id = CommonStringRes.to),
-            airportCode = viewModel.getAirportCode(arrivalType),
+            airportCode = uiState.airportCodes[arrivalType] ?: "",
             onAirportCodeUpdated = {
-                viewModel.onAirportCodeUpdated(arrivalType, it)
+                onAirportCodeUpdated(arrivalType, it)
             },
-            airportName = viewModel.getAirportName(arrivalType),
+            airportName = uiState.airportNames[arrivalType] ?: "",
             onAirportNameUpdated = {
-                viewModel.onAirportNameUpdated(arrivalType, it)
+                onAirportNameUpdated(arrivalType, it)
             },
-            city = viewModel.getAirportCity(arrivalType),
+            city = uiState.airportCities[arrivalType] ?: "",
             onCityUpdated = {
-                viewModel.onAirportCityUpdated(arrivalType, it)
+                onAirportCityUpdated(arrivalType, it)
             }
         )
     }

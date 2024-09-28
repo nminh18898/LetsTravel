@@ -1,9 +1,5 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.flight
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,14 +13,84 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.flight.CreateNewFlightInf
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.UpdateFlightInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.EditFlightInfoViewModel.ItineraryType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.AddEditHotelInfoViewModel.ErrorType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class FlightInfoUiState(
+    val flightNumber: String = "",
+    val operatedAirlines: String = "",
+    val prices: String = "",
+    val airportCodes: Map<ItineraryType, String> = createEmptyItineraryStringMap(),
+    val airportNames: Map<ItineraryType, String> = createEmptyItineraryStringMap(),
+    val airportCities: Map<ItineraryType, String> = createEmptyItineraryStringMap(),
+    val flightDate: Map<ItineraryType, Long?> = createEmptyItineraryNullableLongMap(),
+    val flightTime: Map<ItineraryType, Pair<Int, Int>> = createEmptyItineraryPairIntMap()
+)
+
+data class AddEditFlightUiState(
+    val flightUiState: FlightInfoUiState = FlightInfoUiState(),
+    val isLoading: Boolean = false,
+    val isNotFound: Boolean = false,
+    val canDelete: Boolean = false,
+    val isShowDeleteConfirmation: Boolean = false,
+    val showError: EditFlightInfoViewModel.ErrorType = EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_NONE,
+    val isCreated: Boolean = false,
+    val isUpdated: Boolean = false,
+    val isDeleted: Boolean = false,
+    val allowSaveContent: Boolean = false
+)
+
+private fun createEmptyItineraryStringMap(): Map<ItineraryType, String> = mutableMapOf(
+    ItineraryType.DEPARTURE to "",
+    ItineraryType.ARRIVAL to ""
+)
+
+private fun createEmptyItineraryNullableLongMap(): Map<ItineraryType, Long?> = mutableMapOf(
+    ItineraryType.DEPARTURE to null,
+    ItineraryType.ARRIVAL to null
+)
+
+private fun createEmptyItineraryPairIntMap(): Map<ItineraryType, Pair<Int, Int>> = mutableMapOf(
+    ItineraryType.DEPARTURE to Pair(0, 0),
+    ItineraryType.ARRIVAL to Pair(0, 0)
+)
+
+fun FlightWithAirportInfo.toFlightInfoUiState(dateTimeFormatter: TripDetailDateTimeFormatter): FlightInfoUiState {
+    return FlightInfoUiState(
+        flightNumber = this.flightInfo.flightNumber,
+        operatedAirlines = this.flightInfo.operatedAirlines,
+        prices = this.flightInfo.price.toString(),
+        flightDate = mutableMapOf(
+            ItineraryType.DEPARTURE to this.flightInfo.departureTime,
+            ItineraryType.ARRIVAL to this.flightInfo.arrivalTime
+        ),
+        flightTime = mutableMapOf(
+            ItineraryType.DEPARTURE to dateTimeFormatter.getHourMinute(this.flightInfo.departureTime),
+            ItineraryType.ARRIVAL to dateTimeFormatter.getHourMinute(this.flightInfo.arrivalTime)
+        ),
+        airportCodes = mutableMapOf(
+            ItineraryType.DEPARTURE to this.departAirport.code,
+            ItineraryType.ARRIVAL to this.destinationAirport.code
+        ),
+        airportNames = mutableMapOf(
+            ItineraryType.DEPARTURE to this.departAirport.airportName,
+            ItineraryType.ARRIVAL to this.destinationAirport.airportName
+        ),
+        airportCities = mutableMapOf(
+            ItineraryType.DEPARTURE to this.departAirport.city,
+            ItineraryType.ARRIVAL to this.destinationAirport.city
+        )
+    )
+}
 
 @HiltViewModel
 class EditFlightInfoViewModel @Inject constructor(
@@ -39,163 +105,123 @@ class EditFlightInfoViewModel @Inject constructor(
     private val tripId: Long = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
     private val flightId: Long = savedStateHandle.get<Long>(MainAppRoute.flightIdArg) ?: 0L
 
-    var flightNumber by mutableStateOf("")
-        private set
-
-    var operatedAirlines by mutableStateOf("")
-        private set
-
-    var prices by mutableStateOf("")
-        private set
-
-    private var airportCodes: Map<ItineraryType, MutableState<String>> = mutableMapOf(
-        ItineraryType.DEPARTURE to mutableStateOf(""),
-        ItineraryType.ARRIVAL to mutableStateOf("")
-    )
-
-    private var airportNames: Map<ItineraryType, MutableState<String>> = mutableMapOf(
-        ItineraryType.DEPARTURE to mutableStateOf(""),
-        ItineraryType.ARRIVAL to mutableStateOf("")
-    )
-
-    private var airportCities: Map<ItineraryType, MutableState<String>> = mutableMapOf(
-        ItineraryType.DEPARTURE to mutableStateOf(""),
-        ItineraryType.ARRIVAL to mutableStateOf("")
-    )
-
-    private var flightDate: Map<ItineraryType, MutableState<Long?>> = mutableMapOf(
-        ItineraryType.DEPARTURE to mutableStateOf(null),
-        ItineraryType.ARRIVAL to mutableStateOf(null)
-    )
-
-    private var flightTime: Map<ItineraryType, MutableState<Pair<Int, Int>>> = mutableMapOf(
-        ItineraryType.DEPARTURE to mutableStateOf(Pair(0, 0)),
-        ItineraryType.ARRIVAL to mutableStateOf(Pair(0, 0))
-    )
-
-    var allowSaveContent by mutableStateOf(false)
-        private set
-
-    var canDelete by mutableStateOf(flightId > 0L)
-
-    var onShowLoadingState by mutableStateOf(false)
-        private set
-
-    var onShowDialogDeleteConfirmation by mutableStateOf(false)
-        private set
-
-    var errorType by mutableStateOf(ErrorType.ERROR_MESSAGE_NONE)
-        private set
-
-    private val _eventChannel = Channel<Event>()
-    val eventTriggerer = _eventChannel.receiveAsFlow()
+    private val _uiState = MutableStateFlow(AddEditFlightUiState())
+    val uiState: StateFlow<AddEditFlightUiState> = _uiState.asStateFlow()
 
     init {
-        loadFlightInfo(flightId)
+        if(flightId > 0) {
+            loadFlightInfo(flightId)
+        }
     }
 
     private fun loadFlightInfo(flightId: Long) {
-        if(flightId <= 0 ) return
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
 
         viewModelScope.launch {
-            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(flightId))?.collect {
-                onShowLoadingState = it == Result.Loading
-
-                when(it) {
-                    is Result.Success -> handleResultLoadFlightInfo(it.data)
-                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_FLIGHT_INFO)
-                    else -> {
-                        // do nothing
+            getFlightInfoUseCase.execute(GetFlightInfoUseCase.Param(flightId)).collect { flightInfo ->
+                if(flightInfo != null) {
+                    _uiState.update {
+                        it.copy(
+                            flightUiState = flightInfo.toFlightInfoUiState(dateTimeFormatter),
+                            isLoading = false,
+                            isNotFound = false,
+                            canDelete = true
+                        )
+                    }
+                    checkAllowSaveContent()
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isNotFound = true,
+                            canDelete = false
+                        )
                     }
                 }
             }
         }
     }
 
-    private suspend fun handleResultLoadFlightInfo(flightInfoWithAirportFlow: Flow<FlightWithAirportInfo?>) {
-        flightInfoWithAirportFlow.collect { flightInfoWithAirport ->
-            if(flightInfoWithAirport != null) {
-                val flightInfo = flightInfoWithAirport.flightInfo
-                onFlightNumberUpdated(flightInfo.flightNumber)
-                onAirlinesUpdated(flightInfo.operatedAirlines)
-                onPricesUpdated(flightInfo.price.toString())
-                onFlightDateUpdated(ItineraryType.DEPARTURE, flightInfo.departureTime)
-                onFlightTimeUpdated(ItineraryType.DEPARTURE, dateTimeFormatter.getHourMinute(flightInfo.departureTime))
-                onFlightDateUpdated(ItineraryType.ARRIVAL, flightInfo.arrivalTime, showWarningInvalidRange = false)
-                onFlightTimeUpdated(ItineraryType.ARRIVAL, dateTimeFormatter.getHourMinute(flightInfo.arrivalTime), showWarningInvalidRange = false)
-
-                val departAirport = flightInfoWithAirport.departAirport
-                onAirportCodeUpdated(ItineraryType.DEPARTURE, departAirport.code)
-                onAirportNameUpdated(ItineraryType.DEPARTURE, departAirport.airportName)
-                onAirportCityUpdated(ItineraryType.DEPARTURE, departAirport.city)
-
-                val destinationAirport = flightInfoWithAirport.destinationAirport
-                onAirportCodeUpdated(ItineraryType.ARRIVAL, destinationAirport.code)
-                onAirportNameUpdated(ItineraryType.ARRIVAL, destinationAirport.airportName)
-                onAirportCityUpdated(ItineraryType.ARRIVAL, destinationAirport.city)
-            }
-            else {
-                _eventChannel.send(Event.CloseScreen)
-            }
-        }
-    }
-
     fun onFlightNumberUpdated(value: String) {
-        flightNumber = value
+        _uiState.update {
+            it.copy(
+                flightUiState = it.flightUiState.copy(flightNumber = value)
+            )
+        }
         checkAllowSaveContent()
     }
 
     fun onAirlinesUpdated(value: String) {
-        operatedAirlines = value
+        _uiState.update {
+            it.copy(
+                flightUiState = it.flightUiState.copy(operatedAirlines = value)
+            )
+        }
     }
 
     fun onPricesUpdated(value: String) {
-        prices = value
-    }
-
-    fun getAirportCode(itineraryType: ItineraryType): String {
-        return airportCodes[itineraryType]?.value ?: ""
+        _uiState.update {
+            it.copy(
+                flightUiState = it.flightUiState.copy(prices = value)
+            )
+        }
     }
 
     fun onAirportCodeUpdated(itineraryType: ItineraryType, value: String) {
-        airportCodes[itineraryType]?.value = value
+        _uiState.update {
+            val currentValue = it.flightUiState.airportCodes.toMutableMap()
+            currentValue[itineraryType] = value
+            it.copy(
+                flightUiState = it.flightUiState.copy(airportCodes = currentValue)
+            )
+        }
         checkAllowSaveContent()
     }
 
-    fun getAirportName(itineraryType: ItineraryType): String {
-        return airportNames[itineraryType]?.value ?: ""
-    }
-
     fun onAirportNameUpdated(itineraryType: ItineraryType, value: String) {
-        airportNames[itineraryType]?.value = value
-    }
-
-    fun getAirportCity(itineraryType: ItineraryType): String {
-        return airportCities[itineraryType]?.value ?: ""
+        _uiState.update {
+            val currentValue = it.flightUiState.airportNames.toMutableMap()
+            currentValue[itineraryType] = value
+            it.copy(
+                flightUiState = it.flightUiState.copy(airportNames = currentValue)
+            )
+        }
     }
 
     fun onAirportCityUpdated(itineraryType: ItineraryType, value: String) {
-        airportCities[itineraryType]?.value = value
-    }
-
-    fun getFlightDate(itineraryType: ItineraryType): Long? {
-        return flightDate[itineraryType]?.value
+        _uiState.update {
+            val currentValue = it.flightUiState.airportCities.toMutableMap()
+            currentValue[itineraryType] = value
+            it.copy(
+                flightUiState = it.flightUiState.copy(airportCities = currentValue)
+            )
+        }
     }
 
     fun onFlightDateUpdated(itineraryType: ItineraryType, value: Long?, showWarningInvalidRange: Boolean = true) {
-        flightDate[itineraryType]?.value = value
+        _uiState.update {
+            val currentValue = it.flightUiState.flightDate.toMutableMap()
+            currentValue[itineraryType] = value
+            it.copy(
+                flightUiState = it.flightUiState.copy(flightDate = currentValue)
+            )
+        }
 
         if(itineraryType == ItineraryType.ARRIVAL && showWarningInvalidRange) {
             checkInvalidFlightTimeRangeAndNotify()
         }
     }
 
-    fun getFlightTime(itineraryType: ItineraryType): Pair<Int, Int> {
-        return flightTime[itineraryType]?.value ?: Pair(0, 0)
-    }
-
     fun onFlightTimeUpdated(itineraryType: ItineraryType, value: Pair<Int, Int>, showWarningInvalidRange: Boolean = true) {
-        flightTime[itineraryType]?.value = value
+        _uiState.update {
+            val currentValue = it.flightUiState.flightTime.toMutableMap()
+            currentValue[itineraryType] = value
+            it.copy(
+                flightUiState = it.flightUiState.copy(flightTime = currentValue)
+            )
+        }
 
         if(itineraryType == ItineraryType.ARRIVAL && showWarningInvalidRange) {
             checkInvalidFlightTimeRangeAndNotify()
@@ -213,24 +239,31 @@ class EditFlightInfoViewModel @Inject constructor(
     }
 
     private fun checkAllowSaveContent() {
-        allowSaveContent =
-            flightNumber.isNotBlankOrEmpty() &&
-            airportCodes[ItineraryType.DEPARTURE]?.value?.isNotBlankOrEmpty() == true &&
-            airportCodes[ItineraryType.ARRIVAL]?.value?.isNotBlankOrEmpty() == true &&
-            flightDate[ItineraryType.DEPARTURE]?.value != null &&
-            flightDate[ItineraryType.ARRIVAL]?.value != null &&
-            isValidFlightTime()
+        _uiState.update {
+            it.copy(allowSaveContent = isAllowSave())
+        }
+    }
+
+    private fun isAllowSave(): Boolean {
+        val flightUiState = uiState.value.flightUiState
+
+        return flightUiState.flightNumber.isNotBlankOrEmpty() &&
+                flightUiState.airportCodes[ItineraryType.DEPARTURE]?.isNotBlankOrEmpty() == true &&
+                flightUiState.airportCodes[ItineraryType.ARRIVAL]?.isNotBlankOrEmpty() == true &&
+                flightUiState.flightDate[ItineraryType.DEPARTURE] != null &&
+                flightUiState.flightDate[ItineraryType.ARRIVAL] != null &&
+                isValidFlightTime()
     }
 
     fun onSaveClick() {
         viewModelScope.launch {
             val flightInfo = FlightInfo(
                 flightId = flightId,
-                flightNumber,
-                operatedAirlines,
-                getDateTimeMillis(ItineraryType.DEPARTURE),
-                getDateTimeMillis(ItineraryType.ARRIVAL),
-                prices.toLongOrNull() ?: 0L
+                flightNumber = uiState.value.flightUiState.flightNumber,
+                operatedAirlines = uiState.value.flightUiState.operatedAirlines,
+                departureTime = getDateTimeMillis(ItineraryType.DEPARTURE),
+                arrivalTime = getDateTimeMillis(ItineraryType.ARRIVAL),
+                price = uiState.value.flightUiState.prices.toLongOrNull() ?: 0L
             )
             val departAirport = extractAirportInfoFromInput(ItineraryType.DEPARTURE)
             val arrivalAirport = extractAirportInfoFromInput(ItineraryType.ARRIVAL)
@@ -255,15 +288,18 @@ class EditFlightInfoViewModel @Inject constructor(
                 departAirport,
                 arrivalAirport
             )
-        )?.collect {
-            onShowLoadingState = it == Result.Loading
-
-            when(it) {
-                is Result.Success -> _eventChannel.send(Event.CloseScreen)
-                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO)
-                else -> {
-                    // do nothing
+        ).collect { result ->
+            when(result) {
+                is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isCreated = true
+                        )
+                    }
                 }
+                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO)
             }
         }
     }
@@ -276,70 +312,88 @@ class EditFlightInfoViewModel @Inject constructor(
                 departAirport,
                 arrivalAirport
             )
-        )?.collect {
-            onShowLoadingState = it == Result.Loading
-
-            when(it) {
-                is Result.Success -> _eventChannel.send(Event.CloseScreen)
-                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO)
-                else -> {
-                    // do nothing
+        ).collect { result ->
+            when(result) {
+                is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isUpdated = true
+                        )
+                    }
                 }
+                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO)
             }
         }
     }
 
     fun onDeleteClick() {
-        onShowDialogDeleteConfirmation = true
+        _uiState.update {
+            it.copy(isShowDeleteConfirmation = true)
+        }
     }
 
     fun onDeleteConfirm() {
-        onShowDialogDeleteConfirmation = false
+        _uiState.update {
+            it.copy(isShowDeleteConfirmation = false)
+        }
 
         viewModelScope.launch {
-            deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId))?.collect {
-                onShowLoadingState = it == Result.Loading
-
-                when(it) {
-                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
-                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO)
-                    else -> {
-                        // do nothing
+            deleteFlightInfoUseCase.execute(DeleteFlightInfoUseCase.Param(flightId)).collect { result ->
+                when(result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                    is Result.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isDeleted = true
+                            )
+                        }
                     }
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO)
                 }
             }
         }
     }
 
     fun onDeleteDismiss() {
-        onShowDialogDeleteConfirmation = false
+        _uiState.update {
+            it.copy(isShowDeleteConfirmation = false)
+        }
     }
 
     private fun showErrorInBriefPeriod(errorType: ErrorType) {
         viewModelScope.launch {
-            this@EditFlightInfoViewModel.errorType = errorType
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    showError = errorType
+                )
+            }
             delay(3000)
-            this@EditFlightInfoViewModel.errorType = ErrorType.ERROR_MESSAGE_NONE
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    showError = ErrorType.ERROR_MESSAGE_NONE
+                )
+            }
         }
     }
 
     private fun extractAirportInfoFromInput(type: ItineraryType): AirportInfo {
         return AirportInfo(
-            airportCodes.getStringValue(type),
-            airportCities.getStringValue(type),
-            airportNames.getStringValue(type)
+            code = uiState.value.flightUiState.airportCodes[type] ?: "",
+            city = uiState.value.flightUiState.airportCities[type] ?: "",
+            airportName = uiState.value.flightUiState.airportNames[type] ?: ""
         )
     }
 
     private fun getDateTimeMillis(type: ItineraryType): Long {
-        val localDate = flightDate[type]?.value ?: 0L
-        val timeHourMinutes = flightTime[type]?.value ?: Pair(0, 0)
+        val localDate = uiState.value.flightUiState.flightDate[type] ?: 0L
+        val timeHourMinutes = uiState.value.flightUiState.flightTime[type] ?: Pair(0, 0)
 
         return dateTimeFormatter.combineActivityDateTimeToMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
-    }
-
-    private fun Map<ItineraryType, MutableState<String>>.getStringValue(key: ItineraryType): String {
-        return this[key]?.value ?: ""
     }
 
     enum class ItineraryType {
@@ -354,9 +408,5 @@ class EditFlightInfoViewModel @Inject constructor(
         ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO,
         ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO,
         ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID
-    }
-
-    sealed class Event {
-        data object CloseScreen: Event()
     }
 }
