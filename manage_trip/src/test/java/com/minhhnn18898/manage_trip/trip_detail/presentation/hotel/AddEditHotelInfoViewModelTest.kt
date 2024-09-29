@@ -75,7 +75,7 @@ class AddEditHotelInfoViewModelTest {
     }
 
     @Test
-    fun loadHotelInfo_hotelShown()  = runTest {
+    fun loadHotelInfo_hotelShown() {
         // Given
         val hotelInfo = HotelInfo(
             hotelId = 1L,
@@ -367,6 +367,7 @@ class AddEditHotelInfoViewModelTest {
         Truth.assertThat(uiState.isShowDeleteConfirmation).isFalse()
         Truth.assertThat(uiState.isLoading).isFalse()
         Truth.assertThat(uiState.isDeleted).isTrue()
+        Truth.assertThat(uiState.isNotFound).isTrue()
         Truth.assertThat(fakeTripDetailRepository.getHotelInfoForTesting(1L)).isNull()
     }
 
@@ -402,6 +403,47 @@ class AddEditHotelInfoViewModelTest {
         advanceUntilIdle()
         // Then - verify error is hidden
         Truth.assertThat(viewModel.uiState.value.showError).isEqualTo(AddEditHotelInfoViewModel.ErrorType.ERROR_MESSAGE_NONE)
+    }
+
+    @Test
+    fun onDeleteClick_onDeleteConfirmed_showLoading() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher())
+
+        // Given
+        val hotelInfo = HotelInfo(
+            hotelId = 1L,
+            hotelName = "Liberty Central Riverside Hotel",
+            address = "District 1, Ho Chi Minh City",
+            checkInDate = 1_000_000,
+            checkOutDate = 1_200_000,
+            price = 2_200_000
+        )
+        fakeTripDetailRepository.upsertHotelInfo(1L, hotelInfo)
+        setupViewModel(hotelIdArg = 1L)
+        viewModel.onDeleteClick()
+        advanceUntilIdle()
+
+        // When
+        val resultList = mutableListOf<AddEditHotelUiState>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.toList(resultList)
+        }
+
+        viewModel.onDeleteConfirm()
+        advanceUntilIdle()
+
+        // Then - assert loading is shown correctly
+        // First item is the state before we invoke onDeleteConfirm(),
+        Truth.assertThat(resultList[0].isLoading).isFalse()
+
+        // Second item is when we hide the confirmation view
+        Truth.assertThat(resultList[1].isLoading).isFalse()
+
+        // Third item is when we display the loading view
+        Truth.assertThat(resultList[2].isLoading).isTrue()
+
+        // Third item is when we hide the loading view
+        Truth.assertThat(resultList[3].isLoading).isFalse()
     }
 
     @Test
@@ -483,6 +525,13 @@ class AddEditHotelInfoViewModelTest {
 
         // Given
         setupViewModel()
+        viewModel.apply {
+            onHotelNameUpdated("Le Saigon Hotel")
+            onAddressUpdated("Tan Binh District, Ho Chi Minh City")
+            onPricesUpdated("1200000")
+            onCheckInDateUpdated(1_100_000)
+            onCheckOutDateUpdated(1_500_000)
+        }
 
         // When
         val resultList = mutableListOf<AddEditHotelUiState>()

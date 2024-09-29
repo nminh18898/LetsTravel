@@ -27,6 +27,7 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.DatePickerWithDialog
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow
 import com.minhhnn18898.ui_components.base_components.InputTextRow
@@ -100,20 +101,24 @@ fun AddEditHotelInfoScreen(
 
     val defaultModifier = Modifier.padding(horizontal = 16.dp)
 
-    Column(
-        modifier = modifier
-            .padding(vertical = 16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        EditHotelInfo(
-            uiState = uiState.hotelUiState,
-            onHotelNameUpdated = viewModel::onHotelNameUpdated,
-            onAddressNameUpdated = viewModel::onAddressUpdated,
-            onPricesUpdated = viewModel::onPricesUpdated,
-            onCheckInDateUpdated = viewModel::onCheckInDateUpdated,
-            onCheckOutDateUpdated = viewModel::onCheckOutDateUpdated,
-            modifier = defaultModifier
-        )
+    if(uiState.isNotFound) {
+        DefaultErrorView(modifier = modifier)
+    } else {
+        Column(
+            modifier = modifier
+                .padding(vertical = 16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            EditHotelInfo(
+                uiState = uiState.hotelUiState,
+                onHotelNameUpdated = viewModel::onHotelNameUpdated,
+                onAddressNameUpdated = viewModel::onAddressUpdated,
+                onPricesUpdated = viewModel::onPricesUpdated,
+                onCheckInDateUpdated = viewModel::onCheckInDateUpdated,
+                onCheckOutDateUpdated = viewModel::onCheckOutDateUpdated,
+                modifier = defaultModifier
+            )
+        }
     }
 
     AnimatedVisibility(uiState.isLoading) {

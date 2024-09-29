@@ -47,6 +47,7 @@ import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.DatePickerWithDialog
 import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.TimePickerWithDialog
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
@@ -132,44 +133,48 @@ fun AddEditTripActivityScreen(
         }
     )
 
-    Column(
-        modifier = modifier
-    ) {
-        ActivityPhoto(
-            photoPath = uiState.tripActivityUiState.photo,
-            onClick = {
-                imagePicker.launch(
-                    PickVisualMediaRequest(
-                        ActivityResultContracts.PickVisualMedia.ImageOnly
+    if(uiState.isNotFound) {
+        DefaultErrorView(modifier = modifier)
+    } else {
+        Column(
+            modifier = modifier
+        ) {
+            ActivityPhoto(
+                photoPath = uiState.tripActivityUiState.photo,
+                onClick = {
+                    imagePicker.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
                     )
-                )
-            }
-        )
+                }
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        InputBasicActivityInfo(
-            name =  uiState.tripActivityUiState.name,
-            onNameUpdated = viewModel::onNameUpdated,
-            description =  uiState.tripActivityUiState.description,
-            onDescriptionUpdated = viewModel::onDescriptionUpdated,
-            prices =  uiState.tripActivityUiState.prices,
-            onPricesUpdated = viewModel::onPricesUpdated,
-            modifier = defaultModifier
-        )
+            InputBasicActivityInfo(
+                name =  uiState.tripActivityUiState.name,
+                onNameUpdated = viewModel::onNameUpdated,
+                description =  uiState.tripActivityUiState.description,
+                onDescriptionUpdated = viewModel::onDescriptionUpdated,
+                prices =  uiState.tripActivityUiState.prices,
+                onPricesUpdated = viewModel::onPricesUpdated,
+                modifier = defaultModifier
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        InputDateTime(
-            titleRes = CommonStringRes.schedule,
-            date =  uiState.tripActivityUiState.date,
-            onDateSelected = viewModel::onDateUpdated,
-            timeFrom =  uiState.tripActivityUiState.timeFrom,
-            onTimeFromSelected = viewModel::onTimeFromUpdated,
-            timeTo =  uiState.tripActivityUiState.timeTo,
-            onTimeToSelected = viewModel::onTimeToUpdated,
-            modifier = defaultModifier
-        )
+            InputDateTime(
+                titleRes = CommonStringRes.schedule,
+                date =  uiState.tripActivityUiState.date,
+                onDateSelected = viewModel::onDateUpdated,
+                timeFrom =  uiState.tripActivityUiState.timeFrom,
+                onTimeFromSelected = viewModel::onTimeFromUpdated,
+                timeTo =  uiState.tripActivityUiState.timeTo,
+                onTimeToSelected = viewModel::onTimeToUpdated,
+                modifier = defaultModifier
+            )
+        }
     }
 
     AnimatedVisibility(uiState.isLoading) {

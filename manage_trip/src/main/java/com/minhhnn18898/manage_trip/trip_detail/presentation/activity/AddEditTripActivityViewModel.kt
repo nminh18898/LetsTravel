@@ -102,7 +102,6 @@ class AddEditTripActivityViewModel @Inject constructor(
                 tripActivityUiState = it.tripActivityUiState.copy(photo = value)
             )
         }
-        checkAllowSaveContent()
     }
 
     fun onNameUpdated(value: String) {
@@ -111,6 +110,7 @@ class AddEditTripActivityViewModel @Inject constructor(
                 tripActivityUiState = it.tripActivityUiState.copy(name = value)
             )
         }
+        checkAllowSaveContent()
     }
 
     fun onDescriptionUpdated(value: String) {
@@ -282,8 +282,8 @@ class AddEditTripActivityViewModel @Inject constructor(
     }
 
     private fun TripActivityUiState.toActivityInfo(): TripActivityInfo {
-        val timeFrom: Long? = if(this.date == null)  null else getDateTimeMillis(this.date, this.timeFrom)
-        val timeTo: Long? = if(this.date == null)  null else getDateTimeMillis(this.date, this.timeTo)
+        val timeFrom: Long? = if(this.date == null) null else getDateTimeMillis(this.date, this.timeFrom)
+        val timeTo: Long? = if(this.date == null) null else getDateTimeMillis(this.date, this.timeTo)
 
         return TripActivityInfo(
             activityId = activityId,
