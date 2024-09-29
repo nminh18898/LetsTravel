@@ -59,7 +59,7 @@ class AddEditTripViewModelTest {
 
     @After
     fun cleanup() {
-
+        fakeTripInfoRepository.reset()
     }
 
     @Test
@@ -150,7 +150,7 @@ class AddEditTripViewModelTest {
     }
 
     @Test
-    fun loadTripInfo_emptyTrip_showError() {
+    fun loadTripInfo_emptyTrip_showNotFound() {
         // When
         setupViewModel(tripIdArg = 1L)
 
@@ -172,7 +172,7 @@ class AddEditTripViewModelTest {
         // Given
         setupViewModel()
 
-        // Verify can not delete task
+        // Then
         Truth.assertThat(viewModel.uiState.value.canDeleteTrip).isFalse()
     }
 
@@ -319,7 +319,7 @@ class AddEditTripViewModelTest {
     }
 
     @Test
-    fun onDeleteClick_onDeleteDismiss() {
+    fun onDeleteClick_onDeleteDismissed_verifyDeleteConfirmationIsShownThenHidden() {
         // Given
         setupViewModel()
 
@@ -337,7 +337,7 @@ class AddEditTripViewModelTest {
     }
 
     @Test
-    fun onDeleteClick_onDeleteConfirmed() = runTest {
+    fun onDeleteClick_onDeleteConfirmed_verifyTripIsDeleted() = runTest {
         // Given
         Dispatchers.setMain(StandardTestDispatcher())
 
@@ -616,15 +616,20 @@ class AddEditTripViewModelTest {
         viewModel.onSaveClick()
         advanceUntilIdle()
 
-        // Then
+        // Then - assert loading and error is shown correctly
         Truth.assertThat(resultList).hasSize(4)
-        // first item is the state before we invoke onSaveClick(),
-        // second, third, fourth item is the state after we invoke onSaveClick()
-        // We need to assert loading and error is shown correctly
+
+        // First item is the state before we invoke onSaveClick(),
         Truth.assertThat(resultList[0].isLoading).isFalse()
+
+        // Second item: verify loading is shown right after click save
         Truth.assertThat(resultList[1].isLoading).isTrue()
+
+        // Third item: error occurs, verify error state is shown
         Truth.assertThat(resultList[2].showError).isEqualTo(AddEditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_TRIP_INFO)
         Truth.assertThat(resultList[2].isLoading).isFalse()
+
+        // Fourth item: error occurs, verify error state is hidden
         Truth.assertThat(resultList[3].showError).isEqualTo(AddEditTripViewModel.ErrorType.ERROR_MESSAGE_NONE)
         Truth.assertThat(resultList[3].isLoading).isFalse()
     }
@@ -660,15 +665,20 @@ class AddEditTripViewModelTest {
         viewModel.onSaveClick()
         advanceUntilIdle()
 
-        // Then
+        // Then - assert loading and error is shown correctly
         Truth.assertThat(resultList).hasSize(4)
-        // first item is the state before we invoke onSaveClick(),
-        // second, third, fourth item is the state after we invoke onSaveClick()
-        // We need to assert loading and error is shown correctly
+
+        // First item is the state before we invoke onSaveClick(),
         Truth.assertThat(resultList[0].isLoading).isFalse()
+
+        // Second item: verify loading is shown right after click save
         Truth.assertThat(resultList[1].isLoading).isTrue()
+
+        // Third item: error occurs, verify error state is shown
         Truth.assertThat(resultList[2].showError).isEqualTo(AddEditTripViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_TRIP_INFO)
         Truth.assertThat(resultList[2].isLoading).isFalse()
+
+        // Fourth item: error occurs, verify error state is hidden
         Truth.assertThat(resultList[3].showError).isEqualTo(AddEditTripViewModel.ErrorType.ERROR_MESSAGE_NONE)
         Truth.assertThat(resultList[3].isLoading).isFalse()
     }
