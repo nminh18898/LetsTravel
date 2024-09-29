@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -45,9 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.StringUtils
@@ -64,8 +61,6 @@ import com.minhhnn18898.ui_components.base_components.PieChartItem
 import com.minhhnn18898.ui_components.base_components.PieChartWithLabel
 import com.minhhnn18898.ui_components.base_components.SectionCtaData
 import com.minhhnn18898.ui_components.theme.typography
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
@@ -103,19 +98,6 @@ fun TripDetailScreen(
                 }
             )
         )
-    }
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
-                viewModel.eventTriggerer.collect { event ->
-                    if (event == TripDetailScreenViewModel.Event.CloseScreen) {
-                        navigateUp.invoke()
-                    }
-                }
-            }
-        }
     }
 
     val tripInfoContentState by viewModel.tripInfoContentState.collectAsStateWithLifecycle()

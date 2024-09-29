@@ -47,7 +47,7 @@ import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.EditFlightInfoViewModel.ItineraryType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoViewModel.ItineraryType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatterImpl
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow
@@ -58,11 +58,11 @@ import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
-fun EditFlightInfoScreen(
+fun AddEditFlightInfoScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EditFlightInfoViewModel = hiltViewModel()) {
+    viewModel: AddEditFlightInfoViewModel = hiltViewModel()) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -584,17 +584,17 @@ fun TimePickerWithDialog(
     }
 }
 
-private fun getMessageError(context: Context, errorType: EditFlightInfoViewModel.ErrorType): String {
+private fun getMessageError(context: Context, errorType: AddEditFlightInfoViewModel.ErrorType): String {
     return when(errorType) {
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_create_flight_info)
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_flight_time_is_invalid)
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_load_flight_info)
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_update_flight_info)
-        EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_flight_info)
+        AddEditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_create_flight_info)
+        AddEditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_FLIGHT_TIME_IS_NOT_VALID -> StringUtils.getString(context, R.string.error_flight_time_is_invalid)
+        AddEditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_LOAD_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_load_flight_info)
+        AddEditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_update_flight_info)
+        AddEditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_FLIGHT_INFO -> StringUtils.getString(context, R.string.error_can_not_delete_flight_info)
         else -> ""
     }
 }
 
-private fun EditFlightInfoViewModel.ErrorType.isShow(): Boolean {
-    return this != EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_NONE
+private fun AddEditFlightInfoViewModel.ErrorType.isShow(): Boolean {
+    return this != AddEditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_NONE
 }

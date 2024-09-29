@@ -13,8 +13,7 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.flight.CreateNewFlightInf
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.UpdateFlightInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.EditFlightInfoViewModel.ItineraryType
-import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.AddEditHotelInfoViewModel.ErrorType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoViewModel.ItineraryType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -42,7 +41,7 @@ data class AddEditFlightUiState(
     val isNotFound: Boolean = false,
     val canDelete: Boolean = false,
     val isShowDeleteConfirmation: Boolean = false,
-    val showError: EditFlightInfoViewModel.ErrorType = EditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_NONE,
+    val showError: AddEditFlightInfoViewModel.ErrorType = AddEditFlightInfoViewModel.ErrorType.ERROR_MESSAGE_NONE,
     val isCreated: Boolean = false,
     val isUpdated: Boolean = false,
     val isDeleted: Boolean = false,
@@ -93,7 +92,7 @@ fun FlightWithAirportInfo.toFlightInfoUiState(dateTimeFormatter: TripDetailDateT
 }
 
 @HiltViewModel
-class EditFlightInfoViewModel @Inject constructor(
+class AddEditFlightInfoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val createNewFlightInfoUseCase: CreateNewFlightInfoUseCase,
     private val getFlightInfoUseCase: GetFlightInfoUseCase,

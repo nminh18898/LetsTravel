@@ -13,7 +13,7 @@ import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
 import com.minhhnn18898.manage_trip.trip_detail.presentation.activity.AddEditTripActivityScreen
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.EditFlightInfoScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.AddEditHotelInfoScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo.EditTripScreen
@@ -86,7 +86,7 @@ fun NavGraphBuilder.manageTripFeatureComposable(
         route = EditFlightInfoDestination.routeWithArgs,
         arguments = EditFlightInfoDestination.arguments
     ) {
-        EditFlightInfoScreen(
+        AddEditFlightInfoScreen(
             onComposedTopBarActions = {
                 appBarOnScreenDisplay.invoke(it)
             },

@@ -23,10 +23,8 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripActivityDate
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -41,10 +39,10 @@ class TripDetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val coverResourceProvider: CoverDefaultResourceProvider,
     private val activityDateSeparatorResourceProvider: TripActivityDateSeparatorResourceProvider,
-    private val getTripInfoUseCase: GetTripInfoUseCase,
-    private val getListFlightInfoUseCase: GetListFlightInfoUseCase,
-    private val getListHotelInfoUseCase: GetListHotelInfoUseCase,
-    private val getSortedListTripActivityInfoUseCase: GetSortedListTripActivityInfoUseCase,
+    getTripInfoUseCase: GetTripInfoUseCase,
+    getListFlightInfoUseCase: GetListFlightInfoUseCase,
+    getListHotelInfoUseCase: GetListHotelInfoUseCase,
+    getSortedListTripActivityInfoUseCase: GetSortedListTripActivityInfoUseCase,
     private val dateTimeFormatter: TripDetailDateTimeFormatterImpl
 ): ViewModel() {
 
@@ -81,14 +79,8 @@ class TripDetailScreenViewModel @Inject constructor(
         )
 
     private var estimateBudget: MutableMap<BudgetType, Long> = mutableMapOf()
-    var estimateBudgetDisplay by mutableStateOf("")
-        private set
-
     var budgetDisplay by mutableStateOf(BudgetDisplay(total = 0, portions = emptyList()))
         private set
-
-    private val _eventChannel = Channel<Event>()
-    val eventTriggerer = _eventChannel.receiveAsFlow()
 
     val tripInfoContentState: StateFlow<TripDetailScreenTripInfoUiState> =
         getTripInfoUseCase.execute(GetTripInfoUseCase.Param(tripId)).map {
@@ -138,15 +130,10 @@ class TripDetailScreenViewModel @Inject constructor(
 
     private fun onUpdateBudgetTotal() {
         val total = estimateBudget.getTotal()
-        estimateBudgetDisplay = if(total > 0) total.formatWithCommas() else ""
         budgetDisplay = BudgetDisplay(
             total = total,
             portions = estimateBudget.map { BudgetPortion(it.key, it.value) }
         )
-    }
-
-    sealed class Event {
-        data object CloseScreen: Event()
     }
 
     private fun FlightWithAirportInfo.toFlightDisplayInfo(): FlightDisplayInfo {
