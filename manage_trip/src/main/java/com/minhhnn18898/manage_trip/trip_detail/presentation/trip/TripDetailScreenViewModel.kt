@@ -191,7 +191,7 @@ class TripDetailScreenViewModel @Inject constructor(
             date = dateString,
             startTime = startTimeString,
             endTime = endTimeString,
-            price = if(this.price > 0) this.price.formatWithCommas() else "",
+            price = if(this.price > 0) this.price.formatWithCommas() else ""
         )
     }
 

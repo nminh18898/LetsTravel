@@ -8,6 +8,8 @@ import com.minhhnn18898.manage_trip.trip_detail.data.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
@@ -26,11 +28,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 
 @Suppress("SpellCheckingInspection")
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -49,10 +46,7 @@ class TripDetailScreenViewModelTest {
 
     private lateinit var viewModel: TripDetailScreenViewModel
 
-    private lateinit var mockAnnotations: AutoCloseable
-
-    @Mock
-    private lateinit var dateTimeFormatter: TripDetailDateTimeFormatter
+    private lateinit var fakeDateTimeFormatter: FakeTripDetailDateTimeFormatter
 
     @Before
     fun setup() {
@@ -60,10 +54,7 @@ class TripDetailScreenViewModelTest {
         fakeTripDetailRepository = FakeTripDetailRepository()
         fakeCoverDefaultResourceProvider = FakeCoverDefaultResourceProvider()
         fakeTripActivityDateSeparatorResourceProvider = FakeTripActivityDateSeparatorResourceProvider()
-
-        mockAnnotations = MockitoAnnotations.openMocks(this)
-
-        mockDateTimeFormatter()
+        fakeDateTimeFormatter = FakeTripDetailDateTimeFormatter()
     }
 
     private fun setupViewModel() {
@@ -75,53 +66,14 @@ class TripDetailScreenViewModelTest {
             getListFlightInfoUseCase = GetListFlightInfoUseCase(fakeTripDetailRepository),
             getListHotelInfoUseCase = GetListHotelInfoUseCase(fakeTripDetailRepository),
             getSortedListTripActivityInfoUseCase = GetSortedListTripActivityInfoUseCase(fakeTripDetailRepository),
-            dateTimeFormatter = dateTimeFormatter
+            dateTimeFormatter = fakeDateTimeFormatter
         )
-    }
-
-    private fun mockDateTimeFormatter() {
-        Mockito
-            .`when`(dateTimeFormatter.getHourMinute(anyLong()))
-            .thenAnswer {
-                val param = it.arguments[0] as Long
-                // Mocking get hours and minutes base on the first and last character value of input.
-                // For example: 15 -> hour: 1, minutes: 5
-                Pair(param.toString().first().digitToInt(), param.toString().last().digitToInt())
-            }
-
-        Mockito
-            .`when`(dateTimeFormatter.combineHourMinutesDayToMillis(anyLong(), anyInt(), anyInt()))
-            .thenAnswer {
-                val dateParam = it.arguments[0] as Long
-                val hourParam = it.arguments[1] as Int
-                val minuteParam = it.arguments[2] as Int
-                // Mocking flow combine date value and (hour, minute) with the formula: (date * 10) + (hour * 5) + minute
-                // For example: date 10, hour: 1, minutes: 5 -> 100 + 5 + 5 = 110
-                dateParam * 10 + hourParam * 5 + minuteParam
-            }
-
-        Mockito
-            .`when`(dateTimeFormatter.getFormattedFlightDateTimeString(anyLong()))
-            .thenAnswer {
-                val dateParam = it.arguments[0] as Long
-                dateParam.toString()
-            }
-
-        Mockito
-            .`when`(dateTimeFormatter.findFlightDurationFormattedString(anyLong(), anyLong()))
-            .thenAnswer {
-                val from = it.arguments[0] as Long
-                val to = it.arguments[1] as Long
-                (to - from).toString()
-            }
     }
 
     @After
     fun cleanup() {
         fakeTripDetailRepository.reset()
         fakeTripInfoRepository.reset()
-
-        mockAnnotations.close()
     }
 
     @Test
@@ -212,7 +164,7 @@ class TripDetailScreenViewModelTest {
     }
 
     @Test
-    fun getFlightInfoContentState_hasFlightInfo() = runTest {
+    fun getFlightInfoContentState_hasFlightInfo_flightLoaded() = runTest {
         // Given
         fakeTripDetailRepository.upsertFlightInfo(1L, flightInfoInput)
 
@@ -237,15 +189,209 @@ class TripDetailScreenViewModelTest {
     }
 
     @Test
-    fun getHotelInfoContentState() {
+    fun getFlightInfoContentState_hasErrorWhenLoad() = runTest {
+        // Given
+        fakeTripDetailRepository.forceError = true
+
+        // When
+        setupViewModel()
+
+        // Then
+        val uiState = viewModel.flightInfoContentState.first()
+        Truth.assertThat(uiState).isInstanceOf(UiState.Error::class.java)
     }
 
     @Test
-    fun getActivityInfoContentState() {
+    fun getFlightInfoContentState_hasFlightInfo_budgetUpdated() = runTest {
+        // Given
+        fakeTripDetailRepository.upsertFlightInfo(1L, flightInfoInput)
+
+        // When
+        setupViewModel()
+        viewModel.flightInfoContentState.first()
+
+        // Then
+        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 6_600_000)
+        Truth.assertThat(viewModel.budgetDisplay.portions).isEqualTo(
+            listOf(
+                BudgetPortion(
+                    type = BudgetType.FLIGHT,
+                    price = 6_600_000
+                )
+            )
+        )
     }
 
     @Test
-    fun getBudgetDisplay() {
+    fun getHotelInfoContentState_initStateLoading() {
+        // When
+        setupViewModel()
+
+        // Then: progress indicator is shown
+        Truth.assertThat(viewModel.flightInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
+    }
+
+    @Test
+    fun getHotelInfoContentState_hasHotelInfo_hotelLoaded() = runTest {
+        // Given
+        fakeTripDetailRepository.upsertHotelInfo(1L, *hotelInfoInput.toTypedArray())
+
+        // When
+        setupViewModel()
+
+        // Then
+        val uiState = viewModel.hotelInfoContentState.first()
+        Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
+        Truth.assertThat((uiState as UiState.Success).data).isEqualTo(hotelInfoOutput)
+    }
+
+    @Test
+    fun getHotelInfoContentState_hasEmptyInfo() = runTest {
+        // When
+        setupViewModel()
+
+        // Then
+        val uiState = viewModel.hotelInfoContentState.first()
+        Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
+        Truth.assertThat((uiState as UiState.Success).data).isEmpty()
+    }
+
+    @Test
+    fun getHotelInfoContentState_hasErrorWhenLoad() = runTest {
+        // Given
+        fakeTripDetailRepository.forceError = true
+
+        // When
+        setupViewModel()
+
+        // Then
+        val uiState = viewModel.hotelInfoContentState.first()
+        Truth.assertThat(uiState).isInstanceOf(UiState.Error::class.java)
+    }
+
+    @Test
+    fun getHotelInfoContentState_hasHotelInfo_budgetUpdated() = runTest {
+        // Given
+        fakeTripDetailRepository.upsertHotelInfo(1L, *hotelInfoInput.toTypedArray())
+
+        // When
+        setupViewModel()
+        viewModel.hotelInfoContentState.first()
+
+        // Then
+        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 7_900_000)
+        Truth.assertThat(viewModel.budgetDisplay.portions).isEqualTo(
+            listOf(
+                BudgetPortion(
+                    type = BudgetType.HOTEL,
+                    price = 7_900_000
+                )
+            )
+        )
+    }
+
+    @Test
+    fun getActivityInfoContentState_initStateLoading() {
+        // When
+        setupViewModel()
+
+        // Then: progress indicator is shown
+        Truth.assertThat(viewModel.activityInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
+    }
+
+    @Test
+    fun getActivityInfoContentState_hasActivityInfo_activityLoaded() = runTest {
+        // Given
+        fakeTripDetailRepository.upsertActivityInfo(1L, *activityInfoInput.toTypedArray())
+
+        // When
+        setupViewModel()
+
+        // Then
+        val uiState = viewModel.activityInfoContentState.first()
+        Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
+        Truth.assertThat((uiState as UiState.Success).data).isEqualTo(activityInfoOutput)
+    }
+
+    @Test
+    fun getActivityInfoContentState_hasEmptyInfo() = runTest {
+        // When
+        setupViewModel()
+
+        // Then
+        val uiState = viewModel.activityInfoContentState.first()
+        Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
+        Truth.assertThat((uiState as UiState.Success).data).isEmpty()
+    }
+
+    @Test
+    fun getActivityInfoContentState_hasErrorWhenLoad() = runTest {
+        // Given
+        fakeTripDetailRepository.forceError = true
+
+        // When
+        setupViewModel()
+
+        // Then
+        val uiState = viewModel.activityInfoContentState.first()
+        Truth.assertThat(uiState).isInstanceOf(UiState.Error::class.java)
+    }
+
+    @Test
+    fun getActivityInfoContentState_hasActivityInfo_budgetUpdated() = runTest {
+        // Given
+        fakeTripDetailRepository.upsertActivityInfo(1L, *activityInfoInput.toTypedArray())
+
+        // When
+        setupViewModel()
+        viewModel.activityInfoContentState.first()
+
+        // Then
+        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 7_100_000)
+        Truth.assertThat(viewModel.budgetDisplay.portions).isEqualTo(
+            listOf(
+                BudgetPortion(
+                    type = BudgetType.ACTIVITY,
+                    price = 7_100_000
+                )
+            )
+        )
+    }
+
+    @Test
+    fun getBudgetDisplay_returnCorrectValue() = runTest {
+        // Given
+        setupViewModel()
+
+        fakeTripDetailRepository.upsertFlightInfo(1L, flightInfoInput)
+        fakeTripDetailRepository.upsertHotelInfo(1L, *hotelInfoInput.toTypedArray())
+        fakeTripDetailRepository.upsertActivityInfo(1L, *activityInfoInput.toTypedArray())
+
+        // When
+        viewModel.flightInfoContentState.first()
+        viewModel.hotelInfoContentState.first()
+        viewModel.activityInfoContentState.first()
+
+        // Then
+        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 21_600_000)
+        Truth.assertThat(viewModel.budgetDisplay.portions).containsExactlyElementsIn(
+            listOf(
+                BudgetPortion(
+                    type = BudgetType.HOTEL,
+                    price = 7_900_000
+                ),
+
+                BudgetPortion(
+                    type = BudgetType.FLIGHT,
+                    price = 6_600_000
+                ),
+
+                BudgetPortion(
+                    type = BudgetType.ACTIVITY,
+                    price = 7_100_000
+                )
+            )
+        )
     }
 
     private val flightInfoInput = mutableListOf(
@@ -376,6 +522,146 @@ class TripDetailScreenViewModelTest {
             arrivalTime = "2500000",
             duration = "500000",
             price = "2,100,000"
+        )
+    )
+
+    private val hotelInfoInput = mutableListOf(
+        HotelInfo(
+            hotelId = 1L,
+            hotelName = "Liberty Central Riverside Hotel",
+            address = "District 1, Ho Chi Minh City",
+            price = 2_200_000,
+            checkInDate = 1_500_000,
+            checkOutDate = 1_800_000,
+        ),
+
+        HotelInfo(
+            hotelId = 2L,
+            hotelName = "Eastin Grand Hotel",
+            address = "Phu Nhuan District, Ho Chi Minh City",
+            price = 3_000_000,
+            checkInDate =  1_000_000,
+            checkOutDate = 1_200_000
+        ),
+
+        HotelInfo(
+            hotelId = 3L,
+            hotelName = "Holiday Inn & Suites Saigon Airport",
+            address = "18E Cong Hoa, Ho Chi Minh City",
+            price = 2_700_000,
+            checkInDate =  2_000_000,
+            checkOutDate = 2_500_000
+        )
+    )
+
+    private val hotelInfoOutput = mutableListOf(
+        HotelDisplayInfo(
+            hotelId = 1L,
+            hotelName = "Liberty Central Riverside Hotel",
+            address = "District 1, Ho Chi Minh City",
+            checkInDate = "1500000",
+            checkOutDate = "1800000",
+            duration = 300000,
+            price = "2,200,000"
+        ),
+
+        HotelDisplayInfo(
+            hotelId = 2L,
+            hotelName = "Eastin Grand Hotel",
+            address = "Phu Nhuan District, Ho Chi Minh City",
+            checkInDate = "1000000",
+            checkOutDate = "1200000",
+            duration = 200000,
+            price = "3,000,000"
+        ),
+
+        HotelDisplayInfo(
+            hotelId = 3L,
+            hotelName = "Holiday Inn & Suites Saigon Airport",
+            address = "18E Cong Hoa, Ho Chi Minh City",
+            checkInDate = "2000000",
+            checkOutDate = "2500000",
+            duration = 500000,
+            price = "2,700,000"
+        )
+    )
+
+    private val activityInfoInput = mutableListOf(
+        TripActivityInfo(
+            activityId = 1L,
+            title = "Discover the Delta's Charms",
+            description = "Mekong Delta Tour from HCM City",
+            photo = "https://testing.com/photo",
+            timeFrom = 1_500_000,
+            timeTo = 1_800_000,
+            price = 2_000_000
+        ),
+
+        TripActivityInfo(
+            activityId = 2L,
+            title = "Saigon River Tour in Ho Chi Minh",
+            description = "Hop on board and join us on a luxury cruise on the Saigon River in the city center of Ho Chi Minh City",
+            photo = "https://testing.com/photo2",
+            timeFrom = 1_200_000,
+            timeTo = 1_400_000,
+            price = 2_900_000
+        ),
+
+        TripActivityInfo(
+            activityId = 3L,
+            title = "Cu Chi Tunnels Tour",
+            description = "Used by the Viet Cong during the Vietnam War, the Cu Chi Tunnels are a network of underground tunnels stretching more than 124 miles (200 kilometers)",
+            photo = "https://testing.com/photo3",
+            timeFrom = 2_200_000,
+            timeTo = 2_300_000,
+            price = 2_200_000
+        )
+    )
+
+    private val activityInfoOutput = mutableListOf(
+        TripActivityDateGroupHeader(
+            title = "1000000",
+            dateOrdering = 1,
+            resId = 1
+        ),
+
+        TripActivityDisplayInfo(
+            activityId = 2L,
+            title = "Saigon River Tour in Ho Chi Minh",
+            photo = "https://testing.com/photo2",
+            description = "Hop on board and join us on a luxury cruise on the Saigon River in the city center of Ho Chi Minh City",
+            date = "1200000",
+            startTime = "1200000",
+            endTime = "1400000",
+            price = "2,900,000"
+        ),
+
+        TripActivityDisplayInfo(
+            activityId = 1L,
+            title = "Discover the Delta's Charms",
+            photo = "https://testing.com/photo",
+            description = "Mekong Delta Tour from HCM City",
+            date = "1500000",
+            startTime = "1500000",
+            endTime = "1800000",
+            price = "2,000,000"
+        ),
+
+        TripActivityDateGroupHeader(
+            title = "2000000",
+            dateOrdering = 2,
+            resId = 2
+        ),
+
+        TripActivityDisplayInfo(
+            activityId = 3L,
+            title = "Cu Chi Tunnels Tour",
+            photo = "https://testing.com/photo3",
+            description = "Used by the Viet Cong during the Vietnam War, the Cu Chi Tunnels are a network of underground tunnels stretching more than 124 miles (200 kilometers)",
+            date = "2200000",
+            startTime = "2200000",
+            endTime = "2300000",
+            price = "2,200,000"
         )
     )
 }

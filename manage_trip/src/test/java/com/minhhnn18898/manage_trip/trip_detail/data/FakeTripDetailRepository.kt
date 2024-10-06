@@ -26,6 +26,7 @@ import com.minhhnn18898.manage_trip.trip_detail.data.repo.ExceptionUpdateTripAct
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import org.jetbrains.annotations.TestOnly
@@ -53,6 +54,10 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     override fun getListFlightInfo(tripId: Long): Flow<List<FlightWithAirportInfo>> {
+        if(forceError) {
+            return flow { throw Exception() }
+        }
+
         return observableFlightInfo.map {
             it.toListFlightAirportInfo()
         }
@@ -121,6 +126,10 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     override fun getAllHotelInfo(tripId: Long): Flow<List<HotelInfo>> {
+        if(forceError) {
+            return flow { throw Exception() }
+        }
+
         return observableHotels.map { it.toHotelInfo() }
     }
 
@@ -163,6 +172,10 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     override fun getSortedActivityInfo(tripId: Long): Flow<Map<Long?, List<TripActivityInfo>>> {
+        if(forceError) {
+            return flow { throw Exception() }
+        }
+
         return observableActivities.map { listActivity ->
             listActivity
                 .toTripActivityInfo()
