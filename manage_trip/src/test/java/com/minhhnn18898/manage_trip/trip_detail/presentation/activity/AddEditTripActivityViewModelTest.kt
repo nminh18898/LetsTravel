@@ -255,7 +255,7 @@ class AddEditTripActivityViewModelTest {
     }
 
     @Test
-    fun onCreateActivity_validActivityName_validCheckSchedule_verifyAllowSave() {
+    fun onCreateActivity_validActivityName_validSchedule_verifyAllowSave() {
         // Given
         setupViewModel()
 
@@ -274,7 +274,7 @@ class AddEditTripActivityViewModelTest {
     }
 
     @Test
-    fun onCreateActivity_validActivityName_invalidCheckSchedule_verifyNotAllowSave() {
+    fun onCreateActivity_validActivityName_invalidSchedule_verifyNotAllowSave() {
         // Given
         setupViewModel()
 
@@ -378,6 +378,7 @@ class AddEditTripActivityViewModelTest {
         Truth.assertThat(fakeTripDetailRepository.getActivityInfo(1L)).isNotNull()
 
         advanceUntilIdle()
+
         // Then - verify error is hidden
         Truth.assertThat(viewModel.uiState.value.showError).isEqualTo(AddEditTripActivityViewModel.ErrorType.ERROR_MESSAGE_NONE)
     }
@@ -430,7 +431,7 @@ class AddEditTripActivityViewModelTest {
         }
 
         Mockito
-            .`when`(dateTimeFormatter.combineActivityDateTimeToMillis(anyLong(), anyInt(), anyInt()))
+            .`when`(dateTimeFormatter.combineHourMinutesDayToMillis(anyLong(), anyInt(), anyInt()))
             .thenAnswer {
                 val dateParam = it.arguments[0] as Long
                 val hourParam = it.arguments[1] as Int
@@ -467,7 +468,7 @@ class AddEditTripActivityViewModelTest {
         setupViewModel(1L)
 
         Mockito
-            .`when`(dateTimeFormatter.combineActivityDateTimeToMillis(anyLong(), anyInt(), anyInt()))
+            .`when`(dateTimeFormatter.combineHourMinutesDayToMillis(anyLong(), anyInt(), anyInt()))
             .thenAnswer {
                 val dateParam = it.arguments[0] as Long
                 val hourParam = it.arguments[1] as Int
@@ -561,6 +562,7 @@ class AddEditTripActivityViewModelTest {
         }
 
         fakeTripDetailRepository.forceError = true
+        advanceUntilIdle()
 
         // When
         val resultList = mutableListOf<AddEditTripActivityUiState>()

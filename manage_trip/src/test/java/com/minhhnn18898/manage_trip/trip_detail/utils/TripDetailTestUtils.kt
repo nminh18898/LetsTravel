@@ -59,6 +59,7 @@ fun assertHotelInfoEqual(expected: HotelInfo, target: HotelInfo?) {
     Truth.assertThat(target?.price).isEqualTo(expected.price)
 }
 
+@Suppress("unused")
 fun assertActivityInfoEqual(listExpected: List<TripActivityInfo>, listTarget: List<TripActivityInfo?>) {
     Truth.assertThat(listExpected).hasSize(listTarget.size)
 

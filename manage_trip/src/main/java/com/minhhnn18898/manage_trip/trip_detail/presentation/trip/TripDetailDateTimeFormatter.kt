@@ -12,6 +12,6 @@ interface TripDetailDateTimeFormatter {
     fun millisToActivityFormattedString(millis: Long): String
     fun formatHourMinutes(millis: Long): String
     fun getHourMinute(millis: Long): Pair<Int, Int>
-    fun combineActivityDateTimeToMillis(dateMillis: Long, hour: Int, minute: Int): Long
+    fun combineHourMinutesDayToMillis(dateMillis: Long, hour: Int, minute: Int): Long
     fun getStartOfTheDay(millis: Long): Long
 }

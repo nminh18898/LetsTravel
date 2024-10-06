@@ -59,7 +59,7 @@ open class TripDetailDateTimeFormatterImpl @Inject constructor(
         return baseDateTimeFormatter.getHourMinute(millis)
     }
 
-    override fun combineActivityDateTimeToMillis(dateMillis: Long, hour: Int, minute: Int): Long {
+    override fun combineHourMinutesDayToMillis(dateMillis: Long, hour: Int, minute: Int): Long {
         return baseDateTimeFormatter.combineDateTimeToMillis(dateMillis, hour, minute)
     }
 

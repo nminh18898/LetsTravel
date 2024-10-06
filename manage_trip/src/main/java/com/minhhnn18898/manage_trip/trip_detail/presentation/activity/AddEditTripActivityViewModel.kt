@@ -312,7 +312,7 @@ class AddEditTripActivityViewModel @Inject constructor(
     }
 
     private fun getDateTimeMillis(date: Long, time: Pair<Int, Int>): Long {
-        return dateTimeFormatter.combineActivityDateTimeToMillis(date, time.first, time.second)
+        return dateTimeFormatter.combineHourMinutesDayToMillis(date, time.first, time.second)
     }
 
     enum class ErrorType {

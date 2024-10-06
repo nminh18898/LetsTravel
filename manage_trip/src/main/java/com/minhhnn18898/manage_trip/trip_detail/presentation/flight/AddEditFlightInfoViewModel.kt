@@ -199,7 +199,7 @@ class AddEditFlightInfoViewModel @Inject constructor(
         }
     }
 
-    fun onFlightDateUpdated(itineraryType: ItineraryType, value: Long?, showWarningInvalidRange: Boolean = true) {
+    fun onFlightDateUpdated(itineraryType: ItineraryType, value: Long?) {
         _uiState.update {
             val currentValue = it.flightUiState.flightDate.toMutableMap()
             currentValue[itineraryType] = value
@@ -208,12 +208,14 @@ class AddEditFlightInfoViewModel @Inject constructor(
             )
         }
 
-        if(itineraryType == ItineraryType.ARRIVAL && showWarningInvalidRange) {
+        if(itineraryType == ItineraryType.ARRIVAL) {
             checkInvalidFlightTimeRangeAndNotify()
         }
+
+        checkAllowSaveContent()
     }
 
-    fun onFlightTimeUpdated(itineraryType: ItineraryType, value: Pair<Int, Int>, showWarningInvalidRange: Boolean = true) {
+    fun onFlightTimeUpdated(itineraryType: ItineraryType, value: Pair<Int, Int>) {
         _uiState.update {
             val currentValue = it.flightUiState.flightTime.toMutableMap()
             currentValue[itineraryType] = value
@@ -222,9 +224,7 @@ class AddEditFlightInfoViewModel @Inject constructor(
             )
         }
 
-        if(itineraryType == ItineraryType.ARRIVAL && showWarningInvalidRange) {
-            checkInvalidFlightTimeRangeAndNotify()
-        }
+        checkAllowSaveContent()
     }
 
     private fun checkInvalidFlightTimeRangeAndNotify() {
@@ -392,7 +392,7 @@ class AddEditFlightInfoViewModel @Inject constructor(
         val localDate = uiState.value.flightUiState.flightDate[type] ?: 0L
         val timeHourMinutes = uiState.value.flightUiState.flightTime[type] ?: Pair(0, 0)
 
-        return dateTimeFormatter.combineActivityDateTimeToMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
+        return dateTimeFormatter.combineHourMinutesDayToMillis(localDate, timeHourMinutes.first, timeHourMinutes.second)
     }
 
     enum class ItineraryType {
