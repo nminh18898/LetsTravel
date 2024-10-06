@@ -41,7 +41,7 @@ import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 
 fun LazyListScope.renderTripActivitySection(
-    activityInfoContentState: UiState<List<ITripActivityDisplay>, UiState.UndefinedError>,
+    activityInfoContentState: UiState<List<ITripActivityDisplay>>,
     onClickCreateTripActivity: () -> Unit,
     onClickActivityItem: (Long) -> Unit,
     modifier: Modifier

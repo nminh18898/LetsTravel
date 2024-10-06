@@ -3,8 +3,7 @@ package com.minhhnn18898.manage_trip.trip_info.presentation.base
 import com.minhhnn18898.manage_trip.R
 import javax.inject.Inject
 
-class TripActivityDateSeparatorResourceProvider  @Inject constructor() {
-
+class TripActivityDateSeparatorResourceProvider @Inject constructor() : ITripActivityDateSeparatorResourceProvider {
 
     private val dateSeparatorResource = listOf(
         R.drawable.trip_activity_date_separator_leaf,
@@ -15,7 +14,7 @@ class TripActivityDateSeparatorResourceProvider  @Inject constructor() {
         R.drawable.trip_activity_date_separator_autumn_city
     )
 
-    fun getResource(dayNumber: Int): Int {
+    override fun getResource(dayNumber: Int): Int {
         val ordinal = (dayNumber - 1) % dateSeparatorResource.size
         return dateSeparatorResource[ordinal]
     }

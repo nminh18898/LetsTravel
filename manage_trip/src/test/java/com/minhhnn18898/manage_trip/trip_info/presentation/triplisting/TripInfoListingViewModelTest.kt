@@ -133,5 +133,4 @@ class TripInfoListingViewModelTest {
         Truth.assertThat(result).isInstanceOf(GetSavedTripInfoContentResult::class.java)
         Truth.assertThat((result as GetSavedTripInfoContentResult).listTripItem).isEmpty()
     }
-
 }

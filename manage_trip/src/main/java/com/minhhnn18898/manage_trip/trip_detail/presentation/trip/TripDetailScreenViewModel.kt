@@ -18,12 +18,13 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTri
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
-import com.minhhnn18898.manage_trip.trip_info.presentation.base.CoverDefaultResourceProvider
-import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripActivityDateSeparatorResourceProvider
+import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
+import com.minhhnn18898.manage_trip.trip_info.presentation.base.ITripActivityDateSeparatorResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -37,46 +38,61 @@ data class TripDetailScreenTripInfoUiState(
 @HiltViewModel
 class TripDetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val coverResourceProvider: CoverDefaultResourceProvider,
-    private val activityDateSeparatorResourceProvider: TripActivityDateSeparatorResourceProvider,
+    private val coverResourceProvider: ICoverDefaultResourceProvider,
+    private val activityDateSeparatorResourceProvider: ITripActivityDateSeparatorResourceProvider,
     getTripInfoUseCase: GetTripInfoUseCase,
     getListFlightInfoUseCase: GetListFlightInfoUseCase,
     getListHotelInfoUseCase: GetListHotelInfoUseCase,
     getSortedListTripActivityInfoUseCase: GetSortedListTripActivityInfoUseCase,
-    private val dateTimeFormatter: TripDetailDateTimeFormatterImpl
+    private val dateTimeFormatter: TripDetailDateTimeFormatter
 ): ViewModel() {
 
     val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
 
-    val flightInfoContentState: StateFlow<UiState<List<FlightDisplayInfo>, UiState.UndefinedError>> =
-        getListFlightInfoUseCase.execute(GetListFlightInfoUseCase.Param(tripId)).map { flightInfo ->
-            onUpdateFlightBudget(flightInfo)
-            UiState.Success(flightInfo.map { it.toFlightDisplayInfo() })
-        }.stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = UiState.Loading
-        )
+    val flightInfoContentState: StateFlow<UiState<List<FlightDisplayInfo>>> =
+        getListFlightInfoUseCase.execute(GetListFlightInfoUseCase.Param(tripId))
+            .map { flightInfo ->
+                onUpdateFlightBudget(flightInfo)
+                UiState.Success(flightInfo.map { it.toFlightDisplayInfo() })
+            }
+            .catch<UiState<List<FlightDisplayInfo>>> {
+                emit(UiState.Error())
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = WhileUiSubscribed,
+                initialValue = UiState.Loading
+            )
 
-    val hotelInfoContentState: StateFlow<UiState<List<HotelDisplayInfo>, UiState.UndefinedError>> =
-        getListHotelInfoUseCase.execute(GetListHotelInfoUseCase.Param(tripId)).map { hotelInfo ->
-            onUpdateHotelBudget(hotelInfo)
-            UiState.Success(hotelInfo.map { it.toHotelDisplayInfo() })
-        }.stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = UiState.Loading
-        )
+    val hotelInfoContentState: StateFlow<UiState<List<HotelDisplayInfo>>> =
+        getListHotelInfoUseCase.execute(GetListHotelInfoUseCase.Param(tripId))
+            .map { hotelInfo ->
+                onUpdateHotelBudget(hotelInfo)
+                UiState.Success(hotelInfo.map { it.toHotelDisplayInfo() })
+            }
+            .catch<UiState<List<HotelDisplayInfo>>> {
+                emit(UiState.Error())
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = WhileUiSubscribed,
+                initialValue = UiState.Loading
+            )
 
-    val activityInfoContentState: StateFlow<UiState<List<ITripActivityDisplay>, UiState.UndefinedError>> =
-        getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId)).map {
-            onUpdateActivityBudget(it.values.flatten())
-            UiState.Success(it.makeListTripActivityDisplay())
-        }.stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = UiState.Loading
-        )
+    val activityInfoContentState: StateFlow<UiState<List<ITripActivityDisplay>>> =
+        getSortedListTripActivityInfoUseCase.execute(GetSortedListTripActivityInfoUseCase.Param(tripId))
+            .map {
+                onUpdateActivityBudget(it.values.flatten())
+                UiState.Success(it.makeListTripActivityDisplay())
+            }
+            .catch<UiState<List<ITripActivityDisplay>>> {
+                emit(UiState.Error())
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = WhileUiSubscribed,
+                initialValue = UiState.Loading
+            )
 
     private var estimateBudget: MutableMap<BudgetType, Long> = mutableMapOf()
     var budgetDisplay by mutableStateOf(BudgetDisplay(total = 0, portions = emptyList()))

@@ -62,7 +62,7 @@ private val defaultPageItemSize = object : PageSize {
 
 @Composable
 fun FlightDetailBody(
-    flightInfoContentState: UiState<List<FlightDisplayInfo>, UiState.UndefinedError>,
+    flightInfoContentState: UiState<List<FlightDisplayInfo>>,
     onClickCreateNewFlight: () -> Unit,
     onClickFlightInfoItem: (Long) -> Unit,
     modifier: Modifier

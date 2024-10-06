@@ -27,9 +27,9 @@ class DiscoverViewModel @Inject constructor(
     private val getAuthStateUseCase: GetAuthStateUseCase
 ): ViewModel() {
 
-    var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute(Unit) ?: false)
+    var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute(Unit))
 
-    var articlesContentState: UiState<List<ArticleDisplayInfo>, UiState.UndefinedError> by mutableStateOf(UiState.Loading)
+    var articlesContentState: UiState<List<ArticleDisplayInfo>> by mutableStateOf(UiState.Loading)
         private set
 
     init {
@@ -38,7 +38,7 @@ class DiscoverViewModel @Inject constructor(
 
     private fun observeAuthState() {
         viewModelScope.launch {
-            getAuthStateUseCase.execute(Unit)?.collect {
+            getAuthStateUseCase.execute(Unit).collect {
                 verifiedUserState = it
                 if(verifiedUserState) {
                     onUserAuthCheckSuccess()
@@ -53,11 +53,11 @@ class DiscoverViewModel @Inject constructor(
 
     private fun loadDiscoveryArticles() {
         viewModelScope.launch {
-            getListArticlesDiscovery.execute(Unit)?.collect {
+            getListArticlesDiscovery.execute(Unit).collect {
                 when(it) {
                     is Result.Loading -> articlesContentState = UiState.Loading
                     is Result.Success -> handleResultLoadArticles(it.data)
-                    is Result.Error -> articlesContentState = UiState.Error(UiState.UndefinedError)
+                    is Result.Error -> articlesContentState = UiState.Error()
                 }
             }
         }

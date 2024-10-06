@@ -68,10 +68,10 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 fun TripDetailScreen(
     onComposedTopBarActions: (AppBarActionsState) -> Unit,
     navigateUp: () -> Unit,
-    onNavigateToEditFlightInfoScreen: (Long, Long) -> Unit,
-    onNavigateEditHotelScreen: (Long, Long) -> Unit,
+    onNavigateToEditFlightInfoScreen: (tripId: Long, flightId: Long) -> Unit,
+    onNavigateEditHotelScreen: (tripId: Long, flightId: Long) -> Unit,
     onNavigateToEditTripScreen: (Long) -> Unit,
-    onNavigateEditTripActivityScreen: (Long, Long) -> Unit,
+    onNavigateEditTripActivityScreen: (tripId: Long, activityId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {

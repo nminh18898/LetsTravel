@@ -61,7 +61,7 @@ private val defaultPageItemSize = object : PageSize {
 
 @Composable
 fun HotelDetailBody(
-    hotelInfoContentState: UiState<List<HotelDisplayInfo>, UiState.UndefinedError>,
+    hotelInfoContentState: UiState<List<HotelDisplayInfo>>,
     onClickCreateHotelInfo: () -> Unit,
     onClickHotelInfoItem: (Long) -> Unit,
     modifier: Modifier = Modifier

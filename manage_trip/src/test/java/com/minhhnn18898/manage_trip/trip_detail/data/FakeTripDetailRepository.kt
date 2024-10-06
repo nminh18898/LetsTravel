@@ -241,6 +241,18 @@ class FakeTripDetailRepository: TripDetailRepository {
     }
 
     @TestOnly
+    fun upsertFlightInfo(tripId: Long, listFlightInfo: List<FlightWithAirportInfo>) {
+        listFlightInfo.forEach {
+            upsertFlightInfo(
+                tripId = tripId,
+                flightInfo = it.flightInfo,
+                departAirport = it.departAirport,
+                destinationAirport = it.destinationAirport
+            )
+        }
+    }
+
+    @TestOnly
     fun upsertFlightInfo(tripId: Long, flightInfo: FlightInfo, departAirport: AirportInfo, destinationAirport: AirportInfo) {
         upsertAirportInfo(departAirport)
         upsertAirportInfo(destinationAirport)

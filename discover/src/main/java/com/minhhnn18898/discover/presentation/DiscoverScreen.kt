@@ -148,7 +148,7 @@ private fun RequireSignInPromptSuggestThumbElement(
 
 @Composable
 fun ExploreArticlesSection(
-    articlesContentState: UiState<List<ArticleDisplayInfo>, UiState.UndefinedError>,
+    articlesContentState: UiState<List<ArticleDisplayInfo>>,
     modifier: Modifier
 ) {
 
