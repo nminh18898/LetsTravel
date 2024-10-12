@@ -5,6 +5,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
 data class ArticleModel(
+    val id: String = "",
     val title: String = "",
     val content: String = "",
     @get:PropertyName("thumb_url") @set:PropertyName("thumb_url")

@@ -19,7 +19,9 @@ val listAllDestinations = mutableListOf(
     EditTripActivityInfoDestination,
 
     SignInScreenDestination,
-    SignUpScreenDestination
+    SignUpScreenDestination,
+
+    DiscoveryArticleDetailScreenDestination
 )
 
 object HomeScreenDestination: AppScreenDestination {

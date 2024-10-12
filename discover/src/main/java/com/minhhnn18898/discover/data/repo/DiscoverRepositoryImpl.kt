@@ -27,10 +27,39 @@ class DiscoverRepositoryImpl @Inject constructor(
     override suspend fun getArticles(): List<Article> = withContext(ioDispatcher) {
         return@withContext when(val apiResult = fetchRemoteArticles()) {
             is ApiResult.Success -> apiResult.data.map { it.toArticle() }
-            is ApiResult.Error -> throw ExceptionGetDiscoverArticles()
+            is ApiResult.Error -> throw ExceptionGetDiscoverArticle()
             else -> emptyList<Article>()
         }
     }
+
+    override suspend fun getArticle(id: String) = withContext(ioDispatcher) {
+        return@withContext when(val apiResult = fetchRemoteArticle(id)) {
+            is ApiResult.Success -> apiResult.data?.toArticle()
+            is ApiResult.Error -> throw ExceptionGetDiscoverArticle()
+            else -> null
+        }
+    }
+
+    private suspend fun fetchRemoteArticle(id: String): ApiResult<ArticleModel?> =
+        suspendCoroutine { cont ->
+            val db = Firebase.firestore
+            val docRef = db.collection(ARTICLES).document(id)
+            docRef.get()
+                .addOnSuccessListener { documentSnapshot  ->
+                    if (documentSnapshot  != null) {
+                        Log.w(TAG, "Get data success ")
+                        val article = documentSnapshot.toObject(ArticleModel::class.java)
+                        cont.resume(ApiResult.Success(article))
+                    } else {
+                        Log.d(TAG, "No such document")
+                        cont.resume(ApiResult.Error(Exception()))
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Get failed with ", exception)
+                    cont.resume(ApiResult.Error(exception))
+                }
+        }
 
     private suspend fun fetchRemoteArticles(): ApiResult<List<ArticleModel>> =
         suspendCoroutine { cont ->
@@ -40,10 +69,13 @@ class DiscoverRepositoryImpl @Inject constructor(
             collectionRef
                 .limit(50)
                 .get()
-                .addOnSuccessListener { result ->
+                .addOnSuccessListener { querySnapShot ->
                     Log.w(TAG, "Get data success ")
-                    val articles = result.toObjects(ArticleModel::class.java)
-                    cont.resume(ApiResult.Success(articles))
+                    val result = mutableListOf<ArticleModel>()
+                    querySnapShot.forEach { snapShot ->
+                        result.add(snapShot.toObject(ArticleModel::class.java).copy(id = snapShot.id))
+                    }
+                    cont.resume(ApiResult.Success(result))
                 }
                 .addOnFailureListener { exception ->
                     Log.w(TAG, "Get failed with ", exception)
@@ -53,13 +85,14 @@ class DiscoverRepositoryImpl @Inject constructor(
 
     private suspend fun ArticleModel.toArticle(): Article {
         return Article(
-            this.title,
-            this.content,
-            this.thumbUrl.gsUriToHttpsUrl(),
-            this.photoUrls.gsUriToHttpsUrl(),
-            this.lastEdited,
-            this.originalSrc,
-            this.tag
+            id = this.id,
+            title = this.title,
+            content = this.content,
+            thumbUrl = this.thumbUrl.gsUriToHttpsUrl(),
+            photoUrls = this.photoUrls.gsUriToHttpsUrl(),
+            lastEdited = this.lastEdited,
+            originalSrc = this.originalSrc,
+            tag = this.tag
         )
     }
 }

@@ -11,8 +11,10 @@ import com.minhhnn18898.app_navigation.appbarstate.ClearTopBarActions
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.SignInScreenDestination
+import com.minhhnn18898.discover.navigation.discoverFeatureComposable
 import com.minhhnn18898.letstravel.homescreen.HomeScreen
 import com.minhhnn18898.manage_trip.navigation.manageTripFeatureComposable
+import com.minhhnn18898.manage_trip.navigation.navigateToArticleDetailScreen
 import com.minhhnn18898.manage_trip.navigation.navigateToEditTripScreen
 import com.minhhnn18898.manage_trip.navigation.navigateToTripDetailScreen
 
@@ -43,6 +45,9 @@ fun AppNavHost(
                 },
                 onNavigateToSignInScreen = {
                     navController.navigate(SignInScreenDestination.route)
+                },
+                onNavigateToArticleDetailScreen = { articleId ->
+                    navController.navigateToArticleDetailScreen(articleId)
                 }
             )
             ClearTopBarActions(appBarOnScreenDisplay)
@@ -55,6 +60,12 @@ fun AppNavHost(
         )
 
         signInFeatureComposable(
+            navigationController = navController,
+            appBarOnScreenDisplay = appBarOnScreenDisplay
+        )
+
+        discoverFeatureComposable(
+            modifier = modifier,
             navigationController = navController,
             appBarOnScreenDisplay = appBarOnScreenDisplay
         )

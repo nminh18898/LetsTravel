@@ -1,40 +1,41 @@
 package com.minhhnn18898.ui_components.base_components
 
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.graphics.shapes.RoundedPolygon
-import androidx.graphics.shapes.toPath
-import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sqrt
 
+class HexagonShape : Shape {
 
-fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2], it[3]) }
-class RoundedPolygonShape(
-    private val polygon: RoundedPolygon,
-    private var matrix: Matrix = Matrix()
-) : Shape {
-    private var path = Path()
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
-        path.rewind()
-        path = polygon.toPath().asComposePath()
-        matrix.reset()
-        val bounds = polygon.getBounds()
-        val maxDimension = max(bounds.width, bounds.height)
-        matrix.scale(size.width / maxDimension, size.height / maxDimension)
-        matrix.translate(-bounds.left, -bounds.top)
+        return Outline.Generic(
+            path = drawCustomHexagonPath(size)
+        )
+    }
+}
 
-        path.transform(matrix)
+private fun drawCustomHexagonPath(size: Size): Path {
+    return Path().apply {
+        val radius = min(size.width / 2f, size.height / 2f)
+        val triangleHeight = (sqrt(3.0) * radius / 2)
+        val centerX = size.width / 2
+        val centerY = size.height / 2
 
-        return Outline.Generic(path)
+        moveTo(x = centerX, y = centerY + radius)
+        lineTo(x = (centerX - triangleHeight).toFloat(), y = centerY + radius / 2)
+        lineTo(x = (centerX - triangleHeight).toFloat(), y = centerY - radius / 2)
+        lineTo(x = centerX, y = centerY - radius)
+        lineTo(x = (centerX + triangleHeight).toFloat(), y = centerY - radius / 2)
+        lineTo(x = (centerX + triangleHeight).toFloat(), y = centerY + radius / 2)
+
+        close()
     }
 }

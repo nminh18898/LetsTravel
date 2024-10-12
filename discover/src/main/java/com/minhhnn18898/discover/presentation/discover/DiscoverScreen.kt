@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.minhhnn18898.discover.presentation
+package com.minhhnn18898.discover.presentation.discover
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.RepeatMode
@@ -56,21 +56,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.discover.R
+import com.minhhnn18898.discover.presentation.ui_models.ArticleDisplayInfo
 import com.minhhnn18898.ui_components.base_components.DefaultCtaButton
 import com.minhhnn18898.ui_components.theme.typography
 import kotlinx.coroutines.launch
+import kotlin.math.max
+import kotlin.math.min
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun DiscoverScreen(
     onNavigateToSignInScreen: () -> Unit,
+    onNavigateToArticlesDetailScreen: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DiscoverViewModel = hiltViewModel()
 ) {
     if(viewModel.verifiedUserState) {
         ExploreArticlesSection(
             articlesContentState = viewModel.articlesContentState,
+            onNavigateToArticlesDetailScreen = onNavigateToArticlesDetailScreen,
             modifier = modifier
         )
     }
@@ -149,6 +154,7 @@ private fun RequireSignInPromptSuggestThumbElement(
 @Composable
 fun ExploreArticlesSection(
     articlesContentState: UiState<List<ArticleDisplayInfo>>,
+    onNavigateToArticlesDetailScreen: (String) -> Unit,
     modifier: Modifier
 ) {
 
@@ -164,6 +170,7 @@ fun ExploreArticlesSection(
         } else {
             ArticlesPager(
                 articles = articlesContentState.data,
+                onClickReadMore = onNavigateToArticlesDetailScreen,
                 modifier = modifier
             )
 
@@ -175,6 +182,7 @@ fun ExploreArticlesSection(
 @Composable
 fun ArticlesPager(
     articles: List<ArticleDisplayInfo>,
+    onClickReadMore: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -198,7 +206,7 @@ fun ArticlesPager(
             verticalAlignment = Alignment.CenterVertically,
             pageSize = PageSize.Fill,
             modifier = modifier
-                .height(436.dp)
+                .height(450.dp)
         ) { page ->
             val pageInfo = articles[page]
 
@@ -206,6 +214,9 @@ fun ArticlesPager(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
+                    .clickable {
+                        onClickReadMore(pageInfo.id)
+                    }
             ) {
 
                 Box(
@@ -267,7 +278,7 @@ fun ArticlesPager(
                             contentColor = MaterialTheme.colorScheme.onTertiary
                         ),
                         onClick = {
-
+                            onClickReadMore(pageInfo.id)
                         }
                     ) {
                         Text(stringResource(id = CommonStringRes.read_more))
@@ -283,13 +294,13 @@ fun ArticlesPager(
             position = selectedIndex.value,
             total = articles.size,
             onClickNextItem = {
-                val nextIndex = kotlin.math.min(selectedIndex.value + 1, articles.size - 1)
+                val nextIndex = min(selectedIndex.value + 1, articles.size - 1)
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(page = nextIndex)
                 }
             },
             onClickPrevItem = {
-                val  prevIndex = kotlin.math.max(selectedIndex.value - 1, 0)
+                val  prevIndex = max(selectedIndex.value - 1, 0)
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(page = prevIndex)
                 }

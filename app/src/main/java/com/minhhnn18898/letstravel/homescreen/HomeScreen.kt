@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,12 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.graphics.shapes.CornerRounding
-import androidx.graphics.shapes.RoundedPolygon
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.minhhnn18898.discover.presentation.DiscoverScreen
+import com.minhhnn18898.discover.presentation.discover.DiscoverScreen
 import com.minhhnn18898.letstravel.R
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CreateNewTripCtaDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.EmptySavedTripView
@@ -60,7 +57,7 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.isContentLoading
 import com.minhhnn18898.ui_components.base_components.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
-import com.minhhnn18898.ui_components.base_components.RoundedPolygonShape
+import com.minhhnn18898.ui_components.base_components.HexagonShape
 import com.minhhnn18898.ui_components.base_components.SectionCtaData
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
@@ -73,6 +70,7 @@ fun HomeScreen(
     onClickShowAllSavedTrips: () -> Unit,
     onClickTripItem: (Long) -> Unit,
     onNavigateToSignInScreen: () -> Unit,
+    onNavigateToArticleDetailScreen: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
@@ -125,6 +123,7 @@ fun HomeScreen(
         ) {
             DiscoverScreen(
                 onNavigateToSignInScreen = onNavigateToSignInScreen,
+                onNavigateToArticlesDetailScreen = onNavigateToArticleDetailScreen,
                 modifier = modifier
             )
         }
@@ -159,15 +158,7 @@ private fun TripItemView(
     itemDisplay: UserTripDisplay,
     onClick: (Long) -> Unit
 ) {
-    val hexagon = remember {
-        RoundedPolygon(
-            4,
-            rounding = CornerRounding(0.15f)
-        )
-    }
-    val thumbClip = remember(hexagon) {
-        RoundedPolygonShape(polygon = hexagon)
-    }
+    val thumbClip = HexagonShape()
 
     val roundCornerBgShape = RoundedCornerShape(
         topStartPercent = 0,

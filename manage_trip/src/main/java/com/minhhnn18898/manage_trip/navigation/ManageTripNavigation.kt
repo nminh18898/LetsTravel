@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
 import com.minhhnn18898.app_navigation.appbarstate.ClearTopBarActions
+import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenDestination
 import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditHotelInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripActivityInfoDestination
@@ -19,6 +20,7 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailScre
 import com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo.EditTripScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.triplisting.TripInfoListingScreen
 
+@Suppress("UNUSED_PARAMETER")
 fun NavGraphBuilder.manageTripFeatureComposable(
     navController: NavHostController,
     appBarOnScreenDisplay: (AppBarActionsState) -> Unit,
@@ -145,4 +147,8 @@ fun NavHostController.navigateToEditHotelScreen(tripId: Long, hotelId: Long) {
 
 fun NavHostController.navigateToEditTripActivityScreen(tripId: Long, activityId: Long = 0L) {
     this.navigate("${EditTripActivityInfoDestination.route}/$tripId/$activityId")
+}
+
+fun NavHostController.navigateToArticleDetailScreen(articleId: String) {
+    this.navigate("${DiscoveryArticleDetailScreenDestination.route}/$articleId")
 }

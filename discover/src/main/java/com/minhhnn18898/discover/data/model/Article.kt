@@ -4,6 +4,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
 data class Article(
+    val id: String = "",
     val title: String = "",
     val content: String = "",
     var thumbUrl: String = "",

@@ -7,14 +7,18 @@ import kotlin.coroutines.suspendCoroutine
 
 suspend fun String.gsUriToHttpsUrl(): String =
     suspendCoroutine { cont ->
-        val gsReference = Firebase.storage.getReferenceFromUrl(this)
-        gsReference.downloadUrl
-            .addOnSuccessListener {
-                cont.resume(it.toString())
-            }
-            .addOnFailureListener {
-                cont.resume("")
-            }
+        runCatching {
+            val gsReference = Firebase.storage.getReferenceFromUrl(this)
+            gsReference.downloadUrl
+                .addOnSuccessListener {
+                    cont.resume(it.toString())
+                }
+                .addOnFailureListener {
+                    cont.resume("")
+                }
+        }.onFailure {
+            cont.resume("")
+        }
     }
 
 suspend fun List<String>.gsUriToHttpsUrl(): List<String> {
