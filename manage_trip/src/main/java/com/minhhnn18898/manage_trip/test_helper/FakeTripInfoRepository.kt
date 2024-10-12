@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_info.data
+package com.minhhnn18898.manage_trip.test_helper
 
 import com.minhhnn18898.manage_trip.trip_info.data.model.ExceptionDeleteTripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.ExceptionInsertTripInfo

@@ -3,8 +3,8 @@ package com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo
 import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
-import com.minhhnn18898.manage_trip.trip_info.data.FakeCoverDefaultResourceProvider
-import com.minhhnn18898.manage_trip.trip_info.data.FakeTripInfoRepository
+import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
+import com.minhhnn18898.manage_trip.test_helper.FakeTripInfoRepository
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.domain.CreateTripInfoUseCase

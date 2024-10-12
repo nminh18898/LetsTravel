@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
-import com.minhhnn18898.manage_trip.trip_detail.data.FakeTripDetailRepository
+import com.minhhnn18898.manage_trip.test_helper.FakeTripActivityDateSeparatorResourceProvider
+import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailDateTimeFormatter
+import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
@@ -13,8 +15,8 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
-import com.minhhnn18898.manage_trip.trip_info.data.FakeCoverDefaultResourceProvider
-import com.minhhnn18898.manage_trip.trip_info.data.FakeTripInfoRepository
+import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
+import com.minhhnn18898.manage_trip.test_helper.FakeTripInfoRepository
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase

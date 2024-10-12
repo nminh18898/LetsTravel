@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.data
+package com.minhhnn18898.manage_trip.test_helper
 
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
@@ -183,7 +183,7 @@ class FakeTripDetailRepository: TripDetailRepository {
                     it.timeFrom
                 }
                 .groupBy {
-                    if (it.timeFrom != null) ((it.timeFrom as Long / 1_000_000f).toInt() * 1_000_000L) else null
+                    if (it.timeFrom != null) ((it.timeFrom / 1_000_000f).toInt() * 1_000_000L) else null
                 }
         }
     }

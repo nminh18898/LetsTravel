@@ -1,7 +1,7 @@
 package com.minhhnn18898.manage_trip.trip_info.domain
 
 import com.google.common.truth.Truth
-import com.minhhnn18898.manage_trip.trip_info.data.FakeTripInfoRepository
+import com.minhhnn18898.manage_trip.test_helper.FakeTripInfoRepository
 import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
 import org.junit.After
 import org.junit.Before

@@ -3,7 +3,7 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.activity
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.manage_trip.trip_detail.data.FakeTripDetailRepository
+import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.ExceptionDeleteTripActivityInfo
 import com.minhhnn18898.test_utils.MainDispatcherRule

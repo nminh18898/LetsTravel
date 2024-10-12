@@ -2,7 +2,7 @@ package com.minhhnn18898.manage_trip.trip_info.domain
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
-import com.minhhnn18898.manage_trip.trip_info.data.FakeTripInfoRepository
+import com.minhhnn18898.manage_trip.test_helper.FakeTripInfoRepository
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.utils.assertTripInfoEqual
