@@ -8,6 +8,7 @@ import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
 import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import org.jetbrains.annotations.TestOnly
@@ -23,7 +24,13 @@ class FakeTripInfoRepository: TripInfoRepository {
 
     var forceError = false
 
-    override fun getAllTrips(): Flow<List<TripInfo>> = observableTrips
+    override fun getAllTrips(): Flow<List<TripInfo>> {
+        if(forceError) {
+            return flow { throw Exception() }
+        }
+
+        return observableTrips
+    }
 
     override fun getTrip(id: Long): Flow<TripInfo?> {
         return observableTrips.map { trips ->

@@ -6,6 +6,7 @@ import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.domain.GetListTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CreateNewTripCtaDisplay
+import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentError
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentLoading
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentResult
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentState
@@ -14,6 +15,7 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripInfoItemDisp
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -27,10 +29,14 @@ class TripInfoListingViewModel @Inject constructor(
     val contentState: StateFlow<GetSavedTripInfoContentState> =
         getListTripInfoUseCase.execute().map {
             GetSavedTripInfoContentResult(it.makeListTripDisplayItemWithCreateItem())
-        }.stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = GetSavedTripInfoContentLoading()
+        }
+            .catch<GetSavedTripInfoContentState> {
+                emit(GetSavedTripInfoContentError())
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = WhileUiSubscribed,
+                initialValue = GetSavedTripInfoContentLoading()
         )
 
     private fun List<TripInfo>.makeListTripDisplayItemWithCreateItem(): List<TripInfoItemDisplay> {

@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_info.presentation.triplisting
+package com.minhhnn18898.letstravel.homescreen
 
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
@@ -25,7 +25,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TripInfoListingViewModelTest {
+class HomeScreenViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -33,24 +33,20 @@ class TripInfoListingViewModelTest {
     private lateinit var fakeTripInfoRepository: FakeTripInfoRepository
     private lateinit var fakeCoverDefaultResourceProvider: FakeCoverDefaultResourceProvider
 
-    private lateinit var viewModel: TripInfoListingViewModel
+    private lateinit var viewModel: HomeScreenViewModel
 
     @Before
     fun setup() {
         fakeTripInfoRepository = FakeTripInfoRepository()
         fakeCoverDefaultResourceProvider = FakeCoverDefaultResourceProvider()
+
     }
 
     private fun setupViewModel() {
-        viewModel = TripInfoListingViewModel(
+        viewModel = HomeScreenViewModel(
             getListTripInfoUseCase = GetListTripInfoUseCase(fakeTripInfoRepository),
             defaultCoverResourceProvider = fakeCoverDefaultResourceProvider
         )
-    }
-
-    @After
-    fun cleanup() {
-
     }
 
     private val tripInfoInput = mutableListOf(
@@ -80,8 +76,6 @@ class TripInfoListingViewModelTest {
     )
 
     private val tripItemDisplayExpectedOutput = mutableListOf(
-        CreateNewTripCtaDisplay,
-
         UserTripDisplay(
             tripId = 1L,
             tripName = "Vietnam",
@@ -94,16 +88,20 @@ class TripInfoListingViewModelTest {
             coverDisplay = TripCustomCoverDisplay(coverPath = "https://testing.com/thailand")
         ),
 
-        UserTripDisplay(
-            tripId = 3L,
-            tripName = "Singapore",
-            coverDisplay = TripDefaultCoverDisplay(defaultCoverRes = 2)
-        )
+        CreateNewTripCtaDisplay
     )
+
+    @After
+    fun cleanup() {
+        fakeTripInfoRepository.reset()
+    }
 
     @Test
     fun getContentState_initStateLoading() = runTest {
+        // When
         setupViewModel()
+
+        // Then
         Truth.assertThat(viewModel.contentState.value).isInstanceOf(GetSavedTripInfoContentLoading::class.java)
     }
 
