@@ -26,7 +26,8 @@ class DiscoverViewModel @Inject constructor(
     private val getAuthStateUseCase: GetAuthStateUseCase
 ): ViewModel() {
 
-    var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute(Unit))
+    var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute())
+        private set
 
     var articlesContentState: UiState<List<ArticleDisplayInfo>> by mutableStateOf(UiState.Loading)
         private set

@@ -1,4 +1,4 @@
-package com.minhhnn18898.account.base
+package com.minhhnn18898.account.presentation.base
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

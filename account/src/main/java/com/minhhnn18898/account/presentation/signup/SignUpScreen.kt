@@ -14,17 +14,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.minhhnn18898.account.base.EmailField
-import com.minhhnn18898.account.base.PasswordTextField
-import com.minhhnn18898.account.base.RepeatPasswordTextField
-import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.account.R
+import com.minhhnn18898.account.presentation.base.EmailField
+import com.minhhnn18898.account.presentation.base.PasswordTextField
+import com.minhhnn18898.account.presentation.base.RepeatPasswordTextField
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.core.R.string as CommonStringRes

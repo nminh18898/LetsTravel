@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.minhhnn18898.account.domain.CheckValidSignedInUserUseCase
+import com.minhhnn18898.account.domain.SignInUseCase
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.core.utils.isValidEmail
-import com.minhhnn18898.account.domain.CheckValidSignedInUserUseCase
-import com.minhhnn18898.account.domain.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -50,7 +50,7 @@ class SignInViewModel @Inject constructor(
 
     fun onSignInClick() {
         viewModelScope.launch {
-            signInUseCase.execute(SignInUseCase.Params(uiState.value.email, uiState.value.password))?.collect {
+            signInUseCase.execute(SignInUseCase.Params(uiState.value.email, uiState.value.password)).collect {
                 onShowSaveLoadingState = it is Result.Loading
                 when(it) {
                     is Result.Success -> _eventChannel.send(Event.CloseScreen)
@@ -63,7 +63,7 @@ class SignInViewModel @Inject constructor(
 
     fun onReceiveLifecycleResume() {
         viewModelScope.launch {
-            if(checkValidSignedInUserUseCase.execute(Unit) == true) {
+            if(checkValidSignedInUserUseCase.execute()) {
                 _eventChannel.send(Event.CloseScreen)
             }
         }
