@@ -1,8 +1,5 @@
 package com.minhhnn18898.account.presentation.signin
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.account.domain.CheckValidSignedInUserUseCase
@@ -11,9 +8,11 @@ import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.core.utils.isValidEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,39 +22,50 @@ class SignInViewModel @Inject constructor(
     private val checkValidSignedInUserUseCase: CheckValidSignedInUserUseCase
 ): ViewModel() {
 
-    var uiState = mutableStateOf(LoginUiState())
-        private set
-
-    var errorType by mutableStateOf(ErrorType.ERROR_MESSAGE_NONE)
-        private set
-
-    var onShowSaveLoadingState by mutableStateOf(false)
-        private set
-
-    private val _eventChannel = Channel<Event>()
-    val eventTriggerer = _eventChannel.receiveAsFlow()
-
-    var allowSaveContent by mutableStateOf(false)
-        private set
+    private val _uiState = MutableStateFlow(SignInUiState())
+    val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
 
     fun onEmailChange(newValue: String) {
-        uiState.value = uiState.value.copy(email = newValue)
+        _uiState.update {
+            it.copy(accountUiState = it.accountUiState.copy(email = newValue))
+        }
         checkAllowSaveContent()
     }
 
     fun onPasswordChange(newValue: String) {
-        uiState.value = uiState.value.copy(password = newValue)
+        _uiState.update {
+            it.copy(accountUiState = it.accountUiState.copy(password = newValue))
+        }
         checkAllowSaveContent()
     }
 
     fun onSignInClick() {
         viewModelScope.launch {
-            signInUseCase.execute(SignInUseCase.Params(uiState.value.email, uiState.value.password)).collect {
-                onShowSaveLoadingState = it is Result.Loading
-                when(it) {
-                    is Result.Success -> _eventChannel.send(Event.CloseScreen)
-                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_SIGN_IN)
-                    else -> { }
+            signInUseCase.execute(
+                SignInUseCase.Params(
+                    uiState.value.accountUiState.email,
+                    uiState.value.accountUiState.password
+                )
+            ).collect { result ->
+                when(result) {
+                    is Result.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isValidLogin = true,
+                                isLoading = false
+                            )
+                        }
+                    }
+
+                    is Result.Error -> {
+                        showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_SIGN_IN)
+                    }
+
+                    is Result.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
                 }
             }
         }
@@ -64,23 +74,42 @@ class SignInViewModel @Inject constructor(
     fun onReceiveLifecycleResume() {
         viewModelScope.launch {
             if(checkValidSignedInUserUseCase.execute()) {
-                _eventChannel.send(Event.CloseScreen)
+                _uiState.update {
+                    it.copy(isValidLogin = true)
+                }
             }
         }
     }
 
     private fun checkAllowSaveContent() {
-        val isValidEmail = uiState.value.email.isValidEmail()
-        val isValidPassword = uiState.value.password.isNotBlankOrEmpty()
-        allowSaveContent = isValidEmail && isValidPassword
+        _uiState.update {
+            it.copy(allowSaveContent = isAllowSave())
+        }
+    }
+
+    private fun isAllowSave(): Boolean {
+        val isValidEmail = uiState.value.accountUiState.email.isValidEmail()
+        val isValidPassword = uiState.value.accountUiState.password.isNotBlankOrEmpty()
+
+        return isValidEmail && isValidPassword
     }
 
     @Suppress("SameParameterValue")
     private fun showErrorInBriefPeriod(errorType: ErrorType) {
         viewModelScope.launch {
-            this@SignInViewModel.errorType = errorType
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    showError = errorType
+                )
+            }
             delay(3000)
-            this@SignInViewModel.errorType = ErrorType.ERROR_MESSAGE_NONE
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    showError = ErrorType.ERROR_MESSAGE_NONE
+                )
+            }
         }
     }
 
@@ -89,12 +118,16 @@ class SignInViewModel @Inject constructor(
         ERROR_MESSAGE_CAN_NOT_SIGN_IN
     }
 
-    data class LoginUiState(
+    data class AccountUiState(
         val email: String = "",
         val password: String = ""
     )
 
-    sealed class Event {
-        data object CloseScreen: Event()
-    }
+    data class SignInUiState(
+        val accountUiState: AccountUiState = AccountUiState(),
+        val isLoading: Boolean = false,
+        val showError: ErrorType = ErrorType.ERROR_MESSAGE_NONE,
+        val allowSaveContent: Boolean = false,
+        val isValidLogin: Boolean = false
+    )
 }

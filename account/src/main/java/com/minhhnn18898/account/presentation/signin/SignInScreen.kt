@@ -19,10 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleResumeEffect
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.minhhnn18898.account.R
 import com.minhhnn18898.account.presentation.base.EmailField
 import com.minhhnn18898.account.presentation.base.PasswordTextField
@@ -39,18 +37,7 @@ fun SignInScreen(
     navigateUp: () -> Unit,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.eventTriggerer.collect { event ->
-                if(event == SignInViewModel.Event.CloseScreen) {
-                    navigateUp.invoke()
-                }
-            }
-        }
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LifecycleResumeEffect(Unit) {
         viewModel.onReceiveLifecycleResume()
@@ -63,10 +50,10 @@ fun SignInScreen(
     Column(
         modifier = modifier.padding(horizontal = 16.dp)
     ) {
-        EmailField(value = uiState.email, onNewValue = viewModel::onEmailChange)
+        EmailField(value = uiState.accountUiState.email, onNewValue = viewModel::onEmailChange)
         Spacer(modifier = Modifier.height(8.dp))
         PasswordTextField(
-            value = uiState.password,
+            value = uiState.accountUiState.password,
             onNewValue = viewModel::onPasswordChange
         )
 
@@ -75,7 +62,7 @@ fun SignInScreen(
         SignInButton(
             modifier = modifier,
             onClick = viewModel::onSignInClick,
-            enable = viewModel.allowSaveContent,
+            enable = uiState.allowSaveContent,
         )
         Spacer(modifier = Modifier.height(8.dp))
         CreateNewAccountButton(
@@ -84,13 +71,19 @@ fun SignInScreen(
         )
     }
 
-    AnimatedVisibility(viewModel.onShowSaveLoadingState) {
+    LaunchedEffect(uiState.isValidLogin) {
+        if(uiState.isValidLogin) {
+            navigateUp()
+        }
+    }
+
+    AnimatedVisibility(uiState.isLoading) {
         ProgressDialog()
     }
 
     TopMessageBar(
-        shown = viewModel.errorType.isShow(),
-        text = getMessageError(LocalContext.current, viewModel.errorType)
+        shown = uiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, uiState.showError)
     )
 }
 
