@@ -12,5 +12,5 @@ data class Article(
     @ServerTimestamp
     var lastEdited: Date? = null,
     var originalSrc: String = "",
-    val tag: ArrayList<String> = ArrayList()
+    val tag: List<String> = ArrayList()
 )

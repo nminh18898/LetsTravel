@@ -74,11 +74,9 @@ dependencies {
     testImplementation(libs.androidx.core.testing)
     testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.google.truth)
-
     testImplementation(libs.mockito.core)
     testImplementation(libs.kotlin.mockito.kotlin)
     testImplementation(libs.mockito.core)
-
     testImplementation(project(":test_utils"))
 
     androidTestImplementation(libs.androidx.junit)
@@ -86,10 +84,8 @@ dependencies {
     androidTestImplementation(libs.androidx.core.testing)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.google.truth)
-
     androidTestImplementation(libs.mockito.core)
     androidTestImplementation(libs.kotlin.mockito.kotlin)
     androidTestImplementation(libs.mockito.android)
-
     androidTestImplementation(project(":test_utils"))
 }

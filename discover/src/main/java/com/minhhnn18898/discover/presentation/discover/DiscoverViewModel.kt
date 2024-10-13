@@ -11,7 +11,7 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.discover.data.model.Article
-import com.minhhnn18898.discover.domain.GetListArticlesDiscovery
+import com.minhhnn18898.discover.domain.GetListArticlesDiscoveryUseCase
 import com.minhhnn18898.discover.presentation.ui_models.ArticleDisplayInfo
 import com.minhhnn18898.discover.presentation.ui_models.toDisplayInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DiscoverViewModel @Inject constructor(
-    private val getListArticlesDiscovery: GetListArticlesDiscovery,
+    private val getListArticlesDiscoveryUseCase: GetListArticlesDiscoveryUseCase,
     private val baseDateTimeFormatter: BaseDateTimeFormatter,
     checkValidSignedInUserUseCase: CheckValidSignedInUserUseCase,
     private val getAuthStateUseCase: GetAuthStateUseCase
@@ -52,7 +52,7 @@ class DiscoverViewModel @Inject constructor(
 
     private fun loadDiscoveryArticles() {
         viewModelScope.launch {
-            getListArticlesDiscovery.execute(Unit).collect {
+            getListArticlesDiscoveryUseCase.execute().collect {
                 when(it) {
                     is Result.Loading -> articlesContentState = UiState.Loading
                     is Result.Success -> handleResultLoadArticles(it.data)

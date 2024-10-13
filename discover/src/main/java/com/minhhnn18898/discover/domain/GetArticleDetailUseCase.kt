@@ -20,5 +20,4 @@ class GetArticleDetailUseCase @Inject constructor(private val discoverRepository
     }
 
     data class Param(val id: String)
-
 }

@@ -14,7 +14,7 @@ data class ArticleDisplayInfo(
     var photoUrls: List<String> = emptyList(),
     var lastEdited: String = "",
     var originalSrc: String = "",
-    val tag: ArrayList<String> = ArrayList()
+    val tag: List<String> = ArrayList()
 )
 
 fun Article.toDisplayInfo(baseDateTimeFormatter: BaseDateTimeFormatter): ArticleDisplayInfo {
