@@ -26,13 +26,13 @@ class AppDrawerViewModel @Inject constructor(
 
     private fun observeAuthState() {
         viewModelScope.launch {
-            getAuthStateUseCase.execute(Unit)?.collect {
+            getAuthStateUseCase.execute().collect {
                 userInfo = it
             }
         }
     }
 
     fun onClickSignOut() {
-        signOutUseCase.execute(Unit)
+        signOutUseCase.execute()
     }
 }

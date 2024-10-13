@@ -66,7 +66,7 @@ class DiscoverViewModelTest {
     @Test
     fun getVerifiedUserState_signedInUser() {
         // Given
-        fakeAccountService.addAccount("minhhnn@gmail.com")
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
 
         // When
         setupViewModel()
@@ -79,6 +79,24 @@ class DiscoverViewModelTest {
     fun getVerifiedUserState_notSignedInUser() {
         // When
         setupViewModel()
+
+        // Then
+        Truth.assertThat(viewModel.verifiedUserState).isFalse()
+    }
+
+    @Test
+    fun getVerifiedUserState_signedInUser_thenSignOut() {
+        // Given
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
+
+        // When
+        setupViewModel()
+
+        // Then
+        Truth.assertThat(viewModel.verifiedUserState).isTrue()
+
+        // When
+        fakeAccountService.signOut()
 
         // Then
         Truth.assertThat(viewModel.verifiedUserState).isFalse()
@@ -99,7 +117,7 @@ class DiscoverViewModelTest {
     @Test
     fun getArticlesContentState_loadArticlesSuccess() = runTest {
         // Given
-        fakeAccountService.addAccount("minhhnn@gmail.com")
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
 
         // When
         setupViewModel()
@@ -118,7 +136,7 @@ class DiscoverViewModelTest {
     @Test
     fun getArticlesContentState_loadArticlesError() = runTest {
         // Given
-        fakeAccountService.addAccount("minhhnn@gmail.com")
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
         fakeDiscoveryRepository.forceError = true
 
         // When

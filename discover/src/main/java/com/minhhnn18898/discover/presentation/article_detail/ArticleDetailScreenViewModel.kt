@@ -44,7 +44,7 @@ class ArticleDetailScreenViewModel @Inject constructor(
 
     private fun observeAuthState() {
         viewModelScope.launch {
-            getAuthStateUseCase.execute(Unit).collect {
+            getAuthStateUseCase.execute().collect {
                 verifiedUserState = it
                 if(verifiedUserState) {
                     onUserAuthCheckSuccess()

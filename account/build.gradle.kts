@@ -71,6 +71,14 @@ dependencies {
     implementation(libs.androidx.startup.runtime)
 
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.kotlin.mockito.kotlin)
+    testImplementation(libs.mockito.core)
+    testImplementation(project(":test_utils"))
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

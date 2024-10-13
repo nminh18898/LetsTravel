@@ -6,31 +6,38 @@ import com.minhhnn18898.account.data.model.ExceptionCreateAccount
 import com.minhhnn18898.account.data.model.ExceptionLogIn
 import com.minhhnn18898.account.data.model.UserInfo
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import org.jetbrains.annotations.TestOnly
 
 class FakeAccountService: AccountService {
     var forceError = false
 
-    private var currentUser: UserInfo? = null
+    private val savedUser = mutableMapOf<String, String>()
+
+    private val _currentUser = MutableStateFlow<UserInfo?>(null)
+    private val observableUser: Flow<UserInfo?> = _currentUser
 
     override fun authenticate(email: String, password: String, onResult: (AccountApiResult) -> Unit) {
-        if(forceError) {
-            currentUser = null
+        val isValid = (savedUser[email] == password)
+
+        if(!isValid || forceError) {
+            _currentUser.value = null
             onResult(AccountApiResult.Error(ExceptionLogIn()))
+            return
         }
 
         UserInfo(
             email = email,
             displayName = email
         ).let {
-            currentUser = it
+            _currentUser.value = it
             onResult(AccountApiResult.Success(it))
         }
     }
 
     override fun signOut() {
-        currentUser = null
+        _currentUser.value = null
     }
 
     override fun createUserWithEmailAndPassword(email: String, password: String, onResult: (AccountApiResult) -> Unit) {
@@ -43,27 +50,46 @@ class FakeAccountService: AccountService {
             email = email,
             displayName = email
         )
-        currentUser = userInfo
+        _currentUser.value = userInfo
+        savedUser[email] = password
         onResult(AccountApiResult.Success(userInfo))
     }
 
     override fun isValidLoggedIn(): Boolean {
-        return currentUser != null
+        return _currentUser.value != null
     }
 
     override fun getAuthState(): Flow<Boolean> {
-        return flow { emit(currentUser != null) }
+        return observableUser.map { it != null }
     }
 
     override fun getAuthUserInfo(): Flow<UserInfo?> {
-        return flow { emit(currentUser) }
+        return observableUser
     }
 
     @TestOnly
-    fun addAccount(email: String) {
-        currentUser = UserInfo(
+    fun setCurrentUser(email: String, password: String) {
+        savedUser[email] = password
+
+        _currentUser.value = UserInfo(
             email = email,
             displayName = email
         )
+    }
+
+    @TestOnly
+    fun getCurrentUser(): UserInfo? {
+        return _currentUser.value
+    }
+
+    @TestOnly
+    fun addAccount(email: String, password: String) {
+        savedUser[email] = password
+    }
+
+    @TestOnly
+    fun clearAccount() {
+        savedUser.clear()
+        _currentUser.value = null
     }
 }

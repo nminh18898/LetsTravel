@@ -67,7 +67,7 @@ class ArticleDetailScreenViewModelTest {
     @Test
     fun getVerifiedUserState_signedInUser() {
         // Given
-        fakeAccountService.addAccount("minhhnn@gmail.com")
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
 
         // When
         setupViewModel()
@@ -100,7 +100,7 @@ class ArticleDetailScreenViewModelTest {
     @Test
     fun getArticlesContentState_loadArticleSuccess() = runTest {
         // Given
-        fakeAccountService.addAccount("minhhnn@gmail.com")
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
 
         // When
         setupViewModel("1")
@@ -113,7 +113,7 @@ class ArticleDetailScreenViewModelTest {
     @Test
     fun getArticlesContentState_loadNonExistedArticle() = runTest {
         // Given
-        fakeAccountService.addAccount("minhhnn@gmail.com")
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
 
         // When
         setupViewModel("999")
@@ -125,7 +125,7 @@ class ArticleDetailScreenViewModelTest {
     @Test
     fun getArticlesContentState_loadArticle_hasException() = runTest {
         // Given
-        fakeAccountService.addAccount("minhhnn@gmail.com")
+        fakeAccountService.setCurrentUser("minhhnn@gmail.com", "123456")
         fakeDiscoveryRepository.forceError = true
 
         // When
