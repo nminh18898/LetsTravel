@@ -46,7 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
+import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
+import com.minhhnn18898.app_navigation.destination.TripDetailDestination
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.manage_trip.R
@@ -66,7 +67,7 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun TripDetailScreen(
-    onComposedTopBarActions: (AppBarActionsState) -> Unit,
+    onComposedTopBarActions: (TopAppBarState) -> Unit,
     navigateUp: () -> Unit,
     onNavigateToEditFlightInfoScreen: (tripId: Long, flightId: Long) -> Unit,
     onNavigateEditHotelScreen: (tripId: Long, flightId: Long) -> Unit,
@@ -80,9 +81,12 @@ fun TripDetailScreen(
     val hotelContentState by viewModel.hotelInfoContentState.collectAsStateWithLifecycle()
     val activityContentState by viewModel.activityInfoContentState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
-            AppBarActionsState(
+            TopAppBarState(
+                screenTitle = StringUtils.getString(context, TripDetailDestination.title),
                 actions = {
                     IconButton(
                         onClick = {

@@ -70,7 +70,7 @@ fun HomeScreen(
     onClickShowAllSavedTrips: () -> Unit,
     onClickTripItem: (Long) -> Unit,
     onNavigateToSignInScreen: () -> Unit,
-    onNavigateToArticleDetailScreen: (String) -> Unit,
+    onNavigateToArticleDetailScreen: (id: String, position: Int, listArticles: List<String>) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {

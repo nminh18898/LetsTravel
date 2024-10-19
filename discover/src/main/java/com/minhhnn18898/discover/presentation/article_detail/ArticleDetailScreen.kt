@@ -24,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.carousel.HorizontalUncontainedCarousel
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -118,6 +120,8 @@ fun ArticlesDetailView(
             if(articleDisplayInfo.photoUrls.isNotEmpty()) {
                 PhotoCarousel(urls = articleDisplayInfo.photoUrls)
             }
+
+            NextAndPreviousControlBar()
         }
     } else if(articlesContentState is UiState.Loading) {
         ArticleDetailLoadingView()
@@ -343,4 +347,59 @@ private fun ArticleContentSkeleton(alpha: Float) {
             .padding(horizontal = 16.dp)
             .background(color = Color.LightGray.copy(alpha = alpha))
     )
+}
+
+@Composable
+private fun NextAndPreviousControlBar() {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement  =  Arrangement.SpaceBetween) {
+        ControlButtonPrev()
+        ControlButtonNext()
+    }
+}
+
+@Composable
+private fun ControlButtonPrev() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painter = painterResource(id = com.minhhnn18898.discover.R.drawable.line_start_arrow_notch_24),
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.primary
+        )
+
+        Spacer(modifier = Modifier.width(4.dp))
+
+        Text(
+            text = "Prev",
+            style = typography.labelMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun ControlButtonNext() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "Next",
+            style = typography.labelMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Spacer(modifier = Modifier.width(4.dp))
+
+        Icon(
+            painter = painterResource(id = com.minhhnn18898.discover.R.drawable.line_end_arrow_notch_24),
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
 }

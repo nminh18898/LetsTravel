@@ -44,7 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
+import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
+import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
@@ -59,17 +60,19 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun EditTripScreen(
-    onComposedTopBarActions: (AppBarActionsState) -> Unit,
+    onComposedTopBarActions: (TopAppBarState) -> Unit,
     navigateUp: () -> Unit,
     onNavigateToTripDetailScreen: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditTripViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
-            AppBarActionsState(
+            TopAppBarState(
+                screenTitle = StringUtils.getString(context = context, id = EditTripInfoDestination.title),
                 actions = {
                     if(uiState.canDeleteTrip) {
                         IconButton(
@@ -158,7 +161,6 @@ fun EditTripScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            val context = LocalContext.current
             val imagePicker = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.PickVisualMedia(),
                 onResult = { uri ->

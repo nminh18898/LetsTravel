@@ -68,7 +68,7 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 @Composable
 fun DiscoverScreen(
     onNavigateToSignInScreen: () -> Unit,
-    onNavigateToArticlesDetailScreen: (String) -> Unit,
+    onNavigateToArticlesDetailScreen: (id: String, position: Int, listArticles: List<String>) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DiscoverViewModel = hiltViewModel()
 ) {
@@ -154,7 +154,7 @@ private fun RequireSignInPromptSuggestThumbElement(
 @Composable
 fun ExploreArticlesSection(
     articlesContentState: UiState<List<ArticleDisplayInfo>>,
-    onNavigateToArticlesDetailScreen: (String) -> Unit,
+    onNavigateToArticlesDetailScreen: (id: String, position: Int, listArticles: List<String>) -> Unit,
     modifier: Modifier
 ) {
 
@@ -182,7 +182,7 @@ fun ExploreArticlesSection(
 @Composable
 fun ArticlesPager(
     articles: List<ArticleDisplayInfo>,
-    onClickReadMore: (String) -> Unit,
+    onClickReadMore: (id: String, position: Int, listArticles: List<String>) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -215,7 +215,11 @@ fun ArticlesPager(
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
                     .clickable {
-                        onClickReadMore(pageInfo.id)
+                        onClickReadMore(
+                            pageInfo.id,
+                            articles.indexOfFirst { it.id == pageInfo.id },
+                            articles.map { it.id }
+                        )
                     }
             ) {
 
@@ -278,7 +282,11 @@ fun ArticlesPager(
                             contentColor = MaterialTheme.colorScheme.onTertiary
                         ),
                         onClick = {
-                            onClickReadMore(pageInfo.id)
+                            onClickReadMore(
+                                pageInfo.id,
+                                articles.indexOfFirst { it.id == pageInfo.id },
+                                articles.map { it.id }
+                            )
                         }
                     ) {
                         Text(stringResource(id = CommonStringRes.read_more))

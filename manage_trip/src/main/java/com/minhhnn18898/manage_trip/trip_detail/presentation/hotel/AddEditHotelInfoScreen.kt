@@ -23,7 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
+import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
+import com.minhhnn18898.app_navigation.destination.EditHotelInfoDestination
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.DatePickerWithDialog
@@ -39,16 +40,18 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 
 @Composable
 fun AddEditHotelInfoScreen(
-    onComposedTopBarActions: (AppBarActionsState) -> Unit,
+    onComposedTopBarActions: (TopAppBarState) -> Unit,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditHotelInfoViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
-            AppBarActionsState(
+            TopAppBarState(
+                screenTitle = StringUtils.getString(context, EditHotelInfoDestination.title),
                 actions = {
                     if(uiState.canDelete) {
                         IconButton(
@@ -134,7 +137,7 @@ fun AddEditHotelInfoScreen(
 
     TopMessageBar(
         shown = uiState.showError.isShow(),
-        text = getMessageError(LocalContext.current, uiState.showError)
+        text = getMessageError(context, uiState.showError)
     )
 }
 

@@ -10,12 +10,4 @@ interface AppScreenDestination {
     fun getAllRoutes(): List<String> {
         return mutableListOf(route)
     }
-
-    companion object {
-        fun getAppScreenDestination(route: String): AppScreenDestination {
-           return listAllDestinations.firstOrNull {
-               destination -> destination.getAllRoutes().any { it == route }
-           } ?: HomeScreenDestination
-        }
-    }
 }

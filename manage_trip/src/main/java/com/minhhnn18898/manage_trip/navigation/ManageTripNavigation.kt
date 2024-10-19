@@ -1,18 +1,21 @@
 package com.minhhnn18898.manage_trip.navigation
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
-import com.minhhnn18898.app_navigation.appbarstate.ClearTopBarActions
+import com.minhhnn18898.app_navigation.appbarstate.EmptyActionTopBar
+import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
 import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenDestination
+import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenParameters
 import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditHotelInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripActivityInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.trip_detail.presentation.activity.AddEditTripActivityScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.AddEditHotelInfoScreen
@@ -23,7 +26,7 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.triplisting.TripInfoL
 @Suppress("UNUSED_PARAMETER")
 fun NavGraphBuilder.manageTripFeatureComposable(
     navController: NavHostController,
-    appBarOnScreenDisplay: (AppBarActionsState) -> Unit,
+    appBarOnScreenDisplay: (TopAppBarState) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     composable(
@@ -55,7 +58,7 @@ fun NavGraphBuilder.manageTripFeatureComposable(
                 navController.navigateToTripDetailScreen(tripId)
             }
         )
-        ClearTopBarActions(appBarOnScreenDisplay)
+        EmptyActionTopBar(StringUtils.getString(LocalContext.current, SavedTripsListingFullDestination.title), appBarOnScreenDisplay)
     }
 
     composable(
@@ -149,6 +152,10 @@ fun NavHostController.navigateToEditTripActivityScreen(tripId: Long, activityId:
     this.navigate("${EditTripActivityInfoDestination.route}/$tripId/$activityId")
 }
 
-fun NavHostController.navigateToArticleDetailScreen(articleId: String) {
-    this.navigate("${DiscoveryArticleDetailScreenDestination.route}/$articleId")
+fun NavHostController.navigateToArticleDetailScreen(articleId: String, articlePosition: Int, listArticles: List<String>) {
+    this.navigate(
+        route = DiscoveryArticleDetailScreenDestination(
+            DiscoveryArticleDetailScreenParameters(articleId, articlePosition, listArticles)
+        )
+    )
 }

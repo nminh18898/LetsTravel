@@ -43,7 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
+import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
+import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
@@ -59,16 +60,18 @@ import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun AddEditFlightInfoScreen(
-    onComposedTopBarActions: (AppBarActionsState) -> Unit,
+    onComposedTopBarActions: (TopAppBarState) -> Unit,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditFlightInfoViewModel = hiltViewModel()) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
-            AppBarActionsState(
+            TopAppBarState(
+                screenTitle = StringUtils.getString(context, EditFlightInfoDestination.title),
                 actions = {
                     if(uiState.canDelete) {
                         IconButton(
@@ -159,7 +162,7 @@ fun AddEditFlightInfoScreen(
 
     TopMessageBar(
         shown = uiState.showError.isShow(),
-        text = getMessageError(LocalContext.current, uiState.showError)
+        text = getMessageError(context, uiState.showError)
     )
 }
 

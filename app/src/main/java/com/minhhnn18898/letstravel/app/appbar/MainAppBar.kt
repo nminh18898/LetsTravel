@@ -15,7 +15,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.minhhnn18898.app_navigation.destination.AppScreenDestination
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
 import com.minhhnn18898.core.R
 import com.minhhnn18898.ui_components.theme.typography
@@ -25,9 +26,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppBar(
-    currentScreen: AppScreenDestination,
+    backStackEntry: NavBackStackEntry?,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    title: String,
     actions: @Composable (RowScope.() -> Unit),
     coroutineScope: CoroutineScope,
     drawerState: DrawerState,
@@ -37,13 +39,13 @@ fun MainAppBar(
         title = {
             Text(
                 color = MaterialTheme.colorScheme.primary,
-                text = stringResource(currentScreen.title),
+                text = title,
                 style = typography.titleMedium,
             )
         },
         modifier = modifier,
         navigationIcon = {
-            if(currentScreen.isHomeScreen()) {
+            if(backStackEntry == null || backStackEntry.isHomeScreen()) {
                 IconButton(
                     onClick = {
                         coroutineScope.launch { drawerState.open() }
@@ -72,6 +74,6 @@ fun MainAppBar(
     )
 }
 
-private fun AppScreenDestination.isHomeScreen(): Boolean {
-    return this.route == HomeScreenDestination.route
+private fun NavBackStackEntry.isHomeScreen(): Boolean {
+    return this.destination.hasRoute<HomeScreenDestination>()
 }

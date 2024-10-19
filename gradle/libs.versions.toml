@@ -12,7 +12,9 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+kotlinGradlePlugin = "2.1.0-Beta2"
 kotlinxCoroutinesAndroid = "1.8.1"
+kotlinxSerializationJson = "1.6.2"
 lifecycleVersion = "2.8.4"
 activityCompose = "1.9.2"
 composeBom = "2024.09.03"
@@ -22,8 +24,8 @@ mockitoKotlinVersion = "5.4.0"
 roomKtx = "2.6.1"
 runtimeLivedata = "1.6.8"
 jetbrainsKotlinJvm = "1.9.0"
-navigationRuntimeKtx = "2.7.7"
-navigationCompose = "2.7.7"
+navigationRuntimeKtx = "2.8.3"
+navigationCompose = "2.8.3"
 graphicsShapesAndroid = "1.0.1"
 appcompat = "1.7.0"
 material = "1.12.0"
@@ -32,9 +34,9 @@ startupRuntime = "1.1.1"
 firebaseAuthKtx = "23.0.0"
 firebaseFirestoreKtx = "25.1.0"
 firebaseStorageKtx = "21.0.0"
-lifecycleRuntimeComposeAndroid = "2.8.4"
+lifecycleRuntimeComposeAndroid = "2.8.6"
 truthVersion = "1.4.4"
-lifecycleRuntimeComposeAndroidVersion = "2.8.5"
+lifecycleRuntimeComposeAndroidVersion = "2.8.6"
 
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
@@ -60,9 +62,11 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 kotlin-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlinVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleVersion" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }

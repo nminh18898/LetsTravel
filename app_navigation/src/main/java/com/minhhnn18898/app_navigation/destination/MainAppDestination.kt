@@ -7,26 +7,12 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.flightIdArg
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.hotelIdArg
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.tripIdArg
+import kotlinx.serialization.Serializable
 import com.minhhnn18898.core.R.string as CommonStringRes
 
-val listAllDestinations = mutableListOf(
-    HomeScreenDestination,
-    EditTripInfoDestination,
-    SavedTripsListingFullDestination,
-    TripDetailDestination,
-    EditFlightInfoDestination,
-    EditHotelInfoDestination,
-    EditTripActivityInfoDestination,
-
-    SignInScreenDestination,
-    SignUpScreenDestination,
-
-    DiscoveryArticleDetailScreenDestination
-)
-
-object HomeScreenDestination: AppScreenDestination {
-    override val title: Int =  CommonStringRes.app_name
-    override val route: String = MainAppRoute.HOME_SCREEN_ROUTE
+@Serializable
+data object HomeScreenDestination {
+    val title: Int =  CommonStringRes.app_name
 }
 
 object EditTripInfoDestination: AppScreenDestination {

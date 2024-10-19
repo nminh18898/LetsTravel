@@ -21,9 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.minhhnn18898.app_navigation.appbarstate.AppBarActionsState
-import com.minhhnn18898.app_navigation.destination.AppScreenDestination
-import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
+import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
 import com.minhhnn18898.app_navigation.destination.SignInScreenDestination
 import com.minhhnn18898.letstravel.app.appbar.AppDrawer
 import com.minhhnn18898.letstravel.app.appbar.AppNavHost
@@ -52,9 +50,8 @@ fun MainApp(
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = AppScreenDestination.getAppScreenDestination(backStackEntry?.destination?.route ?: HomeScreenDestination.route)
 
-    var appBarActionsState by remember { mutableStateOf(AppBarActionsState()) }
+    var topAppBarState by remember { mutableStateOf(TopAppBarState()) }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -73,11 +70,12 @@ fun MainApp(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 MainAppBar(
-                    currentScreen = currentScreen,
+                    backStackEntry = backStackEntry,
                     canNavigateBack = navController.previousBackStackEntry != null,
                     navigateUp = { navController.navigateUp() },
+                    title = topAppBarState.screenTitle,
                     actions = {
-                        appBarActionsState.actions?.invoke(this)
+                        topAppBarState.actions?.invoke(this)
                     },
                     drawerState = drawerState,
                     coroutineScope = scope
@@ -88,7 +86,7 @@ fun MainApp(
             AppNavHost(
                 navController = navController,
                 appBarOnScreenDisplay = {
-                    appBarActionsState = it
+                    topAppBarState = it
                 },
                 modifier = modifier.padding(innerPadding)
             )

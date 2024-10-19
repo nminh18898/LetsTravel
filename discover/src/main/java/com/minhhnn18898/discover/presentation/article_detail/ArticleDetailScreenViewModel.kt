@@ -6,9 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.minhhnn18898.account.domain.CheckValidSignedInUserUseCase
 import com.minhhnn18898.account.domain.GetAuthStateUseCase
-import com.minhhnn18898.app_navigation.destination.route.DiscoveryFeatureRoute
+import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenDestination
+import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenParameters
+import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenParametersType
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.BaseDateTimeFormatter
@@ -20,6 +23,7 @@ import com.minhhnn18898.discover.presentation.ui_models.toDisplayInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 @HiltViewModel
 class ArticleDetailScreenViewModel @Inject constructor(
@@ -30,7 +34,11 @@ class ArticleDetailScreenViewModel @Inject constructor(
     private val getAuthStateUseCase: GetAuthStateUseCase
 ): ViewModel() {
 
-    private val articleId: String = savedStateHandle.get<String>(DiscoveryFeatureRoute.articleIdArg) ?: ""
+    private val parameters = savedStateHandle.toRoute<DiscoveryArticleDetailScreenDestination>(
+        mapOf(typeOf<DiscoveryArticleDetailScreenParameters>() to DiscoveryArticleDetailScreenParametersType)
+    ).parameters
+
+    private val articleId: String = parameters.articleId
 
     var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute())
         private set
