@@ -22,7 +22,14 @@ data class DiscoveryArticleDetailScreenDestination(val parameters: DiscoveryArti
 data class DiscoveryArticleDetailScreenParameters(
     val articleId: String,
     val articlePosition: Int,
-    val listArticles: List<String>
+    val listArticles: List<ArticleInfoParameters>
+): Parcelable
+
+@Serializable
+@Parcelize
+data class ArticleInfoParameters(
+    val articleId: String,
+    val articleTitle: String,
 ): Parcelable
 
 val DiscoveryArticleDetailScreenParametersType = object : NavType<DiscoveryArticleDetailScreenParameters>(isNullableAllowed = false) {

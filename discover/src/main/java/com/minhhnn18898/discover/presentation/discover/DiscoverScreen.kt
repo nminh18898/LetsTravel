@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.minhhnn18898.discover.presentation.discover
 
 import androidx.annotation.DrawableRes
@@ -8,7 +6,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -68,7 +65,7 @@ import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
 @Composable
 fun DiscoverScreen(
     onNavigateToSignInScreen: () -> Unit,
-    onNavigateToArticlesDetailScreen: (id: String, position: Int, listArticles: List<String>) -> Unit,
+    onNavigateToArticlesDetailScreen: (id: String, position: Int, listArticles: List<Pair<String, String>>) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DiscoverViewModel = hiltViewModel()
 ) {
@@ -154,7 +151,7 @@ private fun RequireSignInPromptSuggestThumbElement(
 @Composable
 fun ExploreArticlesSection(
     articlesContentState: UiState<List<ArticleDisplayInfo>>,
-    onNavigateToArticlesDetailScreen: (id: String, position: Int, listArticles: List<String>) -> Unit,
+    onNavigateToArticlesDetailScreen: (id: String, position: Int, listArticles: List<Pair<String, String>>) -> Unit,
     modifier: Modifier
 ) {
 
@@ -182,7 +179,7 @@ fun ExploreArticlesSection(
 @Composable
 fun ArticlesPager(
     articles: List<ArticleDisplayInfo>,
-    onClickReadMore: (id: String, position: Int, listArticles: List<String>) -> Unit,
+    onClickReadMore: (id: String, position: Int, listArticles: List<Pair<String, String>>) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -218,7 +215,7 @@ fun ArticlesPager(
                         onClickReadMore(
                             pageInfo.id,
                             articles.indexOfFirst { it.id == pageInfo.id },
-                            articles.map { it.id }
+                            articles.map { Pair(it.id, it.title) }
                         )
                     }
             ) {
@@ -285,7 +282,7 @@ fun ArticlesPager(
                             onClickReadMore(
                                 pageInfo.id,
                                 articles.indexOfFirst { it.id == pageInfo.id },
-                                articles.map { it.id }
+                                articles.map { Pair(it.id, it.title) }
                             )
                         }
                     ) {

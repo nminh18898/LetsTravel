@@ -25,6 +25,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.reflect.typeOf
 
+data class ArticleDetailBottomNavigationUiState(
+    val previous: String,
+    val next: String
+)
+
 @HiltViewModel
 class ArticleDetailScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -38,12 +43,17 @@ class ArticleDetailScreenViewModel @Inject constructor(
         mapOf(typeOf<DiscoveryArticleDetailScreenParameters>() to DiscoveryArticleDetailScreenParametersType)
     ).parameters
 
-    private val articleId: String = parameters.articleId
+    private var articleId: String = parameters.articleId
+
+    private var currentPosition = parameters.articlePosition
 
     var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute())
         private set
 
     var articlesContentState: UiState<ArticleDisplayInfo> by mutableStateOf(UiState.Loading)
+        private set
+
+    var articleBottomNavigationUiState by mutableStateOf(createBottomNavigationState(currentPosition))
         private set
 
     init {
@@ -85,5 +95,35 @@ class ArticleDetailScreenViewModel @Inject constructor(
         }
 
         return UiState.Success(article.toDisplayInfo(baseDateTimeFormatter))
+    }
+
+    private fun createBottomNavigationState(currentPosition: Int): ArticleDetailBottomNavigationUiState {
+        val previous = parameters.listArticles.getOrNull(currentPosition - 1)?.articleTitle ?: ""
+        val next = parameters.listArticles.getOrNull(currentPosition + 1)?.articleTitle ?: ""
+
+        return ArticleDetailBottomNavigationUiState(
+            previous = previous,
+            next = next
+        )
+    }
+
+    fun onClickNextItem() {
+        val nextIndex = currentPosition + 1
+        if(nextIndex in 0..< parameters.listArticles.size) {
+            currentPosition = nextIndex
+            articleId = parameters.listArticles.getOrNull(currentPosition)?.articleId ?: ""
+            articleBottomNavigationUiState = createBottomNavigationState(currentPosition)
+            loadDiscoveryArticle(articleId)
+        }
+    }
+
+    fun onClickPreviousItem() {
+        val previousIndex = currentPosition - 1
+        if(previousIndex in 0..< parameters.listArticles.size) {
+            currentPosition = previousIndex
+            articleId = parameters.listArticles.getOrNull(currentPosition)?.articleId ?: ""
+            articleBottomNavigationUiState = createBottomNavigationState(currentPosition)
+            loadDiscoveryArticle(articleId)
+        }
     }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.minhhnn18898.app_navigation.appbarstate.EmptyActionTopBar
 import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
+import com.minhhnn18898.app_navigation.destination.ArticleInfoParameters
 import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenDestination
 import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenParameters
 import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
@@ -152,10 +153,19 @@ fun NavHostController.navigateToEditTripActivityScreen(tripId: Long, activityId:
     this.navigate("${EditTripActivityInfoDestination.route}/$tripId/$activityId")
 }
 
-fun NavHostController.navigateToArticleDetailScreen(articleId: String, articlePosition: Int, listArticles: List<String>) {
+fun NavHostController.navigateToArticleDetailScreen(articleId: String, articlePosition: Int, listArticles: List<Pair<String, String>>) {
     this.navigate(
         route = DiscoveryArticleDetailScreenDestination(
-            DiscoveryArticleDetailScreenParameters(articleId, articlePosition, listArticles)
+            DiscoveryArticleDetailScreenParameters(
+                articleId = articleId,
+                articlePosition = articlePosition,
+                listArticles = listArticles.map {
+                    ArticleInfoParameters(
+                        articleId = it.first,
+                        articleTitle = it.second
+                    )
+                }
+            )
         )
     )
 }

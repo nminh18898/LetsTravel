@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -64,6 +65,9 @@ fun ArticleDetailScreen(
     if(viewModel.verifiedUserState) {
         ArticlesDetailView(
             articlesContentState = viewModel.articlesContentState,
+            articlesBottomControllerUiState = viewModel.articleBottomNavigationUiState,
+            onClickPrevious = viewModel::onClickPreviousItem,
+            onClickNext = viewModel::onClickNextItem,
             modifier = modifier
         )
     }
@@ -78,55 +82,69 @@ fun ArticleDetailScreen(
 @Composable
 fun ArticlesDetailView(
     articlesContentState: UiState<ArticleDisplayInfo>,
+    articlesBottomControllerUiState: ArticleDetailBottomNavigationUiState,
+    onClickPrevious: () -> Unit,
+    onClickNext: () -> Unit,
     modifier: Modifier
 ) {
-    if(articlesContentState is UiState.Success) {
-        val articleDisplayInfo = articlesContentState.data
+    when (articlesContentState) {
+        is UiState.Success -> {
+            val articleDisplayInfo = articlesContentState.data
 
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            ArticleHeaderThumbDisplay(
-                thumbUrl = articleDisplayInfo.thumbUrl,
-                title = articleDisplayInfo.title,
-                lastEdited = articleDisplayInfo.lastEdited
-            )
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                ArticleHeaderThumbDisplay(
+                    thumbUrl = articleDisplayInfo.thumbUrl,
+                    title = articleDisplayInfo.title,
+                    lastEdited = articleDisplayInfo.lastEdited
+                )
 
-            ArticleTagDisplay(tags = articleDisplayInfo.tag)
+                ArticleTagDisplay(tags = articleDisplayInfo.tag)
 
-            Text(
-                text = articleDisplayInfo.content,
-                style = typography.bodyMedium.copy(
-                    lineBreak = LineBreak.Paragraph
-                ),
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            if(articleDisplayInfo.originalSrc.isNotBlankOrEmpty()) {
                 Text(
-                    text = "(${stringResource(id = CommonStringRes.source)}: ${articleDisplayInfo.originalSrc})",
-                    style = typography.bodySmall.copy(
-                        lineBreak = LineBreak.Simple
+                    text = articleDisplayInfo.content,
+                    style = typography.bodyMedium.copy(
+                        lineBreak = LineBreak.Paragraph
                     ),
-                    fontStyle = FontStyle.Italic,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if(articleDisplayInfo.originalSrc.isNotBlankOrEmpty()) {
+                    Text(
+                        text = "(${stringResource(id = CommonStringRes.source)}: ${articleDisplayInfo.originalSrc})",
+                        style = typography.bodySmall.copy(
+                            lineBreak = LineBreak.Simple
+                        ),
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if(articleDisplayInfo.photoUrls.isNotEmpty()) {
+                    PhotoCarousel(urls = articleDisplayInfo.photoUrls)
+                }
+
+                NextAndPreviousControlBar(
+                    previous = articlesBottomControllerUiState.previous,
+                    next = articlesBottomControllerUiState.next,
+                    onClickPrevious = onClickPrevious,
+                    onClickNext = onClickNext
+                )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            if(articleDisplayInfo.photoUrls.isNotEmpty()) {
-                PhotoCarousel(urls = articleDisplayInfo.photoUrls)
-            }
-
-            NextAndPreviousControlBar()
         }
-    } else if(articlesContentState is UiState.Loading) {
-        ArticleDetailLoadingView()
-    } else if(articlesContentState is UiState.Error) {
-        DefaultErrorView(modifier = modifier)
+
+        is UiState.Loading -> {
+            ArticleDetailLoadingView()
+        }
+
+        is UiState.Error -> {
+            DefaultErrorView(modifier = modifier)
+        }
     }
 }
 
@@ -350,56 +368,123 @@ private fun ArticleContentSkeleton(alpha: Float) {
 }
 
 @Composable
-private fun NextAndPreviousControlBar() {
+private fun NextAndPreviousControlBar(
+    previous: String,
+    next: String,
+    onClickPrevious: () -> Unit,
+    onClickNext: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement  =  Arrangement.SpaceBetween) {
-        ControlButtonPrev()
-        ControlButtonNext()
+        verticalAlignment = Alignment.CenterVertically) {
+
+        if(previous.isNotBlankOrEmpty()) {
+            ControlButtonPrev(
+                title = previous,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        onClickPrevious()
+                    }
+            )
+        } else {
+            Box(modifier = Modifier.weight(1f))
+        }
+
+        Spacer(modifier = Modifier.width(24.dp))
+        
+        if(next.isNotBlankOrEmpty()) {
+            ControlButtonNext(
+                title = next,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        onClickNext()
+                    }
+            )
+        } else {
+            Box(modifier = Modifier.weight(1f))
+        }
     }
 }
 
 @Composable
-private fun ControlButtonPrev() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+private fun ControlButtonPrev(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
         Icon(
             painter = painterResource(id = com.minhhnn18898.discover.R.drawable.line_start_arrow_notch_24),
             contentDescription = "",
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.secondary
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = "Prev",
-            style = typography.labelMedium,
-            color = MaterialTheme.colorScheme.secondary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+        TwoLinesText(
+            text = title,
+            contentAlignment = Alignment.CenterStart,
+            textAlign = TextAlign.Start
         )
     }
 }
 
 @Composable
-private fun ControlButtonNext() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = "Next",
-            style = typography.labelMedium,
-            color = MaterialTheme.colorScheme.secondary,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+private fun ControlButtonNext(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
+        TwoLinesText(
+            text = title,
+            contentAlignment = Alignment.CenterEnd,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f),
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(8.dp))
 
         Icon(
             painter = painterResource(id = com.minhhnn18898.discover.R.drawable.line_end_arrow_notch_24),
             contentDescription = "",
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+fun TwoLinesText(
+    text: String,
+    contentAlignment: Alignment,
+    textAlign: TextAlign,
+    modifier: Modifier = Modifier
+) {
+
+    Box(
+        contentAlignment = contentAlignment, 
+        modifier = modifier
+    ) {
+        // Empty text for vertical alignment purposes.
+        Text(text = "\n")
+
+        Text(
+            text = text,
+            overflow = Ellipsis,
+            maxLines = 2,
+            style = typography.labelMedium.copy(
+                lineBreak = LineBreak.Heading
+            ),
+            color = MaterialTheme.colorScheme.secondary,
+            textAlign = textAlign
         )
     }
 }
