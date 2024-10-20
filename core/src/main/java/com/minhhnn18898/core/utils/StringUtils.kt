@@ -7,7 +7,13 @@ import java.util.regex.Pattern
 object StringUtils {
 
     fun getString(context: Context, @StringRes id: Int): String {
-        return context.getString(id)
+        runCatching {
+            return context.getString(id)
+        }.onFailure {
+            return ""
+        }
+
+        return ""
     }
 
     fun getRequiredFieldIndicator(): String = "(*)"

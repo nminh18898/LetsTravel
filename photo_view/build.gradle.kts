@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -59,6 +60,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.coil.compose)
+
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(project(":ui_components"))
     implementation(project(":app_navigation"))

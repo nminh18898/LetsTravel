@@ -93,6 +93,7 @@ dependencies {
     implementation(project(":discover"))
     implementation(project(":firebase"))
     implementation(project(":manage_trip"))
+    implementation(project(":photo_view"))
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.core.testing)

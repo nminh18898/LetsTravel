@@ -14,10 +14,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.minhhnn18898.app_navigation.destination.HomeScreenDestination
+import com.minhhnn18898.app_navigation.destination.PhotoViewFullDestination
 import com.minhhnn18898.core.R
 import com.minhhnn18898.ui_components.theme.typography
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +37,8 @@ fun MainAppBar(
     drawerState: DrawerState,
     modifier: Modifier = Modifier
 ) {
+    val isViewFullPhotoScreen = backStackEntry?.isViewFullPhotoScreen() ?: false
+
     TopAppBar(
         title = {
             Text(
@@ -64,16 +68,22 @@ fun MainAppBar(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back),
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = if(isViewFullPhotoScreen) Color.LightGray else MaterialTheme.colorScheme.primary
                     )
                 }
             }
         },
         actions = actions,
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = if(isViewFullPhotoScreen) Color.Black.copy(0.9f) else MaterialTheme.colorScheme.primaryContainer
+        )
     )
 }
 
 private fun NavBackStackEntry.isHomeScreen(): Boolean {
     return this.destination.hasRoute<HomeScreenDestination>()
+}
+
+private fun NavBackStackEntry.isViewFullPhotoScreen(): Boolean {
+    return this.destination.hasRoute<PhotoViewFullDestination>()
 }

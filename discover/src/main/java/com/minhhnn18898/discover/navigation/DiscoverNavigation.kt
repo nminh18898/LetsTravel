@@ -12,10 +12,11 @@ import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenP
 import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenParametersType
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.discover.presentation.article_detail.ArticleDetailScreen
+import com.minhhnn18898.photo_view.navigation.navigateToPhotoViewFullScreen
 import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.discoverFeatureComposable(
-    @Suppress("UNUSED_PARAMETER") navigationController: NavHostController,
+    navigationController: NavHostController,
     appBarOnScreenDisplay: (TopAppBarState) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -23,7 +24,12 @@ fun NavGraphBuilder.discoverFeatureComposable(
     composable<DiscoveryArticleDetailScreenDestination>(
         typeMap = mapOf(typeOf<DiscoveryArticleDetailScreenParameters>() to DiscoveryArticleDetailScreenParametersType)
     ) {
-        ArticleDetailScreen(modifier = modifier)
+        ArticleDetailScreen(
+            modifier = modifier,
+            onClickPhoto = {
+                navigationController.navigateToPhotoViewFullScreen(it)
+            }
+        )
         EmptyActionTopBar(StringUtils.getString(LocalContext.current, DiscoveryArticleDetailScreenDestination.title), appBarOnScreenDisplay)
     }
 }

@@ -19,6 +19,7 @@ import com.minhhnn18898.manage_trip.navigation.manageTripFeatureComposable
 import com.minhhnn18898.manage_trip.navigation.navigateToArticleDetailScreen
 import com.minhhnn18898.manage_trip.navigation.navigateToEditTripScreen
 import com.minhhnn18898.manage_trip.navigation.navigateToTripDetailScreen
+import com.minhhnn18898.photo_view.navigation.photoViewFullFeatureComposable
 
 @Composable
 fun AppNavHost(
@@ -68,6 +69,11 @@ fun AppNavHost(
 
         discoverFeatureComposable(
             modifier = modifier,
+            navigationController = navController,
+            appBarOnScreenDisplay = appBarOnScreenDisplay
+        )
+
+        photoViewFullFeatureComposable(
             navigationController = navController,
             appBarOnScreenDisplay = appBarOnScreenDisplay
         )

@@ -58,6 +58,7 @@ import com.minhhnn18898.core.R.string as CommonStringRes
 
 @Composable
 fun ArticleDetailScreen(
+    onClickPhoto: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ArticleDetailScreenViewModel = hiltViewModel()
 ) {
@@ -68,6 +69,7 @@ fun ArticleDetailScreen(
             articlesBottomControllerUiState = viewModel.articleBottomNavigationUiState,
             onClickPrevious = viewModel::onClickPreviousItem,
             onClickNext = viewModel::onClickNextItem,
+            onClickPhoto = onClickPhoto,
             modifier = modifier
         )
     }
@@ -85,6 +87,7 @@ fun ArticlesDetailView(
     articlesBottomControllerUiState: ArticleDetailBottomNavigationUiState,
     onClickPrevious: () -> Unit,
     onClickNext: () -> Unit,
+    onClickPhoto: (String) -> Unit,
     modifier: Modifier
 ) {
     when (articlesContentState) {
@@ -126,7 +129,10 @@ fun ArticlesDetailView(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if(articleDisplayInfo.photoUrls.isNotEmpty()) {
-                    PhotoCarousel(urls = articleDisplayInfo.photoUrls)
+                    PhotoCarousel(
+                        urls = articleDisplayInfo.photoUrls,
+                        onClickPhoto = onClickPhoto
+                    )
                 }
 
                 NextAndPreviousControlBar(
@@ -263,7 +269,10 @@ private fun TagDisplay(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PhotoCarousel(urls: List<String>) {
+private fun PhotoCarousel(
+    urls: List<String>,
+    onClickPhoto: (String) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -294,7 +303,10 @@ private fun PhotoCarousel(urls: List<String>) {
                 modifier = Modifier
                     .height(350.dp)
                     .fillMaxWidth()
-                    .maskClip(shape = MaterialTheme.shapes.large),
+                    .maskClip(shape = MaterialTheme.shapes.large)
+                    .clickable {
+                        onClickPhoto(value)
+                    },
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(id = R.drawable.image_placeholder),
                 error = painterResource(id = R.drawable.empty_image_bg)
