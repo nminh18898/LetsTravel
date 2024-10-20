@@ -75,7 +75,7 @@ fun MainAppBar(
         },
         actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = if(isViewFullPhotoScreen) Color.Black.copy(0.9f) else MaterialTheme.colorScheme.primaryContainer
+            containerColor = if(isViewFullPhotoScreen) Color.Black.copy(0.9f) else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
         )
     )
 }
