@@ -4,11 +4,10 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
-    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "com.minhhnn18898.discover"
+    namespace = "com.minhhnn18898.photo_view"
     compileSdk = 34
 
     defaultConfig {
@@ -25,11 +24,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true
@@ -55,11 +54,6 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation (libs.firebase.firestore.ktx)
-    implementation(libs.firebase.storage.ktx)
-
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -70,30 +64,9 @@ dependencies {
     implementation(project(":app_navigation"))
     implementation(project(":core"))
     implementation(project(":architecture"))
-    implementation(project(":firebase"))
-    implementation(project(":account"))
-    implementation(project(":photo_view"))
 
     testImplementation(libs.junit)
-    testImplementation(libs.androidx.core.testing)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.google.truth)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.kotlin.mockito.kotlin)
-    testImplementation(libs.mockito.core)
-    testImplementation(project(":test_utils"))
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.core.testing)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.google.truth)
-    androidTestImplementation(libs.mockito.core)
-    androidTestImplementation(libs.kotlin.mockito.kotlin)
-    androidTestImplementation(libs.mockito.android)
-    androidTestImplementation(project(":test_utils"))
-}
-
-kapt {
-    correctErrorTypes = true
 }
