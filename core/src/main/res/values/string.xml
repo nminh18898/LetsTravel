@@ -70,4 +70,8 @@
     <string name="day">Day</string>
     <string name="other">Other</string>
     <string name="source">Source</string>
+    <string name="bill_split">Bill split</string>
+    <string name="plan">Plan</string>
+    <string name="memories">Memories</string>
+    <string name="expenses">Expenses</string>
 </resources>

@@ -3,9 +3,6 @@ package com.minhhnn18898.app_navigation.destination
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
-import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.activityIdArg
-import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.flightIdArg
-import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.hotelIdArg
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute.Companion.tripIdArg
 import kotlinx.serialization.Serializable
 import com.minhhnn18898.core.R.string as CommonStringRes
@@ -25,70 +22,11 @@ object EditTripInfoDestination: AppScreenDestination {
     )
 
     override fun getAllRoutes(): List<String> {
-        return mutableListOf(TripDetailDestination.route, routeWithArgs)
+        return mutableListOf(route, routeWithArgs)
     }
 }
 
 object SavedTripsListingFullDestination: AppScreenDestination {
     override val title: Int = CommonStringRes.saved_trips
     override val route: String = MainAppRoute.SAVED_TRIPS_LISTING_SCREEN_ROUTE
-}
-
-object TripDetailDestination: AppScreenDestination {
-    override val title: Int = CommonStringRes.trip_detail
-    override val route: String = MainAppRoute.TRIP_DETAIL_SCREEN_ROUTE
-
-    val routeWithArgs = "$route/{$tripIdArg}"
-    val arguments = listOf(
-        navArgument(tripIdArg) { type = NavType.LongType }
-    )
-
-    override fun getAllRoutes(): List<String> {
-        return mutableListOf(route, routeWithArgs)
-    }
-}
-
-object EditFlightInfoDestination: AppScreenDestination {
-    override val title: Int get() = CommonStringRes.flight_info
-    override val route: String = MainAppRoute.EDIT_FLIGHT_INFO_SCREEN_ROUTE
-
-    val routeWithArgs = "$route/{$tripIdArg}/{$flightIdArg}"
-    val arguments = listOf(
-        navArgument(tripIdArg) { type = NavType.LongType },
-        navArgument(flightIdArg) { type = NavType.LongType }
-    )
-
-    override fun getAllRoutes(): List<String> {
-        return mutableListOf(route, routeWithArgs)
-    }
-}
-
-object EditHotelInfoDestination: AppScreenDestination {
-    override val title: Int get() = CommonStringRes.hotel_info
-    override val route: String = MainAppRoute.EDIT_HOTEL_INFO_SCREEN_ROUTE
-
-    val routeWithArgs = "$route/{$tripIdArg}/{$hotelIdArg}"
-    val arguments = listOf(
-        navArgument(tripIdArg) { type = NavType.LongType },
-        navArgument(hotelIdArg) { type = NavType.LongType }
-    )
-
-    override fun getAllRoutes(): List<String> {
-        return mutableListOf(route, routeWithArgs)
-    }
-}
-
-object EditTripActivityInfoDestination: AppScreenDestination {
-    override val title: Int get() = CommonStringRes.activity_info
-    override val route: String = MainAppRoute.EDIT_TRIP_ACTIVITY_INFO_SCREEN_ROUTE
-
-    val routeWithArgs = "$route/{$tripIdArg}/{$activityIdArg}"
-    val arguments = listOf(
-        navArgument(tripIdArg) { type = NavType.LongType },
-        navArgument(activityIdArg) { type = NavType.LongType }
-    )
-
-    override fun getAllRoutes(): List<String> {
-        return mutableListOf(route, routeWithArgs)
-    }
 }

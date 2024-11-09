@@ -16,6 +16,8 @@ import com.minhhnn18898.app_navigation.destination.EditTripActivityInfoDestinati
 import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
+import com.minhhnn18898.app_navigation.destination.TripDetailDestinationParameters
+import com.minhhnn18898.app_navigation.mapper.CustomNavType
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.trip_detail.presentation.activity.AddEditTripActivityScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoScreen
@@ -23,6 +25,7 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.AddEditHotelI
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo.EditTripScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.triplisting.TripInfoListingScreen
+import kotlin.reflect.typeOf
 
 @Suppress("UNUSED_PARAMETER")
 fun NavGraphBuilder.manageTripFeatureComposable(
@@ -62,9 +65,8 @@ fun NavGraphBuilder.manageTripFeatureComposable(
         EmptyActionTopBar(StringUtils.getString(LocalContext.current, SavedTripsListingFullDestination.title), appBarOnScreenDisplay)
     }
 
-    composable(
-        route = TripDetailDestination.routeWithArgs,
-        arguments = TripDetailDestination.arguments
+    composable<TripDetailDestination>(
+        typeMap = mapOf(typeOf<TripDetailDestinationParameters>() to CustomNavType(TripDetailDestinationParameters::class.java, TripDetailDestinationParameters.serializer()))
     ) {
         TripDetailScreen(
             onComposedTopBarActions = {
@@ -138,7 +140,11 @@ fun NavHostController.navigateToEditTripScreen(tripId: Long) {
 }
 
 fun NavHostController.navigateToTripDetailScreen(tripId: Long) {
-    this.navigate("${TripDetailDestination.route}/$tripId")
+    this.navigate(
+        route = TripDetailDestination(
+            TripDetailDestinationParameters(tripId)
+        )
+    )
 }
 
 fun NavHostController.navigateToEditFlightScreen(tripId: Long, flightId: Long) {

@@ -6,7 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
+import androidx.navigation.toRoute
+import com.minhhnn18898.app_navigation.destination.TripDetailDestination
+import com.minhhnn18898.app_navigation.destination.TripDetailDestinationParameters
+import com.minhhnn18898.app_navigation.mapper.CustomNavType
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.formatWithCommas
@@ -28,6 +31,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 data class TripDetailScreenTripInfoUiState(
     val tripDisplay: UserTripDisplay? = null,
@@ -47,7 +51,11 @@ class TripDetailScreenViewModel @Inject constructor(
     private val dateTimeFormatter: TripDetailDateTimeFormatter
 ): ViewModel() {
 
-    val tripId = savedStateHandle.get<Long>(MainAppRoute.tripIdArg) ?: -1
+    private val parameters = savedStateHandle.toRoute<TripDetailDestination>(
+        typeMap = mapOf(typeOf<TripDetailDestinationParameters>() to CustomNavType(TripDetailDestinationParameters::class.java, TripDetailDestinationParameters.serializer()))
+    ).parameters
+
+    val tripId = parameters.tripId
 
     val flightInfoContentState: StateFlow<UiState<List<FlightDisplayInfo>>> =
         getListFlightInfoUseCase.execute(GetListFlightInfoUseCase.Param(tripId))
