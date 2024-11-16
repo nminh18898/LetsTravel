@@ -1,6 +1,5 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.trip
 
-import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.RepeatMode
@@ -15,13 +14,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -54,19 +51,12 @@ import com.minhhnn18898.app_navigation.destination.ExpenseTabDestination
 import com.minhhnn18898.app_navigation.destination.MemoryTabDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailPlanTabDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailTabDestination
+import com.minhhnn18898.app_navigation.destination.isPlanTab
 import com.minhhnn18898.core.utils.StringUtils
-import com.minhhnn18898.core.utils.formatWithCommas
-import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.navigation.TripDetailTabRow
-import com.minhhnn18898.manage_trip.trip_detail.presentation.activity.renderTripActivitySection
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.FlightDetailBody
-import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.HotelDetailBody
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay
-import com.minhhnn18898.ui_components.base_components.PieChartData
-import com.minhhnn18898.ui_components.base_components.PieChartItem
-import com.minhhnn18898.ui_components.base_components.PieChartWithLabel
 import com.minhhnn18898.ui_components.base_components.SectionCtaData
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
@@ -84,9 +74,9 @@ fun TripDetailScreen(
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
 
-    val flightContentState by viewModel.flightInfoContentState.collectAsStateWithLifecycle()
-    val hotelContentState by viewModel.hotelInfoContentState.collectAsStateWithLifecycle()
-    val activityContentState by viewModel.activityInfoContentState.collectAsStateWithLifecycle()
+    val flightContentState by viewModel.planTabUIController.flightInfoContentState.collectAsStateWithLifecycle()
+    val hotelContentState by viewModel.planTabUIController.hotelInfoContentState.collectAsStateWithLifecycle()
+    val activityContentState by viewModel.planTabUIController.activityInfoContentState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -113,6 +103,8 @@ fun TripDetailScreen(
 
     val tripInfoContentState by viewModel.tripInfoContentState.collectAsStateWithLifecycle()
 
+    var currentTab: TripDetailTabDestination by remember { mutableStateOf(TripDetailPlanTabDestination) }
+
     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
             TripDetailHeader(
@@ -124,8 +116,6 @@ fun TripDetailScreen(
 
 
         item {
-            var currentTab: TripDetailTabDestination by remember { mutableStateOf(TripDetailPlanTabDestination) }
-
             TripDetailTabRow(
                 allScreens = mutableListOf(TripDetailPlanTabDestination, ExpenseTabDestination, MemoryTabDestination),
                 onTabSelected = {
@@ -135,83 +125,22 @@ fun TripDetailScreen(
             )
         }
 
-        item {
-            EstimatedBudgetSection(
-                modifier = modifier,
-                budgetDisplay = viewModel.budgetDisplay
+        if(currentTab.isPlanTab()) {
+            renderPlanTabUI(
+                flightContentState = flightContentState,
+                hotelContentState = hotelContentState,
+                activityContentState = activityContentState,
+                budgetDisplay = viewModel.planTabUIController.budgetDisplay,
+                tripId = viewModel.tripId,
+                onNavigateToEditFlightInfoScreen = onNavigateToEditFlightInfoScreen,
+                onNavigateEditHotelScreen = onNavigateEditHotelScreen,
+                onNavigateEditTripActivityScreen = onNavigateEditTripActivityScreen
             )
         }
-
-        item {
-            DetailSection(
-                icon = R.drawable.flight_takeoff_24,
-                title = CommonStringRes.flights,
-                modifier = modifier
-            ) {
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                FlightDetailBody(
-                    flightContentState,
-                    modifier = modifier,
-                    onClickCreateNewFlight = {
-                        onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, 0L)
-                    },
-                    onClickFlightInfoItem = { flightId ->
-                        onNavigateToEditFlightInfoScreen.invoke(viewModel.tripId, flightId)
-                    }
-                )
-            }
-        }
-
-        item {
-            DetailSection(
-                icon = R.drawable.hotel_24,
-                title = CommonStringRes.hotels,
-                modifier = modifier
-            ) {
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                HotelDetailBody(
-                    hotelInfoContentState = hotelContentState,
-                    modifier = modifier,
-                    onClickCreateHotelInfo = {
-                        onNavigateEditHotelScreen.invoke(viewModel.tripId, 0L)
-                    },
-                    onClickHotelInfoItem = { hotelId ->
-                        onNavigateEditHotelScreen.invoke(viewModel.tripId, hotelId)
-                    }
-                )
-            }
-        }
-
-        item {
-            DetailSection(
-                icon = R.drawable.nature_people_24,
-                title = CommonStringRes.activities,
-                sectionCtaData = SectionCtaData(
-                    icon = CommonDrawableRes.add_24,
-                    title = com.minhhnn18898.core.R.string.add,
-                    onClick = {
-                        onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
-                    }
-                ),
-                modifier = modifier)
-        }
-
-        renderTripActivitySection(
-            activityInfoContentState = activityContentState,
-            onClickCreateTripActivity = {
-                onNavigateEditTripActivityScreen.invoke(viewModel.tripId, 0L)
-            },
-            onClickActivityItem = { activityId ->
-                onNavigateEditTripActivityScreen.invoke(viewModel.tripId, activityId)
-            },
-            modifier = modifier
-        )
     }
 }
+
+
 
 @Composable
 private fun TripDetailHeader(
@@ -229,54 +158,6 @@ private fun TripDetailHeader(
         if(uiState.isNotFound) {
             navigateUp()
         }
-    }
-}
-
-@Composable
-private fun EstimatedBudgetSection(
-    modifier: Modifier = Modifier,
-    budgetDisplay: BudgetDisplay) {
-
-    if(budgetDisplay.total > 0) {
-        Column {
-            Row(
-                modifier = modifier.padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.price_change_24),
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = stringResource(CommonStringRes.estimated_budget),
-                    style = typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    maxLines = 1
-                )
-            }
-        }
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        Box(
-            modifier = modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            val pieChartItems = getPieChartItems(context = LocalContext.current, budgetDisplay)
-            PieChartWithLabel(
-                chartSize = 132.dp,
-                data = PieChartData(
-                    items = pieChartItems,
-                    title = budgetDisplay.total.formatWithCommas()
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
@@ -361,7 +242,7 @@ private fun TripDetailHeaderContent(
 }
 
 @Composable
-private fun DetailSection(
+fun DetailSection(
     @DrawableRes icon: Int,
     @StringRes title: Int,
     modifier: Modifier = Modifier,
@@ -373,7 +254,7 @@ private fun DetailSection(
 }
 
 @Composable
-private fun DetailSection(
+fun DetailSection(
     @DrawableRes icon: Int,
     @StringRes title: Int,
     modifier: Modifier = Modifier,
@@ -435,48 +316,4 @@ private fun DetailSection(
 
         content()
     }
-}
-
-private fun getBudgetLabel(context: Context, type: BudgetType): String {
-    return when(type) {
-        BudgetType.FLIGHT -> StringUtils.getString(context, id = CommonStringRes.flight)
-        BudgetType.HOTEL -> StringUtils.getString(context, id = CommonStringRes.hotel)
-        BudgetType.ACTIVITY -> StringUtils.getString(context, id = CommonStringRes.activity)
-    }
-}
-
-private val pieChartColor = mutableListOf(
-    Color(0xFF4CB140),
-    Color(0xFF5752D1),
-    Color(0xFFF4C145),
-    Color(0xFFEF9234),
-    Color(0xFF519DE9),
-    Color(0xFFC9190B)
-)
-
-fun getPieChartColor(index: Int): Color {
-    if(index in 0 until pieChartColor.size) {
-        return pieChartColor[index]
-    }
-
-    return Color(0xFFFFA600)
-}
-
-fun getPieChartItems(context: Context, budgetDisplay: BudgetDisplay): List<PieChartItem> {
-    val pieChartItems = mutableListOf<PieChartItem>()
-
-    for(i in budgetDisplay.portions.indices) {
-        val portion = budgetDisplay.portions[i]
-        val percent = (portion.price.toFloat() / budgetDisplay.total * 100)
-        pieChartItems.add(
-            PieChartItem(
-                color = getPieChartColor(i),
-                value = portion.price.toFloat(),
-                percent = percent,
-                label = getBudgetLabel(context, portion.type)
-            )
-        )
-    }
-
-    return pieChartItems
 }

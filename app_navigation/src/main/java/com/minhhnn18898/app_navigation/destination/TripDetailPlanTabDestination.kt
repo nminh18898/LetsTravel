@@ -94,3 +94,7 @@ object MemoryTabDestination: TripDetailTabDestination {
     override val icon: Int
         get() = com.minhhnn18898.ui_components.R.drawable.photo_prints_24
 }
+
+fun TripDetailTabDestination.isPlanTab(): Boolean {
+    return this == TripDetailPlanTabDestination
+}
