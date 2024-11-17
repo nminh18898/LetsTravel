@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.minhhnn18898.manage_trip.trip_detail.presentation.flight
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.AirportDisplayInfo
-import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.FlightDisplayInfo
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.AirportDisplayInfo
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.FlightDisplayInfo
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView

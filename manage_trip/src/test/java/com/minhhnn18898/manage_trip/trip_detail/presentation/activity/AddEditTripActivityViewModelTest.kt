@@ -9,6 +9,8 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.activity.CreateTripActivi
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.DeleteTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.UpdateTripActivityInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.AddEditTripActivityUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.AddEditTripActivityViewModel
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers

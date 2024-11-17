@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.flight
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight
 
 import android.content.Context
 import androidx.annotation.DrawableRes
@@ -48,7 +48,7 @@ import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoViewModel.ItineraryType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoViewModel.ItineraryType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatterImpl
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow

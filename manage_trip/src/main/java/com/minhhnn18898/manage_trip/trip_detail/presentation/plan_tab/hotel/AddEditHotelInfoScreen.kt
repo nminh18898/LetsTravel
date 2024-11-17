@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.hotel
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel
 
 import android.content.Context
 import androidx.annotation.StringRes
@@ -27,7 +27,7 @@ import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
 import com.minhhnn18898.app_navigation.destination.EditHotelInfoDestination
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.DatePickerWithDialog
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.DatePickerWithDialog
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputPriceRow

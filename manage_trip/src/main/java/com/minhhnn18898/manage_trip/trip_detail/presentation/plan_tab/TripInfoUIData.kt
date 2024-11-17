@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.trip
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab
 
 import androidx.annotation.DrawableRes
 

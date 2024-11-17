@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.trip
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +13,7 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ITripActivityDateSeparatorResourceProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow

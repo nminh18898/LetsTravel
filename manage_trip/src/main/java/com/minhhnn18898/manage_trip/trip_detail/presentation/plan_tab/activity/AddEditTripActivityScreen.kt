@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.activity
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity
 
 import android.content.Context
 import android.content.Intent
@@ -46,8 +46,8 @@ import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
 import com.minhhnn18898.app_navigation.destination.EditTripActivityInfoDestination
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.DatePickerWithDialog
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.TimePickerWithDialog
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.DatePickerWithDialog
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.TimePickerWithDialog
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.InputTextRow

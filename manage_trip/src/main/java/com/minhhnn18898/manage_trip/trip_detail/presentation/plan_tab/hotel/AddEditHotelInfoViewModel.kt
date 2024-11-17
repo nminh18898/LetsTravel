@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.hotel
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

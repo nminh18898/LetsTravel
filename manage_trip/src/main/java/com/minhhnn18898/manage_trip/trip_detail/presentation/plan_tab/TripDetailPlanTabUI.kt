@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.trip
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
@@ -25,9 +25,10 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.activity.renderTripActivitySection
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.FlightDetailBody
-import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.HotelDetailBody
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.renderTripActivitySection
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.FlightDetailBody
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.HotelDetailBody
+import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.DetailSection
 import com.minhhnn18898.ui_components.base_components.PieChartData
 import com.minhhnn18898.ui_components.base_components.PieChartItem
 import com.minhhnn18898.ui_components.base_components.PieChartWithLabel
@@ -125,7 +126,8 @@ fun LazyListScope.renderPlanTabUI(
 @Composable
 private fun EstimatedBudgetSection(
     modifier: Modifier = Modifier,
-    budgetDisplay: BudgetDisplay) {
+    budgetDisplay: BudgetDisplay
+) {
 
     if(budgetDisplay.total > 0) {
         Column {

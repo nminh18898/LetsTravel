@@ -55,6 +55,8 @@ import com.minhhnn18898.app_navigation.destination.isExpenseTab
 import com.minhhnn18898.app_navigation.destination.isPlanTab
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.navigation.TripDetailTabRow
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.renderPlanTabUI
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.renderExpenseTabUI
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay

@@ -13,7 +13,9 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.flight.CreateNewFlightInf
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.UpdateFlightInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoViewModel.ItineraryType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoViewModel
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoViewModel.ItineraryType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertFlightAndAirportEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule

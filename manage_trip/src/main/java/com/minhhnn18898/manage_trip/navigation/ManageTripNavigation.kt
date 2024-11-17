@@ -19,9 +19,9 @@ import com.minhhnn18898.app_navigation.destination.TripDetailDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestinationParameters
 import com.minhhnn18898.app_navigation.mapper.CustomNavType
 import com.minhhnn18898.core.utils.StringUtils
-import com.minhhnn18898.manage_trip.trip_detail.presentation.activity.AddEditTripActivityScreen
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoScreen
-import com.minhhnn18898.manage_trip.trip_detail.presentation.hotel.AddEditHotelInfoScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.AddEditTripActivityScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddEditHotelInfoScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo.EditTripScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.triplisting.TripInfoListingScreen

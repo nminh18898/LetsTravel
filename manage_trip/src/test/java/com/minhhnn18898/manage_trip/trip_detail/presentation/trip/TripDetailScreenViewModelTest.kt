@@ -17,6 +17,13 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoU
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.test_helper.FakeTripInfoRepository
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.AirportDisplayInfo
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.BudgetPortion
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.BudgetType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.FlightDisplayInfo
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.HotelDisplayInfo
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.TripActivityDateGroupHeader
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.TripActivityDisplayInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase

@@ -9,6 +9,9 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.CreateNewHotelInfoU
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.DeleteHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.UpdateHotelInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddEditHotelInfoViewModel
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddEditHotelUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.HotelUiState
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

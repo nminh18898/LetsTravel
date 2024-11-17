@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.flight
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -13,7 +13,7 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.flight.CreateNewFlightInf
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.UpdateFlightInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.presentation.flight.AddEditFlightInfoViewModel.ItineraryType
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoViewModel.ItineraryType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

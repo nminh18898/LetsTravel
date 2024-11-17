@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.trip
+package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

@@ -11,6 +11,7 @@ import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.TripDetailPlanTabController
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ITripActivityDateSeparatorResourceProvider
