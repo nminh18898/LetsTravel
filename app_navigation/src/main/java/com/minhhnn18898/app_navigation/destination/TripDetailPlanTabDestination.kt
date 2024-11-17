@@ -98,3 +98,7 @@ object MemoryTabDestination: TripDetailTabDestination {
 fun TripDetailTabDestination.isPlanTab(): Boolean {
     return this == TripDetailPlanTabDestination
 }
+
+fun TripDetailTabDestination.isExpenseTab(): Boolean {
+    return this == ExpenseTabDestination
+}

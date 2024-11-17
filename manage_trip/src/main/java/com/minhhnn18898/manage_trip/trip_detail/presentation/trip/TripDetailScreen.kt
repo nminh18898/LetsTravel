@@ -51,6 +51,7 @@ import com.minhhnn18898.app_navigation.destination.ExpenseTabDestination
 import com.minhhnn18898.app_navigation.destination.MemoryTabDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailPlanTabDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailTabDestination
+import com.minhhnn18898.app_navigation.destination.isExpenseTab
 import com.minhhnn18898.app_navigation.destination.isPlanTab
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.navigation.TripDetailTabRow
@@ -136,6 +137,8 @@ fun TripDetailScreen(
                 onNavigateEditHotelScreen = onNavigateEditHotelScreen,
                 onNavigateEditTripActivityScreen = onNavigateEditTripActivityScreen
             )
+        } else if(currentTab.isExpenseTab()) {
+            renderExpenseTabUI()
         }
     }
 }
