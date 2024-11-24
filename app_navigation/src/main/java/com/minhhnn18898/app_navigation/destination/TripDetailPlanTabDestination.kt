@@ -76,7 +76,7 @@ object TripDetailPlanTabDestination: TripDetailTabDestination {
         get() = R.string.plan
 
     override val icon: Int
-        get() = com.minhhnn18898.ui_components.R.drawable.holiday_village_24
+        get() = com.minhhnn18898.ui_components.R.drawable.book_5_24
 }
 
 object ExpenseTabDestination: TripDetailTabDestination {
@@ -102,3 +102,12 @@ fun TripDetailTabDestination.isPlanTab(): Boolean {
 fun TripDetailTabDestination.isExpenseTab(): Boolean {
     return this == ExpenseTabDestination
 }
+
+@Serializable
+data class BillSplitManageMemberDestination(val parameters: BillSplitManageMemberDestinationParameters)
+
+@Serializable
+@Parcelize
+data class BillSplitManageMemberDestinationParameters(
+    val tripId: Long
+): Parcelable

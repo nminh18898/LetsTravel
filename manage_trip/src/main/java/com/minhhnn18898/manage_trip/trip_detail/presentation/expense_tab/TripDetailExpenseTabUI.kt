@@ -2,6 +2,7 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,11 +35,12 @@ import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.ui_components.theme.typography
 
 fun LazyListScope.renderExpenseTabUI(
+    onNavigateManageMemberScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     item {
-        MemberList()
+        MemberList(onClickMemberList = onNavigateManageMemberScreen)
     }
 
     item {
@@ -83,7 +85,7 @@ private fun BillHeader(modifier: Modifier = Modifier) {
     ) {
         Row(
             modifier = Modifier
-                .weight(3f)
+                .weight(1f)
                 .padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -100,8 +102,8 @@ private fun BillHeader(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "Dinner at boat restaurant",
-                style = typography.titleMedium,
+                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do",
+                style = typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2
@@ -109,7 +111,6 @@ private fun BillHeader(modifier: Modifier = Modifier) {
         }
 
         Column(
-            modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.End
         ) {
             Text(
@@ -141,11 +142,11 @@ private fun BillDescription(modifier: Modifier = Modifier) {
     ) {
 
         Column(modifier = Modifier
-            .weight(2f)
+            .weight(1f)
             .padding(end = 8.dp)
         ) {
             Text(
-                text = "Short description",
+                text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
                 style = typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary,
                 overflow = TextOverflow.Ellipsis,
@@ -164,7 +165,6 @@ private fun BillDescription(modifier: Modifier = Modifier) {
 
         Row(
             modifier = Modifier
-                .weight(1f)
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.End
         ) {
@@ -176,7 +176,10 @@ private fun BillDescription(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MemberList(modifier: Modifier = Modifier) {
+private fun MemberList(
+    onClickMemberList: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     val stroke = Stroke(
         width = 3f,
@@ -194,6 +197,8 @@ private fun MemberList(modifier: Modifier = Modifier) {
                     style = stroke,
                     cornerRadius = CornerRadius(100.dp.toPx())
                 )
+            }.clickable {
+                onClickMemberList()
             },
         contentAlignment = Alignment.Center
     ) {
@@ -223,7 +228,7 @@ private fun MemberItem(
     )
 }
 
-private val memberAvatarList = listOf(
+val memberAvatarList = listOf(
     R.drawable.avatar_skunk,
     R.drawable.avatar_porcupine,
     R.drawable.avatar_deer,
