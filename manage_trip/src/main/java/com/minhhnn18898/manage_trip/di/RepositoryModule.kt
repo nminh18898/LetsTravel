@@ -6,6 +6,9 @@ import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.MemberInfoRepository
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.MemberInfoRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.TripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.TripDetailRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatterImpl
@@ -46,6 +49,18 @@ object RepositoryModule {
             hotelInfoDao = hotelInfoDao,
             activityInfoDao = activityInfoDao,
             dateTimeFormatter = TripDetailDateTimeFormatterImpl(BaseDateTimeFormatterImpl())
+        )
+    }
+
+    @Provides
+    fun provideMemberInfoRepository(
+        @IODispatcher
+        ioDispatcher: CoroutineDispatcher,
+        memberInfoDao: MemberInfoDao
+    ): MemberInfoRepository {
+        return MemberInfoRepositoryImpl(
+            ioDispatcher = ioDispatcher,
+            memberInfoDao = memberInfoDao
         )
     }
 }

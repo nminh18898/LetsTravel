@@ -28,4 +28,6 @@
     <string name="error_can_not_update_activity">Can not update activity. Please try again</string>
     <string name="error_can_not_delete_activity">Can not delete activity. Please try again</string>
     <string name="error_activity_schedule_is_invalid">Schedule is invalid</string>
+    <string name="add_member_to_your_trip">Add member to your trip</string>
+    <string name="add_new_member">Add new member</string>
 </resources>

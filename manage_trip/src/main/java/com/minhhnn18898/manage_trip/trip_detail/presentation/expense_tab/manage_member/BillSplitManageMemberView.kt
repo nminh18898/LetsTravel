@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -36,16 +38,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.manage_trip.R
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.memberAvatarList
+import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
+import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
+
 
 @Composable
 fun BillSplitManageMemberView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: BillSplitManageMemberViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val memberInfoUiState by viewModel.memberInfoContentState.collectAsStateWithLifecycle()
+
     Column(modifier = modifier.padding(horizontal = 20.dp)) {
-        AddNewMemberView()
+        AddNewMemberView(
+            onClickAddButton = viewModel::onAddNewMember,
+            memberName = uiState.newMemberName,
+            onMemberNameChanged = viewModel::onNewMemberNameUpdated,
+            allowAddMember = uiState.allowAddNewMember
+        )
 
         HorizontalDivider(
             modifier = Modifier.padding(vertical = 20.dp),
@@ -53,24 +71,27 @@ fun BillSplitManageMemberView(
             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f)
         )
 
-        ManageMemberItemView()
+        ManageMemberSection(memberInfoUiState)
     }
 }
 
 @Composable
-private fun AddNewMemberView(modifier: Modifier = Modifier) {
-    var memberNameText by remember { mutableStateOf("") }
+private fun AddNewMemberView(
+    onClickAddButton: () -> Unit,
+    memberName: String,
+    onMemberNameChanged: (String) -> Unit,
+    allowAddMember: Boolean,
+    modifier: Modifier = Modifier
+) {
 
     Row(modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         OutlinedTextField(
-            value = memberNameText,
-            onValueChange = {
-                memberNameText = it
-            },
-            label = { Text("Add new member") },
+            value = memberName,
+            onValueChange = onMemberNameChanged,
+            label = { Text(stringResource(id = R.string.add_new_member)) },
             modifier = Modifier.weight(1f),
             leadingIcon = {
                 Icon(
@@ -84,24 +105,74 @@ private fun AddNewMemberView(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.width(8.dp))
 
+        val addButtonColor = MaterialTheme.colorScheme.tertiary
         IconButton(
-            onClick = {
-
-            },
+            onClick = onClickAddButton,
             content = {
                 Icon(
                     modifier = Modifier.size(36.dp),
                     painter = painterResource(id = R.drawable.check_circle_24),
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.tertiary
+                    tint = if(allowAddMember) addButtonColor else addButtonColor.copy(alpha = 0.5f)
                 )
-            }
+            },
+            enabled = allowAddMember
         )
     }
 }
 
 @Composable
-private fun ManageMemberItemView(modifier: Modifier = Modifier) {
+private fun ManageMemberSection(
+    memberInfoUiState: UiState<List<MemberInfoUiState>>,
+    modifier: Modifier = Modifier) {
+
+    when (memberInfoUiState) {
+        is UiState.Loading -> {
+            ManageMemberSectionLoading()
+        }
+
+        is UiState.Error -> {
+            ErrorTextView(
+                error = stringResource(id = com.minhhnn18898.core.R.string.can_not_load_info),
+                modifier = modifier
+            )
+        }
+
+        is UiState.Success -> {
+            val listMember = memberInfoUiState.data
+
+            if(listMember.isEmpty()) {
+                DefaultEmptyView(
+                    text = stringResource(id = R.string.add_member_to_your_trip),
+                    modifier = Modifier
+                        .height(100.dp)
+                        .fillMaxWidth(),
+                    onClick = {
+                        // no-op
+                    }
+                )
+            } else {
+                LazyColumn {
+                    items(memberInfoUiState.data) {
+                        ManageMemberItemView(it)
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+private fun ManageMemberSectionLoading(modifier: Modifier = Modifier) {
+
+}
+
+@Composable
+private fun ManageMemberItemView(
+    memberInfo: MemberInfoUiState,
+    modifier: Modifier = Modifier
+) {
     val openRemoveMemberConfirmationDialog = remember { mutableStateOf(false) }
     val openChangeMemberNameDialog = remember { mutableStateOf(false) }
 
@@ -128,7 +199,7 @@ private fun ManageMemberItemView(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "Lorem ipsum dolor sit amet,",
+                text = memberInfo.memberName,
                 style = typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary,
                 overflow = TextOverflow.Ellipsis,

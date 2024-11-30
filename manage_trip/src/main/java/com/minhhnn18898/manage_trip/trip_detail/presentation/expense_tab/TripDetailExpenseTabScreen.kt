@@ -34,11 +34,10 @@ import androidx.compose.ui.unit.dp
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.ui_components.theme.typography
 
-fun LazyListScope.renderExpenseTabUI(
+fun LazyListScope.renderExpenseTabScreen(
     onNavigateManageMemberScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     item {
         MemberList(onClickMemberList = onNavigateManageMemberScreen)
     }

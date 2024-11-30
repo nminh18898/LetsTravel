@@ -7,6 +7,7 @@ import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
 import com.minhhnn18898.manage_trip.trip_info.data.dao.TripInfoDao
 import dagger.Module
 import dagger.Provides
@@ -52,5 +53,10 @@ object DatabaseModule {
     @Provides
     fun provideActivityInfoDao(database: UserTripDatabase): ActivityInfoDao {
         return database.activityInfoDao()
+    }
+
+    @Provides
+    fun provideMemberInfoDao(database: UserTripDatabase): MemberInfoDao {
+        return database.memberInfoDao()
     }
 }
