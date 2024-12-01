@@ -1,5 +1,7 @@
 package com.minhhnn18898.manage_trip.di
 
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProviderImpl
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ITripActivityDateSeparatorResourceProvider
@@ -21,5 +23,10 @@ object UiComponentModule {
     @Provides
     fun provideTripActivityDateSeparatorResourceProvider(): ITripActivityDateSeparatorResourceProvider {
         return TripActivityDateSeparatorResourceProvider()
+    }
+
+    @Provides
+    fun provideManageMemberResourceProvider(): ManageMemberResourceProvider {
+        return ManageMemberResourceProviderImpl()
     }
 }

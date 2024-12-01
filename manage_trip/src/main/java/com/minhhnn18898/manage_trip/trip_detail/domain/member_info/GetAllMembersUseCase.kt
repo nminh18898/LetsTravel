@@ -7,5 +7,5 @@ import javax.inject.Inject
 
 class GetAllMembersUseCase @Inject constructor(private val repository: MemberInfoRepository) {
 
-    fun execute(tripId: Long) : Flow<List<MemberInfo>> = repository.getAllMemberInfo(tripId)
+    fun execute(tripId: Long) : Flow<List<MemberInfo>> = repository.getAllMemberInfoStream(tripId)
 }

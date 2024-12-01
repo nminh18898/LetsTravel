@@ -34,14 +34,14 @@ data class MemberInfoModel(
 data class MemberInfo(
     val memberId: Long = 0,
     val memberName: String,
-    val avatar: Int
+    val avatarId: Int
 )
 
 fun MemberInfo.toMemberInfoModel(tripId: Long): MemberInfoModel {
     return MemberInfoModel(
         memberId = this.memberId,
         memberName = this.memberName,
-        avatar = this.avatar,
+        avatar = this.avatarId,
         tripId = tripId
     )
 }
@@ -50,7 +50,7 @@ fun MemberInfoModel.toMemberInfo(): MemberInfo {
     return MemberInfo(
         memberId = this.memberId,
         memberName = this.memberName,
-        avatar = this.avatar
+        avatarId = this.avatar
     )
 }
 

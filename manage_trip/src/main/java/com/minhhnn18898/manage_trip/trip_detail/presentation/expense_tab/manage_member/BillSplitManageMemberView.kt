@@ -1,5 +1,7 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member
 
+import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,11 +30,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,11 +43,14 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.memberAvatarList
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView
+import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 
 
@@ -56,6 +61,8 @@ fun BillSplitManageMemberView(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val memberInfoUiState by viewModel.memberInfoContentState.collectAsStateWithLifecycle()
+
+    val updateMemberUiState = uiState.updateMemberUiState
 
     Column(modifier = modifier.padding(horizontal = 20.dp)) {
         AddNewMemberView(
@@ -71,8 +78,40 @@ fun BillSplitManageMemberView(
             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f)
         )
 
-        ManageMemberSection(memberInfoUiState)
+        ManageMemberSection(
+            memberInfoUiState = memberInfoUiState,
+            onClickEditMember = { memberId, memberName ->
+                viewModel.onClickUpdateMemberInfo(memberId, memberName)
+            }
+
+        )
     }
+
+
+    AnimatedVisibility(visible = updateMemberUiState != null) {
+        if(updateMemberUiState != null) {
+            ChangeMemberNameConfirmationDialog(
+                memberId = updateMemberUiState.memberId,
+                currentMemberName = updateMemberUiState.currentMemberName,
+                newMemberName = updateMemberUiState.newMemberName,
+                onMemberNameChanged = viewModel::onExistingMemberNameUpdated,
+                allowUpdate = updateMemberUiState.allowUpdateExistingMemberInfo,
+                onDismissRequest = viewModel::onCancelUpdateMemberInfo,
+                onConfirmation = {
+                    viewModel.onUpdateMemberInfo(it)
+                }
+            )
+        }
+    }
+
+    AnimatedVisibility(uiState.isLoading) {
+        ProgressDialog()
+    }
+
+    TopMessageBar(
+        shown = uiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, uiState.showError)
+    )
 }
 
 @Composable
@@ -124,6 +163,7 @@ private fun AddNewMemberView(
 @Composable
 private fun ManageMemberSection(
     memberInfoUiState: UiState<List<MemberInfoUiState>>,
+    onClickEditMember: (memberId: Long, memberName: String) -> Unit,
     modifier: Modifier = Modifier) {
 
     when (memberInfoUiState) {
@@ -154,7 +194,10 @@ private fun ManageMemberSection(
             } else {
                 LazyColumn {
                     items(memberInfoUiState.data) {
-                        ManageMemberItemView(it)
+                        ManageMemberItemView(
+                            memberInfo = it,
+                            onClickEditMember = onClickEditMember
+                        )
                     }
                 }
             }
@@ -171,10 +214,10 @@ private fun ManageMemberSectionLoading(modifier: Modifier = Modifier) {
 @Composable
 private fun ManageMemberItemView(
     memberInfo: MemberInfoUiState,
+    onClickEditMember: (memberId: Long, memberName: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val openRemoveMemberConfirmationDialog = remember { mutableStateOf(false) }
-    val openChangeMemberNameDialog = remember { mutableStateOf(false) }
 
     Row(modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -188,7 +231,7 @@ private fun ManageMemberItemView(
         ) {
 
             Image(
-                painter = painterResource(memberAvatarList.first()),
+                painter = painterResource(memberInfo.avatarRes),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -228,7 +271,7 @@ private fun ManageMemberItemView(
 
             IconButton(
                 onClick = {
-                    openChangeMemberNameDialog.value = true
+                    onClickEditMember(memberInfo.memberId, memberInfo.memberName)
                 },
                 content = {
                     Icon(
@@ -240,6 +283,7 @@ private fun ManageMemberItemView(
                 }
             )
 
+            val billOwnerButtonColor = MaterialTheme.colorScheme.secondary
             IconButton(
                 onClick = {
 
@@ -249,7 +293,7 @@ private fun ManageMemberItemView(
                         modifier = Modifier.size(24.dp),
                         painter = painterResource(id = R.drawable.editor_choice_24),
                         contentDescription = "",
-                        tint = MaterialTheme.colorScheme.secondary
+                        tint = if(memberInfo.isDefaultBillOwner) billOwnerButtonColor else billOwnerButtonColor.copy(alpha = 0.6f)
                     )
                 }
             )
@@ -263,17 +307,6 @@ private fun ManageMemberItemView(
             },
             onConfirmation = {
                 openRemoveMemberConfirmationDialog.value = false
-            }
-        )
-    }
-
-    if(openChangeMemberNameDialog.value) {
-        ChangeMemberNameConfirmationDialog(
-            onDismissRequest = {
-                openChangeMemberNameDialog.value = false
-            },
-            onConfirmation = {
-                openChangeMemberNameDialog.value = false
             }
         )
     }
@@ -333,11 +366,14 @@ private fun RemoveMemberConfirmationDialog(
 
 @Composable
 private fun ChangeMemberNameConfirmationDialog(
+    memberId: Long,
+    currentMemberName: String,
+    newMemberName: String,
+    onMemberNameChanged: (String) -> Unit,
+    allowUpdate: Boolean,
     onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit
+    onConfirmation: (Long) -> Unit
 ) {
-    var memberNameText by remember { mutableStateOf("") }
-
     Dialog(
         onDismissRequest = { onDismissRequest() }
     ) {
@@ -366,7 +402,7 @@ private fun ChangeMemberNameConfirmationDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Change member name",
+                    text = stringResource(id = R.string.update_member_dialog_title),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     style = typography.titleLarge
                 )
@@ -374,7 +410,7 @@ private fun ChangeMemberNameConfirmationDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Please enter new name for [Current member name]:",
+                    text = stringResource(id = R.string.update_member_dialog_content, currentMemberName),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     style = typography.bodyMedium
                 )
@@ -382,10 +418,8 @@ private fun ChangeMemberNameConfirmationDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = memberNameText,
-                    onValueChange = {
-                        memberNameText = it
-                    },
+                    value = newMemberName,
+                    onValueChange = onMemberNameChanged,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
@@ -408,16 +442,31 @@ private fun ChangeMemberNameConfirmationDialog(
                     }
 
                     TextButton(
-                        onClick = { onConfirmation() },
+                        onClick = { onConfirmation(memberId) },
                         modifier = Modifier.padding(8.dp),
+                        enabled = allowUpdate
                     ) {
                         Text(
                             text = stringResource(id = com.minhhnn18898.core.R.string.confirm),
-                            color = MaterialTheme.colorScheme.primary
+                            color = if(allowUpdate) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         )
                     }
                 }
             }
         }
+    }
+}
+
+private fun BillSplitManageMemberViewModel.ErrorType.isShow(): Boolean {
+    return this != BillSplitManageMemberViewModel.ErrorType.ERROR_MESSAGE_NONE
+}
+
+private fun getMessageError(context: Context, errorType: BillSplitManageMemberViewModel.ErrorType): String {
+    return when(errorType) {
+        BillSplitManageMemberViewModel.ErrorType.ERROR_MESSAGE_LIMIT_MEMBER_REACH -> StringUtils.getString(context, R.string.manage_member_error_limit_reach)
+        BillSplitManageMemberViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_MEMBER -> StringUtils.getString(context, R.string.error_can_not_add_member)
+        BillSplitManageMemberViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_MEMBER -> StringUtils.getString(context, R.string.error_can_not_update_member_info)
+        BillSplitManageMemberViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_MEMBER -> StringUtils.getString(context, R.string.error_can_not_delete_member)
+        else -> ""
     }
 }

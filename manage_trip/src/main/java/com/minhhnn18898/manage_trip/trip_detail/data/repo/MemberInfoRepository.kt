@@ -9,11 +9,15 @@ interface MemberInfoRepository {
         const val MAX_MEMBER_ALLOW = 30
     }
 
-    fun getAllMemberInfo(tripId: Long): Flow<List<MemberInfo>>
+    fun getAllMemberInfoStream(tripId: Long): Flow<List<MemberInfo>>
 
-    suspend fun insertMember(tripId: Long, memberInfo: MemberInfo): Long
+    fun getAllMemberInfo(tripId: Long): List<MemberInfo>
 
-    suspend fun updateMemberInfo(tripId: Long, memberInfo: MemberInfo)
+    suspend fun getMember(memberId: Long): MemberInfo?
+
+    suspend fun insertMember(tripId: Long, memberName: String): Long
+
+    suspend fun updateMemberInfo(tripId: Long, memberId: Long, memberName: String)
 
     suspend fun deleteMember(memberId: Long)
 }

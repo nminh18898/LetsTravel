@@ -30,4 +30,10 @@
     <string name="error_activity_schedule_is_invalid">Schedule is invalid</string>
     <string name="add_member_to_your_trip">Add member to your trip</string>
     <string name="add_new_member">Add new member</string>
+    <string name="update_member_dialog_title">Change member name</string>
+    <string name="update_member_dialog_content">Please enter new name for %s:</string>
+    <string name="manage_member_error_limit_reach">You cannot add more members to this group. The maximum limit has been reached.</string>
+    <string name="error_can_not_update_member_info">Can not update member info. Please try again</string>
+    <string name="error_can_not_delete_member">Can not delete member. Please try again</string>
+    <string name="error_can_not_add_member">Can not add new member. Please try again</string>
 </resources>

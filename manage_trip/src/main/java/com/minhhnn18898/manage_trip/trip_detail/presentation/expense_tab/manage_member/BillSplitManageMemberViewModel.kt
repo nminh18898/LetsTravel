@@ -11,7 +11,6 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.CreateNewMemberUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.DeleteMemberUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
@@ -33,11 +32,20 @@ import kotlin.reflect.typeOf
 
 data class BillSplitManageMemberViewUiState(
     val newMemberName: String = "",
-    val isLoading: Boolean = false,
     val allowAddNewMember: Boolean = false,
-    val isShowDeleteMemberConfirmation: Boolean = false,
-    val isDisplayUpdateMemberInfoForm: Boolean = false,
+    val isLoading: Boolean = false,
+    val deleteMemberUiState: DeleteMemberUiState? = null,
+    val updateMemberUiState: UpdateMemberUiState? = null,
     val showError: BillSplitManageMemberViewModel.ErrorType = BillSplitManageMemberViewModel.ErrorType.ERROR_MESSAGE_NONE,
+)
+
+data class DeleteMemberUiState(val memberId: Long)
+
+data class UpdateMemberUiState(
+    val memberId: Long,
+    val currentMemberName: String = "",
+    val newMemberName: String = "",
+    val allowUpdateExistingMemberInfo: Boolean = false,
 )
 
 @HiltViewModel
@@ -46,7 +54,8 @@ class BillSplitManageMemberViewModel @Inject constructor(
     private val createNewMemberUseCase: CreateNewMemberUseCase,
     getAllMembersUseCase: GetAllMembersUseCase,
     private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
-    private val deleteMemberUseCase: DeleteMemberUseCase
+    private val deleteMemberUseCase: DeleteMemberUseCase,
+    private val resourceProvider: ManageMemberResourceProvider
 ): ViewModel() {
 
     companion object {
@@ -65,7 +74,7 @@ class BillSplitManageMemberViewModel @Inject constructor(
     val memberInfoContentState: StateFlow<UiState<List<MemberInfoUiState>>> =
         getAllMembersUseCase.execute(tripId)
             .map { memberInfo ->
-                UiState.Success(memberInfo.map { it.toMemberInfoUiState() })
+                UiState.Success(memberInfo.map { it.toMemberInfoUiState(resourceProvider) })
             }
             .catch<UiState<List<MemberInfoUiState>>> {
                 emit(UiState.Error())
@@ -96,10 +105,7 @@ class BillSplitManageMemberViewModel @Inject constructor(
         viewModelScope.launch {
             createNewMemberUseCase.execute(
                 tripId = tripId,
-                memberInfo = MemberInfo(
-                    memberId = 0L,
-                    memberName = name
-                )
+                memberName = name,
             ).collect { result ->
                 when(result) {
                     is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
@@ -130,6 +136,84 @@ class BillSplitManageMemberViewModel @Inject constructor(
     private fun checkAllowAddNewMember() {
         _uiState.update {
             it.copy(allowAddNewMember = uiState.value.newMemberName.isNotBlankOrEmpty())
+        }
+    }
+
+    fun onClickUpdateMemberInfo(memberId: Long, memberName: String) {
+        _uiState.update {
+            it.copy(
+                updateMemberUiState = UpdateMemberUiState(
+                    memberId = memberId,
+                    currentMemberName = memberName,
+                    newMemberName = memberName
+                )
+            )
+        }
+    }
+
+    fun onCancelUpdateMemberInfo() {
+        _uiState.update {
+            it.copy(
+                updateMemberUiState = null
+            )
+        }
+    }
+
+    fun onExistingMemberNameUpdated(value: String) {
+        _uiState.update { state ->
+            state.copy(
+                updateMemberUiState = state.updateMemberUiState?.copy(newMemberName = value)
+            )
+        }
+        checkAllowUpdateExistingMember()
+    }
+
+    private fun checkAllowUpdateExistingMember() {
+        _uiState.update {
+            val updateMemberState = it.updateMemberUiState
+            it.copy(
+                updateMemberUiState = updateMemberState?.copy(
+                    allowUpdateExistingMemberInfo = updateMemberState.newMemberName.isNotBlankOrEmpty()
+                )
+            )
+        }
+    }
+
+    fun onUpdateMemberInfo(memberId: Long) {
+        val memberName = _uiState.value.updateMemberUiState?.newMemberName ?: ""
+
+        if(memberName.isEmpty()) {
+            showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_MEMBER)
+            return
+        }
+
+        viewModelScope.launch {
+            updateMemberInfoUseCase.execute(
+                tripId = tripId,
+                memberId = memberId,
+                memberName = memberName
+            ).collect { result ->
+                when(result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                    is Result.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                updateMemberUiState = null,
+                            )
+                        }
+                    }
+                    is Result.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                updateMemberUiState = null,
+                            )
+                        }
+                        showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_MEMBER)
+                    }
+                }
+            }
         }
     }
 

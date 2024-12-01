@@ -16,12 +16,15 @@ interface MemberInfoDao {
     @Update
     suspend fun update(memberInfoModel: MemberInfoModel): Int
 
-    @Query("DELETE FROM member_info WHERE member_id = :memberId")
+    @Query("DELETE FROM member_info WHERE id =:memberId")
     suspend fun delete(memberId: Long): Int
 
     @Query("SELECT * FROM member_info WHERE trip_id=:tripId")
-    fun getMembers(tripId: Long): Flow<List<MemberInfoModel>>
+    fun getMembersStream(tripId: Long): Flow<List<MemberInfoModel>>
 
-    @Query("SELECT * FROM member_info WHERE member_id=:memberId")
-    fun getMember(memberId: Long): Flow<MemberInfoModel?>
+    @Query("SELECT * FROM member_info WHERE trip_id=:tripId")
+    fun getMembers(tripId: Long):List<MemberInfoModel>
+
+    @Query("SELECT * FROM member_info WHERE id=:memberId")
+    fun getMember(memberId: Long): MemberInfoModel?
 }
