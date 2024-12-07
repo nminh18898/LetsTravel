@@ -1,9 +1,17 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member
 
 import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,11 +36,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,7 +53,6 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.MemberInfoUiState
-import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.memberAvatarList
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
@@ -63,6 +69,7 @@ fun BillSplitManageMemberView(
     val memberInfoUiState by viewModel.memberInfoContentState.collectAsStateWithLifecycle()
 
     val updateMemberUiState = uiState.updateMemberUiState
+    val deleteMemberUiState = uiState.deleteMemberUiState
 
     Column(modifier = modifier.padding(horizontal = 20.dp)) {
         AddNewMemberView(
@@ -80,10 +87,12 @@ fun BillSplitManageMemberView(
 
         ManageMemberSection(
             memberInfoUiState = memberInfoUiState,
-            onClickEditMember = { memberId, memberName ->
-                viewModel.onClickUpdateMemberInfo(memberId, memberName)
+            onClickEditMember = { memberId, memberName, memberAvatar ->
+                viewModel.onClickUpdateMemberInfo(memberId, memberName, memberAvatar)
+            },
+            onClickDeleteMember = { memberId, memberName, memberAvatar ->
+                viewModel.onClickDeleteMember(memberId, memberName, memberAvatar)
             }
-
         )
     }
 
@@ -94,11 +103,26 @@ fun BillSplitManageMemberView(
                 memberId = updateMemberUiState.memberId,
                 currentMemberName = updateMemberUiState.currentMemberName,
                 newMemberName = updateMemberUiState.newMemberName,
+                memberAvatar = updateMemberUiState.memberAvatar,
                 onMemberNameChanged = viewModel::onExistingMemberNameUpdated,
                 allowUpdate = updateMemberUiState.allowUpdateExistingMemberInfo,
                 onDismissRequest = viewModel::onCancelUpdateMemberInfo,
                 onConfirmation = {
                     viewModel.onUpdateMemberInfo(it)
+                }
+            )
+        }
+    }
+
+    AnimatedVisibility(visible = deleteMemberUiState != null) {
+        if(deleteMemberUiState != null) {
+            RemoveMemberConfirmationDialog(
+                memberId = deleteMemberUiState.memberId,
+                memberName = deleteMemberUiState.memberName,
+                memberAvatar = deleteMemberUiState.memberAvatar,
+                onDismissRequest = viewModel::onCancelDeleteMember,
+                onConfirmation = {
+                    viewModel.onDeleteMemberConfirmed(it)
                 }
             )
         }
@@ -163,7 +187,8 @@ private fun AddNewMemberView(
 @Composable
 private fun ManageMemberSection(
     memberInfoUiState: UiState<List<MemberInfoUiState>>,
-    onClickEditMember: (memberId: Long, memberName: String) -> Unit,
+    onClickEditMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
+    onClickDeleteMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
     modifier: Modifier = Modifier) {
 
     when (memberInfoUiState) {
@@ -192,11 +217,12 @@ private fun ManageMemberSection(
                     }
                 )
             } else {
-                LazyColumn {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(memberInfoUiState.data) {
                         ManageMemberItemView(
                             memberInfo = it,
-                            onClickEditMember = onClickEditMember
+                            onClickEditMember = onClickEditMember,
+                            onClickDeleteMember = onClickDeleteMember
                         )
                     }
                 }
@@ -208,17 +234,101 @@ private fun ManageMemberSection(
 
 @Composable
 private fun ManageMemberSectionLoading(modifier: Modifier = Modifier) {
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 1000
+                0.7f at 500
+            },
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
 
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        items(10) {
+            ManageMemberSkeletonItem(
+                alpha = alpha,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun ManageMemberSkeletonItem(alpha: Float, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray.copy(alpha = alpha))
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(160.dp)
+                    .background(Color.LightGray.copy(alpha = alpha))
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray.copy(alpha = alpha))
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray.copy(alpha = alpha))
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(Color.LightGray.copy(alpha = alpha))
+            )
+        }
+    }
 }
 
 @Composable
 private fun ManageMemberItemView(
     memberInfo: MemberInfoUiState,
-    onClickEditMember: (memberId: Long, memberName: String) -> Unit,
+    onClickEditMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
+    onClickDeleteMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val openRemoveMemberConfirmationDialog = remember { mutableStateOf(false) }
-
     Row(modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -257,7 +367,7 @@ private fun ManageMemberItemView(
         ) {
             IconButton(
                 onClick = {
-                    openRemoveMemberConfirmationDialog.value = true
+                   onClickDeleteMember(memberInfo.memberId, memberInfo.memberName, memberInfo.avatarRes)
                 },
                 content = {
                     Icon(
@@ -271,7 +381,7 @@ private fun ManageMemberItemView(
 
             IconButton(
                 onClick = {
-                    onClickEditMember(memberInfo.memberId, memberInfo.memberName)
+                    onClickEditMember(memberInfo.memberId, memberInfo.memberName, memberInfo.avatarRes)
                 },
                 content = {
                     Icon(
@@ -299,28 +409,20 @@ private fun ManageMemberItemView(
             )
         }
     }
-
-    if(openRemoveMemberConfirmationDialog.value) {
-        RemoveMemberConfirmationDialog(
-            onDismissRequest = {
-                openRemoveMemberConfirmationDialog.value = false
-            },
-            onConfirmation = {
-                openRemoveMemberConfirmationDialog.value = false
-            }
-        )
-    }
 }
 
 @Composable
 private fun RemoveMemberConfirmationDialog(
+    memberId: Long,
+    memberName: String,
+    @DrawableRes memberAvatar: Int,
     onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit
+    onConfirmation: (Long) -> Unit
 ) {
     AlertDialog(
         icon = {
             Image(
-                painter = painterResource(memberAvatarList.first()),
+                painter = painterResource(memberAvatar),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -329,10 +431,10 @@ private fun RemoveMemberConfirmationDialog(
             )
         },
         title = {
-            Text(text = "Remove [member] from bill")
+            Text(text = stringResource(id = R.string.delete_member_dialog_title, memberName))
         },
         text = {
-            Text(text = "Are you sure you want to remove [Member Name] from the bill? This will recalculate the total amount due for the remaining members.")
+            Text(text = stringResource(id = R.string.delete_member_dialog_content, memberName))
         },
         onDismissRequest = {
             onDismissRequest()
@@ -340,7 +442,7 @@ private fun RemoveMemberConfirmationDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    onConfirmation()
+                    onConfirmation(memberId)
                 }
             ) {
                 Text(
@@ -367,6 +469,7 @@ private fun RemoveMemberConfirmationDialog(
 @Composable
 private fun ChangeMemberNameConfirmationDialog(
     memberId: Long,
+    @DrawableRes memberAvatar: Int,
     currentMemberName: String,
     newMemberName: String,
     onMemberNameChanged: (String) -> Unit,
@@ -391,7 +494,7 @@ private fun ChangeMemberNameConfirmationDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
-                    painter = painterResource(memberAvatarList.first()),
+                    painter = painterResource(memberAvatar),
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

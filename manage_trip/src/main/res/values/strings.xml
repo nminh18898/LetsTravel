@@ -36,4 +36,6 @@
     <string name="error_can_not_update_member_info">Can not update member info. Please try again</string>
     <string name="error_can_not_delete_member">Can not delete member. Please try again</string>
     <string name="error_can_not_add_member">Can not add new member. Please try again</string>
+    <string name="delete_member_dialog_title">Remove %s from trip</string>
+    <string name="delete_member_dialog_content">Are you sure you want to remove %s from the trip? This will recalculate the total costs for the remaining members.</string>
 </resources>

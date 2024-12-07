@@ -1,5 +1,6 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member
 
+import androidx.annotation.DrawableRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,12 +40,17 @@ data class BillSplitManageMemberViewUiState(
     val showError: BillSplitManageMemberViewModel.ErrorType = BillSplitManageMemberViewModel.ErrorType.ERROR_MESSAGE_NONE,
 )
 
-data class DeleteMemberUiState(val memberId: Long)
+data class DeleteMemberUiState(
+    val memberId: Long,
+    val memberName: String,
+    @DrawableRes val memberAvatar: Int
+)
 
 data class UpdateMemberUiState(
     val memberId: Long,
     val currentMemberName: String = "",
     val newMemberName: String = "",
+    @DrawableRes val memberAvatar: Int,
     val allowUpdateExistingMemberInfo: Boolean = false,
 )
 
@@ -139,13 +145,18 @@ class BillSplitManageMemberViewModel @Inject constructor(
         }
     }
 
-    fun onClickUpdateMemberInfo(memberId: Long, memberName: String) {
+    fun onClickUpdateMemberInfo(
+        memberId: Long,
+        memberName: String,
+        memberAvatar: Int,
+    ) {
         _uiState.update {
             it.copy(
                 updateMemberUiState = UpdateMemberUiState(
                     memberId = memberId,
                     currentMemberName = memberName,
-                    newMemberName = memberName
+                    newMemberName = memberName,
+                    memberAvatar = memberAvatar
                 )
             )
         }
@@ -156,6 +167,57 @@ class BillSplitManageMemberViewModel @Inject constructor(
             it.copy(
                 updateMemberUiState = null
             )
+        }
+    }
+
+    fun onClickDeleteMember(
+        memberId: Long,
+        memberName: String,
+        memberAvatar: Int
+    ) {
+        _uiState.update {
+            it.copy(
+                deleteMemberUiState = DeleteMemberUiState(
+                    memberId = memberId,
+                    memberName = memberName,
+                    memberAvatar = memberAvatar
+                )
+            )
+        }
+    }
+
+    fun onCancelDeleteMember() {
+        _uiState.update {
+            it.copy(
+                deleteMemberUiState = null
+            )
+        }
+    }
+
+    fun onDeleteMemberConfirmed(memberId: Long) {
+        viewModelScope.launch {
+            deleteMemberUseCase.execute(memberId).collect { result ->
+                when(result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                    is Result.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                deleteMemberUiState = null,
+                            )
+                        }
+                    }
+                    is Result.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                deleteMemberUiState = null,
+                            )
+                        }
+                        showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_MEMBER)
+                    }
+                }
+            }
         }
     }
 
