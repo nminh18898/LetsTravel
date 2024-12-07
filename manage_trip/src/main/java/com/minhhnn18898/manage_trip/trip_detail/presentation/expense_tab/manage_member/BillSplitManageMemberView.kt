@@ -52,7 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.MemberInfoUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.base_components.ProgressDialog

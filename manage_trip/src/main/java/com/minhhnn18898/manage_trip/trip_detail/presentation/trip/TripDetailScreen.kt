@@ -28,9 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,13 +47,12 @@ import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
 import com.minhhnn18898.app_navigation.destination.ExpenseTabDestination
 import com.minhhnn18898.app_navigation.destination.MemoryTabDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailPlanTabDestination
-import com.minhhnn18898.app_navigation.destination.TripDetailTabDestination
 import com.minhhnn18898.app_navigation.destination.isExpenseTab
 import com.minhhnn18898.app_navigation.destination.isPlanTab
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.navigation.TripDetailTabRow
-import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.renderExpenseTabScreen
-import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.renderPlanTabUI
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.renderExpenseTabScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.renderPlanTabUI
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay
@@ -107,7 +103,7 @@ fun TripDetailScreen(
 
     val tripInfoContentState by viewModel.tripInfoContentState.collectAsStateWithLifecycle()
 
-    var currentTab: TripDetailTabDestination by remember { mutableStateOf(TripDetailPlanTabDestination) }
+    val currentTab = viewModel.currentTabSelected
 
     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
@@ -123,7 +119,7 @@ fun TripDetailScreen(
             TripDetailTabRow(
                 allScreens = mutableListOf(TripDetailPlanTabDestination, ExpenseTabDestination, MemoryTabDestination),
                 onTabSelected = {
-                    currentTab = it
+                    viewModel.onChangeTab(tab = it)
                 },
                 currentScreen = currentTab
             )

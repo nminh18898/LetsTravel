@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.HotelDisplayInfo
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.HotelDisplayInfo
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView

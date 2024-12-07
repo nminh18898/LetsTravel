@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.ITripActivityDisplay
-import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.TripActivityDateGroupHeader
-import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.TripActivityDisplayInfo
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.ITripActivityDisplay
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.TripActivityDateGroupHeader
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.TripActivityDisplayInfo
 import com.minhhnn18898.ui_components.R
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView

@@ -18,8 +18,8 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.CreateNewMemb
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.DeleteMemberUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.UpdateMemberInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.MemberInfoUiState
-import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.toMemberInfoUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.toMemberInfoUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

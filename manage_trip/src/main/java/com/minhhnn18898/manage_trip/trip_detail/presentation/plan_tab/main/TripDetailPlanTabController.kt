@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab
+package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
