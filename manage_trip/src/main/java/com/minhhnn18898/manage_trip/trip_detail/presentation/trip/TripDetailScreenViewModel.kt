@@ -67,6 +67,10 @@ class TripDetailScreenViewModel @Inject constructor(
             initialValue = TripDetailScreenTripInfoUiState(isLoading = true)
         )
 
+    var tripName: String = ""
+        private set
+        get() = tripInfoContentState.value.tripDisplay?.tripName ?: ""
+
 
     val planTabUIController = TripDetailPlanTabController(
         viewModelScope = viewModelScope,

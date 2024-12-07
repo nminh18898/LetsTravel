@@ -73,7 +73,7 @@ fun TripDetailScreen(
     onNavigateEditHotelScreen: (tripId: Long, flightId: Long) -> Unit,
     onNavigateToEditTripScreen: (Long) -> Unit,
     onNavigateEditTripActivityScreen: (tripId: Long, activityId: Long) -> Unit,
-    onNavigateToBillSlitMemberScreen: (Long) -> Unit,
+    onNavigateToBillSlitMemberScreen: (tripId: Long, tripName: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
@@ -143,7 +143,7 @@ fun TripDetailScreen(
         } else if(currentTab.isExpenseTab()) {
             renderExpenseTabScreen(
                 onNavigateManageMemberScreen = {
-                    onNavigateToBillSlitMemberScreen.invoke(viewModel.tripId)
+                    onNavigateToBillSlitMemberScreen.invoke(viewModel.tripId, viewModel.tripName)
                 }
             )
         }

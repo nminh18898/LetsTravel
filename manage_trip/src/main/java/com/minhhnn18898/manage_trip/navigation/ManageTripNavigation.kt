@@ -5,6 +5,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.minhhnn18898.app_navigation.appbarstate.EmptyActionTopBar
 import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
 import com.minhhnn18898.app_navigation.destination.ArticleInfoParameters
@@ -90,8 +91,8 @@ fun NavGraphBuilder.manageTripFeatureComposable(
             onNavigateEditTripActivityScreen = { tripId, activityId ->
                 navController.navigateToEditTripActivityScreen(tripId, activityId)
             },
-            onNavigateToBillSlitMemberScreen = {
-                navController.navigateToBillSplitManageMemberScreen(it)
+            onNavigateToBillSlitMemberScreen = { tripId, tripName ->
+                navController.navigateToBillSplitManageMemberScreen(tripId, tripName)
             }
         )
     }
@@ -138,9 +139,10 @@ fun NavGraphBuilder.manageTripFeatureComposable(
 
     composable<BillSplitManageMemberDestination>(
         typeMap = mapOf(typeOf<BillSplitManageMemberDestinationParameters>() to CustomNavType(BillSplitManageMemberDestinationParameters::class.java, BillSplitManageMemberDestinationParameters.serializer()))
-    ) {
+    ) { backStackEntry ->
+        val destinationParameters = backStackEntry.toRoute<BillSplitManageMemberDestination>()
         BillSplitManageMemberView()
-        EmptyActionTopBar("", appBarOnScreenDisplay)
+        EmptyActionTopBar(destinationParameters.parameters.tripName, appBarOnScreenDisplay)
     }
 }
 
@@ -189,10 +191,10 @@ fun NavHostController.navigateToArticleDetailScreen(articleId: String, articlePo
     )
 }
 
-fun NavHostController.navigateToBillSplitManageMemberScreen(tripId: Long) {
+fun NavHostController.navigateToBillSplitManageMemberScreen(tripId: Long, tripName: String) {
     this.navigate(
         route = BillSplitManageMemberDestination(
-            BillSplitManageMemberDestinationParameters(tripId)
+            BillSplitManageMemberDestinationParameters(tripId, tripName)
         )
     )
 }

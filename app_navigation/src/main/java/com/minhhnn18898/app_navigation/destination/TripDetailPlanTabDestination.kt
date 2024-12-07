@@ -109,5 +109,6 @@ data class BillSplitManageMemberDestination(val parameters: BillSplitManageMembe
 @Serializable
 @Parcelize
 data class BillSplitManageMemberDestinationParameters(
-    val tripId: Long
+    val tripId: Long,
+    val tripName: String,
 ): Parcelable

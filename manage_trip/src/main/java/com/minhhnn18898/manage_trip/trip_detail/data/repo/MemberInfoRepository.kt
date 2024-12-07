@@ -1,5 +1,6 @@
 package com.minhhnn18898.manage_trip.trip_detail.data.repo
 
+import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfo
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +21,12 @@ interface MemberInfoRepository {
     suspend fun updateMemberInfo(tripId: Long, memberId: Long, memberName: String)
 
     suspend fun deleteMember(memberId: Long)
+
+    suspend fun getDefaultBillOwner(tripId: Long): DefaultBillOwnerInfo?
+
+    fun getDefaultBillOwnerStream(tripId: Long): Flow<DefaultBillOwnerInfo?>
+
+    suspend fun upsertDefaultBillOwner(tripId: Long, memberId: Long): Long
+
+    suspend fun deleteDefaultBillOwner(tripId: Long)
 }

@@ -1,9 +1,13 @@
 package com.minhhnn18898.manage_trip.trip_detail.data.repo
 
 import com.minhhnn18898.core.di.IODispatcher
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.toBillOwnerInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.toMemberInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.toMemberInfoModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,7 +19,8 @@ import java.util.SortedSet
 class MemberInfoRepositoryImpl(
     @IODispatcher
     private val ioDispatcher: CoroutineDispatcher,
-    private val memberInfoDao: MemberInfoDao
+    private val memberInfoDao: MemberInfoDao,
+    private val defaultBillOwnerDao: DefaultBillOwnerDao
 ): MemberInfoRepository {
 
     override fun getAllMemberInfoStream(tripId: Long): Flow<List<MemberInfo>> =
@@ -125,5 +130,42 @@ class MemberInfoRepositoryImpl(
         }
 
         return 0
+    }
+
+    override suspend fun getDefaultBillOwner(tripId: Long): DefaultBillOwnerInfo? = withContext(ioDispatcher) {
+        defaultBillOwnerDao
+            .getBillOwner(tripId)
+            ?.toBillOwnerInfo()
+    }
+
+    override fun getDefaultBillOwnerStream(tripId: Long): Flow<DefaultBillOwnerInfo?> =
+        defaultBillOwnerDao
+            .getBillOwnerStream(tripId)
+            .map {
+                it?.toBillOwnerInfo()
+            }
+
+    override suspend fun upsertDefaultBillOwner(tripId: Long, memberId: Long): Long = withContext(ioDispatcher) {
+        val resultCode = defaultBillOwnerDao
+            .insert(
+                DefaultBillOwnerModel(
+                    tripId = tripId,
+                    memberId = memberId
+                )
+            )
+
+        if(resultCode == -1L) {
+            throw ExceptionUpsertDefaultBillOwner()
+        }
+
+        resultCode
+    }
+
+    override suspend fun deleteDefaultBillOwner(tripId: Long) = withContext(ioDispatcher) {
+        val result = defaultBillOwnerDao.delete(tripId)
+
+        if(result <= 0) {
+            throw ExceptionDeleteDefaultBillOwner()
+        }
     }
 }

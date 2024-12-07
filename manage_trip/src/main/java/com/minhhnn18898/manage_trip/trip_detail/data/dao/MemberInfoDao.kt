@@ -23,7 +23,7 @@ interface MemberInfoDao {
     fun getMembersStream(tripId: Long): Flow<List<MemberInfoModel>>
 
     @Query("SELECT * FROM member_info WHERE trip_id=:tripId")
-    fun getMembers(tripId: Long):List<MemberInfoModel>
+    fun getMembers(tripId: Long): List<MemberInfoModel>
 
     @Query("SELECT * FROM member_info WHERE id=:memberId")
     fun getMember(memberId: Long): MemberInfoModel?

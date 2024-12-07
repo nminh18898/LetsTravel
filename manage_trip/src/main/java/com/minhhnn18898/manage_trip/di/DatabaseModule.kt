@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
@@ -58,5 +59,10 @@ object DatabaseModule {
     @Provides
     fun provideMemberInfoDao(database: UserTripDatabase): MemberInfoDao {
         return database.memberInfoDao()
+    }
+
+    @Provides
+    fun provideDefaultBillOwnerInfoDao(database: UserTripDatabase): DefaultBillOwnerDao {
+        return database.defaultBillOwnerDao()
     }
 }

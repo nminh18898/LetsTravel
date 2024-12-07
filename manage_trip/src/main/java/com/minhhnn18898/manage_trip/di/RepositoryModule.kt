@@ -4,6 +4,7 @@ import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
@@ -56,11 +57,13 @@ object RepositoryModule {
     fun provideMemberInfoRepository(
         @IODispatcher
         ioDispatcher: CoroutineDispatcher,
-        memberInfoDao: MemberInfoDao
+        memberInfoDao: MemberInfoDao,
+        defaultBillOwnerDao: DefaultBillOwnerDao
     ): MemberInfoRepository {
         return MemberInfoRepositoryImpl(
             ioDispatcher = ioDispatcher,
-            memberInfoDao = memberInfoDao
+            memberInfoDao = memberInfoDao,
+            defaultBillOwnerDao = defaultBillOwnerDao
         )
     }
 }

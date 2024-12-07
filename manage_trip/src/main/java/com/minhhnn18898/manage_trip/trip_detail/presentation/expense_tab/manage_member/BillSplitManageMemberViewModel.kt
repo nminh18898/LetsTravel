@@ -12,6 +12,8 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
+import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.GetTripDefaultBillOwnerStreamUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.UpsertNewTripBillOwnerUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.CreateNewMemberUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.DeleteMemberUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
@@ -24,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -61,7 +63,9 @@ class BillSplitManageMemberViewModel @Inject constructor(
     getAllMembersUseCase: GetAllMembersUseCase,
     private val updateMemberInfoUseCase: UpdateMemberInfoUseCase,
     private val deleteMemberUseCase: DeleteMemberUseCase,
-    private val resourceProvider: ManageMemberResourceProvider
+    private val resourceProvider: ManageMemberResourceProvider,
+    getTripDefaultBillOwnerStreamUseCase: GetTripDefaultBillOwnerStreamUseCase,
+    private val upsertNewTripBillOwnerUseCase: UpsertNewTripBillOwnerUseCase
 ): ViewModel() {
 
     companion object {
@@ -78,9 +82,18 @@ class BillSplitManageMemberViewModel @Inject constructor(
     val uiState: StateFlow<BillSplitManageMemberViewUiState> = _uiState.asStateFlow()
 
     val memberInfoContentState: StateFlow<UiState<List<MemberInfoUiState>>> =
-        getAllMembersUseCase.execute(tripId)
-            .map { memberInfo ->
-                UiState.Success(memberInfo.map { it.toMemberInfoUiState(resourceProvider) })
+        getAllMembersUseCase
+            .execute(tripId)
+            .combine(getTripDefaultBillOwnerStreamUseCase.execute(tripId)) { memberInfo, defaultBillOwner ->
+                UiState.Success(
+                    memberInfo.map {
+                        it.toMemberInfoUiState(
+                            manageMemberResourceProvider = resourceProvider,
+                            isDefaultBillOwner = defaultBillOwner?.memberId == it.memberId
+                        )
+                    }
+                )
+
             }
             .catch<UiState<List<MemberInfoUiState>>> {
                 emit(UiState.Error())
@@ -297,11 +310,49 @@ class BillSplitManageMemberViewModel @Inject constructor(
         }
     }
 
+    fun onUpdateDefaultBillOwner(memberId: Long) {
+        if(memberInfoContentState.isAlreadyDefaultBillOwner(memberId)) {
+            return
+        }
+
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+            )
+        }
+
+        viewModelScope.launch {
+            upsertNewTripBillOwnerUseCase.execute(
+                tripId = tripId,
+                memberId = memberId,
+            ).collect { result ->
+                when(result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                    is Result.Success -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                    }
+                    is Result.Error -> {
+                        _uiState.update { it.copy(isLoading = false) }
+                        showErrorInBriefPeriod(ErrorType.ERROR_CAN_NOT_UPDATE_BILL_OWNER)
+                    }
+                }
+            }
+        }
+    }
+
     enum class ErrorType {
         ERROR_MESSAGE_NONE,
         ERROR_MESSAGE_LIMIT_MEMBER_REACH,
         ERROR_MESSAGE_CAN_NOT_ADD_MEMBER,
         ERROR_MESSAGE_CAN_NOT_UPDATE_MEMBER,
-        ERROR_MESSAGE_CAN_NOT_DELETE_MEMBER
+        ERROR_MESSAGE_CAN_NOT_DELETE_MEMBER,
+        ERROR_CAN_NOT_UPDATE_BILL_OWNER
     }
+}
+
+private fun StateFlow<UiState<List<MemberInfoUiState>>>.isAlreadyDefaultBillOwner(memberId: Long): Boolean {
+    return (this.value as? UiState.Success)
+        ?.data
+        ?.firstOrNull { it.isDefaultBillOwner }
+        ?.memberId == memberId
 }

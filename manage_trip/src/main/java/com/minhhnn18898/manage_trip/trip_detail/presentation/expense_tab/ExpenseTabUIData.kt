@@ -11,11 +11,14 @@ data class MemberInfoUiState(
     val isDefaultBillOwner: Boolean
 )
 
-fun MemberInfo.toMemberInfoUiState(manageMemberResourceProvider: ManageMemberResourceProvider): MemberInfoUiState {
+fun MemberInfo.toMemberInfoUiState(
+    manageMemberResourceProvider: ManageMemberResourceProvider,
+    isDefaultBillOwner: Boolean = false
+): MemberInfoUiState {
     return MemberInfoUiState(
         memberId = memberId,
         memberName = memberName,
         avatarRes = manageMemberResourceProvider.getAvatarResource(avatarId),
-        isDefaultBillOwner = false
+        isDefaultBillOwner = isDefaultBillOwner
     )
 }

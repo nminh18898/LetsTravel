@@ -4,10 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfoModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfoModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfoModel
@@ -21,9 +23,10 @@ import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
     TripInfoModel::class,
     HotelInfoModel::class,
     TripActivityInfoModel::class,
-    MemberInfoModel::class
+    MemberInfoModel::class,
+    DefaultBillOwnerModel::class
 ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class UserTripDatabase : RoomDatabase() {
@@ -39,4 +42,6 @@ abstract class UserTripDatabase : RoomDatabase() {
     abstract fun activityInfoDao(): ActivityInfoDao
 
     abstract fun memberInfoDao(): MemberInfoDao
+
+    abstract fun defaultBillOwnerDao(): DefaultBillOwnerDao
 }

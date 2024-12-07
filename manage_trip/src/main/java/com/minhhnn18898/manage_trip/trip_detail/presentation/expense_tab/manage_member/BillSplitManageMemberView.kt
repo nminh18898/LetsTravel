@@ -92,10 +92,12 @@ fun BillSplitManageMemberView(
             },
             onClickDeleteMember = { memberId, memberName, memberAvatar ->
                 viewModel.onClickDeleteMember(memberId, memberName, memberAvatar)
+            },
+            onClickChangeDefaultBillOwner = {
+                viewModel.onUpdateDefaultBillOwner(it)
             }
         )
     }
-
 
     AnimatedVisibility(visible = updateMemberUiState != null) {
         if(updateMemberUiState != null) {
@@ -189,6 +191,7 @@ private fun ManageMemberSection(
     memberInfoUiState: UiState<List<MemberInfoUiState>>,
     onClickEditMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
     onClickDeleteMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
+    onClickChangeDefaultBillOwner: (Long) -> Unit,
     modifier: Modifier = Modifier) {
 
     when (memberInfoUiState) {
@@ -222,7 +225,8 @@ private fun ManageMemberSection(
                         ManageMemberItemView(
                             memberInfo = it,
                             onClickEditMember = onClickEditMember,
-                            onClickDeleteMember = onClickDeleteMember
+                            onClickDeleteMember = onClickDeleteMember,
+                            onClickChangeDefaultBillOwner = onClickChangeDefaultBillOwner
                         )
                     }
                 }
@@ -327,6 +331,7 @@ private fun ManageMemberItemView(
     memberInfo: MemberInfoUiState,
     onClickEditMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
     onClickDeleteMember: (memberId: Long, memberName: String, memberAvatar: Int) -> Unit,
+    onClickChangeDefaultBillOwner: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier,
@@ -393,17 +398,16 @@ private fun ManageMemberItemView(
                 }
             )
 
-            val billOwnerButtonColor = MaterialTheme.colorScheme.secondary
             IconButton(
                 onClick = {
-
+                    onClickChangeDefaultBillOwner(memberInfo.memberId)
                 },
                 content = {
                     Icon(
                         modifier = Modifier.size(24.dp),
                         painter = painterResource(id = R.drawable.editor_choice_24),
                         contentDescription = "",
-                        tint = if(memberInfo.isDefaultBillOwner) billOwnerButtonColor else billOwnerButtonColor.copy(alpha = 0.6f)
+                        tint = if(memberInfo.isDefaultBillOwner) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
                     )
                 }
             )
