@@ -103,12 +103,3 @@ fun TripDetailTabDestination.isExpenseTab(): Boolean {
     return this == ExpenseTabDestination
 }
 
-@Serializable
-data class BillSplitManageMemberDestination(val parameters: BillSplitManageMemberDestinationParameters)
-
-@Serializable
-@Parcelize
-data class BillSplitManageMemberDestinationParameters(
-    val tripId: Long,
-    val tripName: String,
-): Parcelable

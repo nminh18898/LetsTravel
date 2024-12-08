@@ -74,4 +74,6 @@
     <string name="plan">Plan</string>
     <string name="memories">Memories</string>
     <string name="expenses">Expenses</string>
+    <string name="receipt_name">Receipt name</string>
+    <string name="receipt">Receipt</string>
 </resources>

@@ -17,12 +17,15 @@ import com.minhhnn18898.app_navigation.destination.EditFlightInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditHotelInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripActivityInfoDestination
 import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
+import com.minhhnn18898.app_navigation.destination.ManageBillDestination
+import com.minhhnn18898.app_navigation.destination.ManageBillDestinationParameters
 import com.minhhnn18898.app_navigation.destination.SavedTripsListingFullDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailDestinationParameters
 import com.minhhnn18898.app_navigation.mapper.CustomNavType
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.BillSplitManageMemberView
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_bill.ManageBillView
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.AddEditTripActivityScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddEditHotelInfoScreen
@@ -93,6 +96,9 @@ fun NavGraphBuilder.manageTripFeatureComposable(
             },
             onNavigateToBillSlitMemberScreen = { tripId, tripName ->
                 navController.navigateToBillSplitManageMemberScreen(tripId, tripName)
+            },
+            onNavigateToManageBillScreen = {
+                navController.navigateToManageBillScreen(it)
             }
         )
     }
@@ -143,6 +149,13 @@ fun NavGraphBuilder.manageTripFeatureComposable(
         val destinationParameters = backStackEntry.toRoute<BillSplitManageMemberDestination>()
         BillSplitManageMemberView()
         EmptyActionTopBar(destinationParameters.parameters.tripName, appBarOnScreenDisplay)
+    }
+
+    composable<ManageBillDestination>(
+        typeMap = mapOf(typeOf<ManageBillDestinationParameters>() to CustomNavType(ManageBillDestinationParameters::class.java, ManageBillDestinationParameters.serializer()))
+    ) {
+        ManageBillView()
+        EmptyActionTopBar(StringUtils.getString(LocalContext.current, ManageBillDestination.title), appBarOnScreenDisplay)
     }
 }
 
@@ -195,6 +208,14 @@ fun NavHostController.navigateToBillSplitManageMemberScreen(tripId: Long, tripNa
     this.navigate(
         route = BillSplitManageMemberDestination(
             BillSplitManageMemberDestinationParameters(tripId, tripName)
+        )
+    )
+}
+
+fun NavHostController.navigateToManageBillScreen(tripId: Long) {
+    this.navigate(
+        route = ManageBillDestination(
+            ManageBillDestinationParameters(tripId)
         )
     )
 }

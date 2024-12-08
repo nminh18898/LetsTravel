@@ -36,19 +36,27 @@ import com.minhhnn18898.ui_components.theme.typography
 
 fun LazyListScope.renderExpenseTabScreen(
     onNavigateManageMemberScreen: () -> Unit,
+    onNavigateManageBillScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     item {
-        MemberList(onClickMemberList = onNavigateManageMemberScreen)
+        MemberList(
+            onClickMemberList = onNavigateManageMemberScreen
+        )
     }
 
     item {
-        BillInfo()
+        BillInfo(
+            onClickBillDescription = onNavigateManageBillScreen
+        )
     }
 }
 
 @Composable
-private fun BillInfo(modifier: Modifier = Modifier) {
+private fun BillInfo(
+    onClickBillDescription: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val stroke = Stroke(
         width = 2f
     )
@@ -66,6 +74,9 @@ private fun BillInfo(modifier: Modifier = Modifier) {
                 )
             }
             .padding(12.dp)
+            .clickable {
+                onClickBillDescription()
+            }
     ) {
         Column {
             BillHeader()
@@ -133,7 +144,9 @@ private fun BillHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun BillDescription(modifier: Modifier = Modifier) {
+private fun BillDescription(
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
