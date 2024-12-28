@@ -1,7 +1,7 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 
 import androidx.annotation.DrawableRes
-import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 
 data class MemberInfoUiState(

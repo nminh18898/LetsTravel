@@ -1,7 +1,7 @@
-package com.minhhnn18898.manage_trip.trip_detail.data.repo
+package com.minhhnn18898.manage_trip.trip_detail.data.repo.expense
 
-import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOwnerInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
 import kotlinx.coroutines.flow.Flow
 
 interface MemberInfoRepository {

@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
-import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.ExceptionUpdateHotelInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionUpdateHotelInfo
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertHotelInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi

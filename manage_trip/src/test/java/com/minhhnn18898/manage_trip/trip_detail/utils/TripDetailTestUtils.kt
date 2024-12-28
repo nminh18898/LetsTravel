@@ -1,11 +1,11 @@
 package com.minhhnn18898.manage_trip.trip_detail.utils
 
 import com.google.common.truth.Truth
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 
 fun assertFlightAndAirportEqual(listExpected: List<FlightWithAirportInfo>, listTarget: List<FlightWithAirportInfo?>) {
     Truth.assertThat(listExpected).hasSize(listTarget.size)

@@ -7,11 +7,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepository

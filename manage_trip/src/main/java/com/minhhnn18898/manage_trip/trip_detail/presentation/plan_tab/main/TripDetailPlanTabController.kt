@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.formatWithCommas
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase

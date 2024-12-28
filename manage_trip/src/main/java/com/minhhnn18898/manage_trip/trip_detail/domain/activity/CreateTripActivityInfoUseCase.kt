@@ -2,8 +2,8 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.activity
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
-import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.TripDetailRepository
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow

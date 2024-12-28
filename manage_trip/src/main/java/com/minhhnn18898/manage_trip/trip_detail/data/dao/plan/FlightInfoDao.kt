@@ -1,11 +1,11 @@
-package com.minhhnn18898.manage_trip.trip_detail.data.dao
+package com.minhhnn18898.manage_trip.trip_detail.data.dao.plan
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfoModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao

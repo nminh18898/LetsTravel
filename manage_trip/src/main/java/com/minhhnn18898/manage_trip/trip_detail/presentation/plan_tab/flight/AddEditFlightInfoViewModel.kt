@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.CreateNewFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetFlightInfoUseCase

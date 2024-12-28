@@ -3,9 +3,9 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.flight
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertFlightAndAirportEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi

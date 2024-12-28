@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.CreateTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.DeleteTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetTripActivityInfoUseCase

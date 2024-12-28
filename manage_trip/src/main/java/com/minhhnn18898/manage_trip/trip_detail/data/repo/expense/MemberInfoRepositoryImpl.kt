@@ -1,15 +1,15 @@
-package com.minhhnn18898.manage_trip.trip_detail.data.repo
+package com.minhhnn18898.manage_trip.trip_detail.data.repo.expense
 
 import com.minhhnn18898.core.di.IODispatcher
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.DefaultBillOwnerDao
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
-import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerModel
-import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.MemberInfoModel
-import com.minhhnn18898.manage_trip.trip_detail.data.model.toBillOwnerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.toMemberInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.toMemberInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.DefaultBillOwnerDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.MemberInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOwnerInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOwnerModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.toBillOwnerInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.toMemberInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.toMemberInfoModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

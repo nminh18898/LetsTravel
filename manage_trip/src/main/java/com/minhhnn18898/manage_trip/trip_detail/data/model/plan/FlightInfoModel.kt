@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.data.model
+package com.minhhnn18898.manage_trip.trip_detail.data.model.plan
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

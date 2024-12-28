@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
-import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfoModel
 import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

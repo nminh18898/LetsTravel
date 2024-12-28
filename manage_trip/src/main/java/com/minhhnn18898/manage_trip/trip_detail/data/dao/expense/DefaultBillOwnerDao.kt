@@ -1,10 +1,10 @@
-package com.minhhnn18898.manage_trip.trip_detail.data.dao
+package com.minhhnn18898.manage_trip.trip_detail.data.dao.expense
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.minhhnn18898.manage_trip.trip_detail.data.model.DefaultBillOwnerModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOwnerModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao

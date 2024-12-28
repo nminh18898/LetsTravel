@@ -3,12 +3,13 @@ package com.minhhnn18898.manage_trip.di
 import android.content.Context
 import androidx.room.Room
 import com.minhhnn18898.manage_trip.database.UserTripDatabase
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.ActivityInfoDao
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.AirportInfoDao
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.DefaultBillOwnerDao
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.FlightInfoDao
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.HotelInfoDao
-import com.minhhnn18898.manage_trip.trip_detail.data.dao.MemberInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.DefaultBillOwnerDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.MemberInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.ReceiptDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.ActivityInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.AirportInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.FlightInfoDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.HotelInfoDao
 import com.minhhnn18898.manage_trip.trip_info.data.dao.TripInfoDao
 import dagger.Module
 import dagger.Provides
@@ -64,5 +65,10 @@ object DatabaseModule {
     @Provides
     fun provideDefaultBillOwnerInfoDao(database: UserTripDatabase): DefaultBillOwnerDao {
         return database.defaultBillOwnerDao()
+    }
+
+    @Provides
+    fun provideReceiptDao(database: UserTripDatabase): ReceiptDao {
+        return database.receiptDao()
     }
 }

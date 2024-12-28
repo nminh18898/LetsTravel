@@ -2,9 +2,9 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.flight
 
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.architecture.usecase.UseCase
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.TripDetailRepository
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow

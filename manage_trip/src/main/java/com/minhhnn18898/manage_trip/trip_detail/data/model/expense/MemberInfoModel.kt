@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.data.model
+package com.minhhnn18898.manage_trip.trip_detail.data.model.expense
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -19,7 +19,7 @@ import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 )
 data class MemberInfoModel(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo("id")
+    @ColumnInfo("member_id")
     val memberId: Long,
     @ColumnInfo("name")
     val memberName: String,
@@ -28,13 +28,13 @@ data class MemberInfoModel(
 
     // Relation mapping
     @ColumnInfo("trip_id")
-    val tripId: Long,
+    val tripId: Long
 )
 
 data class MemberInfo(
     val memberId: Long = 0,
-    val memberName: String,
-    val avatarId: Int
+    val memberName: String = "",
+    val avatarId: Int = 0
 )
 
 fun MemberInfo.toMemberInfoModel(tripId: Long): MemberInfoModel {

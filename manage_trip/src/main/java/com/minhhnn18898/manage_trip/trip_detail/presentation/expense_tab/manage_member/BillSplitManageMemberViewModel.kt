@@ -12,6 +12,7 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.GetTripDefaultBillOwnerStreamUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.UpsertNewTripBillOwnerUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.CreateNewMemberUseCase
@@ -65,7 +66,8 @@ class BillSplitManageMemberViewModel @Inject constructor(
     private val deleteMemberUseCase: DeleteMemberUseCase,
     private val resourceProvider: ManageMemberResourceProvider,
     getTripDefaultBillOwnerStreamUseCase: GetTripDefaultBillOwnerStreamUseCase,
-    private val upsertNewTripBillOwnerUseCase: UpsertNewTripBillOwnerUseCase
+    private val upsertNewTripBillOwnerUseCase: UpsertNewTripBillOwnerUseCase,
+    private val repository: ReceiptRepository
 ): ViewModel() {
 
     companion object {
@@ -103,6 +105,14 @@ class BillSplitManageMemberViewModel @Inject constructor(
                 started = WhileUiSubscribed,
                 initialValue = UiState.Loading
             )
+
+    init {
+
+        viewModelScope.launch {
+            repository.getReceipts(tripId)
+        }
+
+    }
 
     fun onAddNewMember() {
         val name = uiState.value.newMemberName

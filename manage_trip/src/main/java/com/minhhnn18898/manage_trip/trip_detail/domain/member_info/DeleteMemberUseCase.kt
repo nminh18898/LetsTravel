@@ -1,7 +1,7 @@
 package com.minhhnn18898.manage_trip.trip_detail.domain.member_info
 
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.MemberInfoRepository
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.MemberInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow

@@ -1,10 +1,10 @@
-package com.minhhnn18898.manage_trip.trip_detail.data.repo
+package com.minhhnn18898.manage_trip.trip_detail.data.repo.plan
 
-import com.minhhnn18898.manage_trip.trip_detail.data.model.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import kotlinx.coroutines.flow.Flow
 
 interface TripDetailRepository {
