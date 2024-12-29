@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight
 
 import androidx.compose.animation.core.RepeatMode
@@ -7,7 +5,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -68,39 +65,58 @@ fun FlightDetailBody(
     modifier: Modifier
 ) {
 
-    if(flightInfoContentState is UiState.Loading) {
-        FlightDetailLoading()
-    } else if(flightInfoContentState is UiState.Error) {
-        ErrorTextView(
-            error = stringResource(id = CommonStringRes.can_not_load_info),
-            modifier = modifier
-        )
-    } else if(flightInfoContentState is UiState.Success) {
-         val isEmpty = flightInfoContentState.data.isEmpty()
+    when (flightInfoContentState) {
+        is UiState.Loading -> {
+            FlightDetailLoading()
+        }
 
-        if(isEmpty) {
-            DefaultEmptyView(
-                text = stringResource(id = R.string.add_your_flights),
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth(),
-                onClick = onClickCreateNewFlight
+        is UiState.Error -> {
+            ErrorTextView(
+                error = stringResource(id = CommonStringRes.can_not_load_info),
+                modifier = modifier
             )
-        } else {
-            FlightDetailBodyPager(
-                flightDisplayInfo = flightInfoContentState.data,
+        }
+
+        is UiState.Success -> {
+            FlightDetailContent(
+                flightInfo = flightInfoContentState.data,
+                onClickCreateNewFlight = onClickCreateNewFlight,
                 onClickFlightInfoItem = onClickFlightInfoItem,
                 modifier = modifier
             )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-
-            CreateNewDefaultButton(
-                text = stringResource(id = CommonStringRes.add_new_flight),
-                modifier = modifier.padding(start = 16.dp, top = 8.dp),
-                onClick = onClickCreateNewFlight
-            )
         }
+    }
+}
+
+@Composable
+private fun FlightDetailContent(
+    flightInfo: List<FlightDisplayInfo>,
+    onClickCreateNewFlight: () -> Unit,
+    onClickFlightInfoItem: (Long) -> Unit,
+    modifier: Modifier
+) {
+    if (flightInfo.isEmpty()) {
+        DefaultEmptyView(
+            text = stringResource(id = R.string.add_your_flights),
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth(),
+            onClick = onClickCreateNewFlight
+        )
+    } else {
+        FlightDetailBodyPager(
+            flightDisplayInfo = flightInfo,
+            onClickFlightInfoItem = onClickFlightInfoItem,
+            modifier = modifier
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        CreateNewDefaultButton(
+            text = stringResource(id = CommonStringRes.add_new_flight),
+            modifier = modifier.padding(start = 16.dp, top = 8.dp),
+            onClick = onClickCreateNewFlight
+        )
     }
 }
 

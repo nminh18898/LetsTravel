@@ -53,7 +53,6 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
-import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
@@ -210,14 +209,13 @@ private fun ManageMemberSection(
             val listMember = memberInfoUiState.data
 
             if(listMember.isEmpty()) {
-                DefaultEmptyView(
-                    text = stringResource(id = R.string.add_member_to_your_trip),
-                    modifier = Modifier
-                        .height(100.dp)
-                        .fillMaxWidth(),
-                    onClick = {
-                        // no-op
-                    }
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = stringResource(id = R.string.trip_has_no_member_description),
+                    style = typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.secondary,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {

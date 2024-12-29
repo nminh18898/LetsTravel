@@ -16,6 +16,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.ui_components.R
 import com.minhhnn18898.ui_components.theme.typography
@@ -25,6 +26,7 @@ fun DefaultEmptyView(
     text: String,
     modifier: Modifier,
     onClick: () -> Unit,
+    useIcon: Boolean = true
 ) {
     val stroke = Stroke(width = 6f,
         pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
@@ -44,19 +46,23 @@ fun DefaultEmptyView(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = painterResource(R.drawable.edit_note_24),
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.secondary
-            )
+
+            if(useIcon) {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(R.drawable.edit_note_24),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary
+                )
+            }
 
             Text(
                 modifier = Modifier.padding(start = 8.dp),
                 text = text,
                 style = typography.bodyMedium,
                 color = MaterialTheme.colorScheme.secondary,
-                maxLines = 1
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

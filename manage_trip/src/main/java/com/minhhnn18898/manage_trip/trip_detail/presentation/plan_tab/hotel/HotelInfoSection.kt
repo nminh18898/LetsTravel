@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel
 
 import androidx.compose.animation.core.RepeatMode
@@ -7,7 +5,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -67,39 +64,58 @@ fun HotelDetailBody(
     modifier: Modifier = Modifier
 ) {
 
-    if(hotelInfoContentState is UiState.Loading) {
-        HotelDetailLoading()
-    } else if(hotelInfoContentState is UiState.Error) {
-        ErrorTextView(
-            error = stringResource(id = CommonStringRes.can_not_load_info),
-            modifier = modifier
-        )
-    } else if(hotelInfoContentState is UiState.Success) {
-        val isEmpty = hotelInfoContentState.data.isEmpty()
+    when (hotelInfoContentState) {
+        is UiState.Loading -> {
+            HotelDetailLoading()
+        }
 
-        if(isEmpty) {
-            DefaultEmptyView(
-                text = stringResource(id = R.string.add_your_hotels),
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth(),
-                onClick = onClickCreateHotelInfo
+        is UiState.Error -> {
+            ErrorTextView(
+                error = stringResource(id = CommonStringRes.can_not_load_info),
+                modifier = modifier
             )
-        } else {
-            HotelDetailBodyPager(
-                hotelDisplayInfo = hotelInfoContentState.data,
+        }
+
+        is UiState.Success -> {
+            HotelDetailContent(
+                hotelInfo = hotelInfoContentState.data,
+                onClickCreateHotelInfo = onClickCreateHotelInfo,
                 onClickHotelInfoItem = onClickHotelInfoItem,
                 modifier = modifier
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            CreateNewDefaultButton(
-                text = stringResource(id = CommonStringRes.add_new_hotel),
-                modifier = modifier.padding(start = 16.dp, top = 8.dp),
-                onClick = onClickCreateHotelInfo
-            )
         }
+    }
+}
+
+@Composable
+private fun HotelDetailContent(
+    hotelInfo: List<HotelDisplayInfo>,
+    onClickCreateHotelInfo: () -> Unit,
+    onClickHotelInfoItem: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (hotelInfo.isEmpty()) {
+        DefaultEmptyView(
+            text = stringResource(id = R.string.add_your_hotels),
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth(),
+            onClick = onClickCreateHotelInfo
+        )
+    } else {
+        HotelDetailBodyPager(
+            hotelDisplayInfo = hotelInfo,
+            onClickHotelInfoItem = onClickHotelInfoItem,
+            modifier = modifier
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        CreateNewDefaultButton(
+            text = stringResource(id = CommonStringRes.add_new_hotel),
+            modifier = modifier.padding(start = 16.dp, top = 8.dp),
+            onClick = onClickCreateHotelInfo
+        )
     }
 }
 

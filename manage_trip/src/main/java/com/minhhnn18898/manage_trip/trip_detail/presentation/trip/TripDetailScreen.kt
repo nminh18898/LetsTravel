@@ -79,6 +79,8 @@ fun TripDetailScreen(
     val hotelContentState by viewModel.planTabUIController.hotelInfoContentState.collectAsStateWithLifecycle()
     val activityContentState by viewModel.planTabUIController.activityInfoContentState.collectAsStateWithLifecycle()
 
+    val expenseTabMemberContentState by viewModel.expenseTabController.memberInfoContentState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
@@ -115,7 +117,6 @@ fun TripDetailScreen(
             )
         }
 
-
         item {
             TripDetailTabRow(
                 allScreens = mutableListOf(TripDetailPlanTabDestination, ExpenseTabDestination, MemoryTabDestination),
@@ -139,6 +140,7 @@ fun TripDetailScreen(
             )
         } else if(currentTab.isExpenseTab()) {
             renderExpenseTabScreen(
+                memberInfoContentState = expenseTabMemberContentState,
                 onNavigateManageMemberScreen = {
                     onNavigateToBillSlitMemberScreen(viewModel.tripId, viewModel.tripName)
                 },

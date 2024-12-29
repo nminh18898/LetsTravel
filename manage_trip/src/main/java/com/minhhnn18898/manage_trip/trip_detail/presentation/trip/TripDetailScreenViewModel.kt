@@ -16,6 +16,9 @@ import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.TripDetailExpenseTabController
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.TripDetailPlanTabController
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
@@ -44,7 +47,9 @@ class TripDetailScreenViewModel @Inject constructor(
     getListFlightInfoUseCase: GetListFlightInfoUseCase,
     getListHotelInfoUseCase: GetListHotelInfoUseCase,
     getSortedListTripActivityInfoUseCase: GetSortedListTripActivityInfoUseCase,
-    dateTimeFormatter: TripDetailDateTimeFormatter
+    dateTimeFormatter: TripDetailDateTimeFormatter,
+    getAllMembersUseCase: GetAllMembersUseCase,
+    memberResourceProvider: ManageMemberResourceProvider
 ): ViewModel() {
 
     private val parameters = savedStateHandle.toRoute<TripDetailDestination>(
@@ -85,6 +90,13 @@ class TripDetailScreenViewModel @Inject constructor(
         getListFlightInfoUseCase = getListFlightInfoUseCase,
         getListHotelInfoUseCase = getListHotelInfoUseCase,
         getSortedListTripActivityInfoUseCase = getSortedListTripActivityInfoUseCase
+    )
+
+    val expenseTabController = TripDetailExpenseTabController(
+        viewModelScope = viewModelScope,
+        tripId = tripId,
+        getAllMembersUseCase = getAllMembersUseCase,
+        memberResourceProvider = memberResourceProvider
     )
 
     var currentTabSelected: TripDetailTabDestination by mutableStateOf(TripDetailPlanTabDestination)

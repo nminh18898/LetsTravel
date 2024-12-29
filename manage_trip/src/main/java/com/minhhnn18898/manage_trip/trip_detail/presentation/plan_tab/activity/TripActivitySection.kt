@@ -46,57 +46,76 @@ fun LazyListScope.renderTripActivitySection(
     onClickActivityItem: (Long) -> Unit,
     modifier: Modifier
 ) {
-    if(activityInfoContentState is UiState.Error) {
-        item {
-            ErrorTextView(
-                error = stringResource(id = com.minhhnn18898.core.R.string.can_not_load_info),
+    when (activityInfoContentState) {
+        is UiState.Error -> {
+            item {
+                ErrorTextView(
+                    error = stringResource(id = com.minhhnn18898.core.R.string.can_not_load_info),
+                    modifier = modifier
+                )
+            }
+        }
+
+        is UiState.Success -> {
+            renderTripActivityContentList(
+                activities = activityInfoContentState.data,
+                onClickCreateTripActivity = onClickCreateTripActivity,
+                onClickActivityItem = onClickActivityItem,
                 modifier = modifier
             )
         }
+
+        else -> {
+            // do nothing
+        }
     }
-    else if(activityInfoContentState is UiState.Success) {
-        val isEmpty = activityInfoContentState.data.isEmpty()
+}
 
-        if(isEmpty) {
-            item {
-                DefaultEmptyView(
-                    text = stringResource(id = com.minhhnn18898.manage_trip.R.string.add_your_activities),
-                    modifier = Modifier
-                        .height(100.dp)
-                        .fillMaxWidth(),
-                    onClick = onClickCreateTripActivity
-                )
-            }
 
-        } else {
-            items(activityInfoContentState.data) { displayInfo ->
-                if(displayInfo is TripActivityDateGroupHeader) {
+fun LazyListScope.renderTripActivityContentList(
+    activities: List<ITripActivityDisplay>,
+    onClickCreateTripActivity: () -> Unit,
+    onClickActivityItem: (Long) -> Unit,
+    modifier: Modifier
+) {
+    if (activities.isEmpty()) {
+        item {
+            DefaultEmptyView(
+                text = stringResource(id = com.minhhnn18898.manage_trip.R.string.add_your_activities),
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth(),
+                onClick = onClickCreateTripActivity
+            )
+        }
+    } else {
+        items(activities) { displayInfo ->
+            when (displayInfo) {
+                is TripActivityDateGroupHeader -> {
                     ActivityDateSeparatorView(
                         title = displayInfo.title,
                         dateOrdering = displayInfo.dateOrdering,
                         resId = displayInfo.resId
                     )
                 }
-                else if(displayInfo is TripActivityDisplayInfo) {
+                is TripActivityDisplayInfo -> {
                     ActivityItemView(
                         activityDisplayInfo = displayInfo,
                         onClick = onClickActivityItem
                     )
                 }
             }
-
-            if(activityInfoContentState.data.size >= 3) {
-                item {
-                    CreateNewDefaultButton(
-                        text = stringResource(id = com.minhhnn18898.manage_trip.R.string.add_new_activity),
-                        modifier = modifier.padding(start = 16.dp),
-                        onClick = onClickCreateTripActivity
-                    )
-                }
+        }
+        if (activities.size >= 3) {
+            item {
+                CreateNewDefaultButton(
+                    text = stringResource(id = com.minhhnn18898.manage_trip.R.string.add_new_activity),
+                    modifier = modifier.padding(start = 16.dp),
+                    onClick = onClickCreateTripActivity
+                )
             }
         }
     }
-
 }
 
 @Composable
@@ -152,7 +171,6 @@ private fun ActivityItemView(
             activityDisplayInfo = activityDisplayInfo,
             modifier = Modifier.fillMaxWidth()
         )
-
     }
 }
 

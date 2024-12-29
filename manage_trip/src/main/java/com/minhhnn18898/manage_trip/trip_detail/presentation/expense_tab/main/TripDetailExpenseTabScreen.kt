@@ -2,6 +2,8 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,24 +26,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.manage_trip.R
+import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.theme.typography
 
 fun LazyListScope.renderExpenseTabScreen(
+    memberInfoContentState: UiState<List<MemberInfoUiState>>,
     onNavigateManageMemberScreen: () -> Unit,
     onNavigateManageBillScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     item {
         MemberList(
+            memberInfoContentState = memberInfoContentState,
             onClickMemberList = onNavigateManageMemberScreen
         )
     }
@@ -189,15 +200,67 @@ private fun BillDescription(
 
 @Composable
 private fun MemberList(
+    memberInfoContentState: UiState<List<MemberInfoUiState>>,
     onClickMemberList: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    when(memberInfoContentState) {
+        is UiState.Loading -> {
+            // Handle loading state (optional)
+        }
 
+        is UiState.Error -> {
+            // Handle error state (optional)
+        }
+
+        is UiState.Success -> {
+            MemberInfoContent(
+                memberInfos = memberInfoContentState.data,
+                onClickMemberList = onClickMemberList
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun MemberInfoContent(
+    memberInfos: List<MemberInfoUiState>,
+    onClickMemberList: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if (memberInfos.isEmpty()) {
+        DefaultEmptyView(
+            text = stringResource(id = R.string.add_member_to_your_trip),
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth(),
+            onClick = onClickMemberList
+        )
+    } else {
+        MemberListPreview(
+            memberInfos = memberInfos,
+            onClickMemberList = onClickMemberList,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun MemberListPreview(
+    memberInfos: List<MemberInfoUiState>,
+    onClickMemberList: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val stroke = Stroke(
         width = 3f,
         pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f))
     )
     val color = MaterialTheme.colorScheme.outline
+
+    val maxItemDisplay = 4
+    val itemCount = memberInfos.size
+    val needDisplayMoreItem = itemCount > maxItemDisplay
 
     Box(
         modifier = modifier
@@ -209,17 +272,31 @@ private fun MemberList(
                     style = stroke,
                     cornerRadius = CornerRadius(100.dp.toPx())
                 )
-            }.clickable {
+            }
+            .clickable {
                 onClickMemberList()
             },
         contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier.padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy((4).dp)
+            horizontalArrangement = Arrangement.spacedBy((8).dp)
         ) {
-            memberAvatarList.forEach {
-                MemberItem(it, 48.dp)
+            memberInfos
+                .take(maxItemDisplay)
+                .forEach {
+                    MemberItem(
+                        drawable = it.avatarRes,
+                        itemSize = 48.dp,
+                        memberName = it.memberName
+                    )
+                }
+
+            if(needDisplayMoreItem) {
+                MemberItemMoreDisplay(
+                    itemSize = 48.dp,
+                    moreCount = itemCount - maxItemDisplay
+                )
             }
         }
     }
@@ -229,15 +306,79 @@ private fun MemberList(
 private fun MemberItem(
     @DrawableRes drawable: Int,
     itemSize: Dp,
+    memberName: String = ""
 ) {
-    Image(
-        painter = painterResource(drawable),
-        contentDescription = "",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .size(itemSize)
-            .clip(CircleShape)
-    )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(itemSize)
+    ) {
+        Image(
+            painter = painterResource(drawable),
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(itemSize)
+                .clip(CircleShape)
+        )
+
+        if(memberName.isNotBlankOrEmpty()) {
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = memberName,
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MemberItemMoreDisplay(
+    itemSize: Dp,
+    moreCount: Int,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(itemSize)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(itemSize)
+                .border(1.5.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f), CircleShape)
+                .clip(CircleShape)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White,
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        )
+                    )
+                )
+
+        ) {
+            Icon(
+                painter = painterResource(id = com.minhhnn18898.ui_components.R.drawable.group_24),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = "+$moreCount",
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            color = MaterialTheme.colorScheme.tertiary,
+        )
+
+    }
 }
 
 val memberAvatarList = listOf(
