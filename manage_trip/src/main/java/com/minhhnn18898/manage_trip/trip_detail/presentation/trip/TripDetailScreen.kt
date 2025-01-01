@@ -80,6 +80,7 @@ fun TripDetailScreen(
     val activityContentState by viewModel.planTabUIController.activityInfoContentState.collectAsStateWithLifecycle()
 
     val expenseTabMemberContentState by viewModel.expenseTabController.memberInfoContentState.collectAsStateWithLifecycle()
+    val expenseTabReceiptContentState by viewModel.expenseTabController.receiptInfoContentState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -141,6 +142,7 @@ fun TripDetailScreen(
         } else if(currentTab.isExpenseTab()) {
             renderExpenseTabScreen(
                 memberInfoContentState = expenseTabMemberContentState,
+                receiptInfoUiState = expenseTabReceiptContentState,
                 onNavigateManageMemberScreen = {
                     onNavigateToBillSlitMemberScreen(viewModel.tripId, viewModel.tripName)
                 },

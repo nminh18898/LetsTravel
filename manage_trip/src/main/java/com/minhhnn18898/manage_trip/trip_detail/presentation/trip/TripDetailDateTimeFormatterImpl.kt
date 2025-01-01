@@ -20,6 +20,8 @@ open class TripDetailDateTimeFormatterImpl @Inject constructor(
     private val flightDateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm\nEEE, dd MMMM", Locale.getDefault())
     private val flightDateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMMM, yyyy", Locale.getDefault())
 
+    private val receiptDateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM, yyyy | HH:mm", Locale.getDefault())
+
     override fun getActivityFormattedDateSeparatorString(millis: Long): String {
         return baseDateTimeFormatter.millisToFormattedString(millis, activityDateSeparatorFormatter)
     }
@@ -65,5 +67,10 @@ open class TripDetailDateTimeFormatterImpl @Inject constructor(
 
     override fun getStartOfTheDay(millis: Long): Long {
         return baseDateTimeFormatter.getStartOfTheDay(millis)
+    }
+
+    override fun getFormattedReceiptCreatedDate(millis: Long): String {
+        val localDateTime = baseDateTimeFormatter.millisToLocalDateTime(millis)
+        return receiptDateTimeFormatter.format(localDateTime)
     }
 }

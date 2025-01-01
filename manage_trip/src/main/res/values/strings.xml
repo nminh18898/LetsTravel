@@ -39,4 +39,5 @@
     <string name="delete_member_dialog_title">Remove %s from trip</string>
     <string name="delete_member_dialog_content">Are you sure you want to remove %s from the trip? This will recalculate the total costs for the remaining members.</string>
     <string name="trip_has_no_member_description">There are currently no members associated with this trip.</string>
+    <string name="add_your_receipts">Add your receipts</string>
 </resources>

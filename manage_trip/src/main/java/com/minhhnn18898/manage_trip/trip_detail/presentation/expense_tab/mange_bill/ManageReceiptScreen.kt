@@ -24,8 +24,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,8 +40,12 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -61,6 +70,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.material.color.MaterialColors.ALPHA_DISABLED
 import com.google.android.material.color.MaterialColors.ALPHA_FULL
 import com.minhhnn18898.manage_trip.R
@@ -72,11 +83,30 @@ import com.minhhnn18898.ui_components.theme.LetsTravelTheme
 import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
-fun ManageBillView(
-    modifier: Modifier = Modifier
+fun ManageReceiptView(
+    modifier: Modifier = Modifier,
+    viewModel: ManageReceiptViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val receiptUiState = uiState.receiptUiState
+
     Column(modifier = modifier.padding(16.dp)) {
-        BillInfo(Modifier.padding(horizontal = 8.dp))
+        BillInfo(
+            receiptName = receiptUiState.name,
+            onReceiptNameUpdate = viewModel::onNameUpdated,
+            formattedDate = receiptUiState.formattedDate,
+            date = receiptUiState.dateCreated,
+            onDateUpdated = viewModel::onDateUpdated,
+            time = receiptUiState.timeCreated,
+            onTimeUpdated = viewModel::onTimeUpdated,
+            receiptPrice = receiptUiState.prices,
+            onReceiptPriceUpdate = viewModel::onPricesUpdated,
+            receiptDescription = receiptUiState.description,
+            onReceiptDescriptionUpdate = viewModel::onDescriptionUpdated,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
         
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -97,7 +127,20 @@ fun ManageBillView(
 }
 
 @Composable
-private fun BillInfo(modifier: Modifier = Modifier) {
+private fun BillInfo(
+    receiptName: String,
+    onReceiptNameUpdate: (String) -> Unit,
+    formattedDate: String,
+    date: Long?,
+    onDateUpdated: (Long?) -> Unit,
+    time: Pair<Int, Int>,
+    onTimeUpdated: (Pair<Int, Int>) -> Unit,
+    receiptPrice: String,
+    onReceiptPriceUpdate: (String) -> Unit,
+    receiptDescription: String,
+    onReceiptDescriptionUpdate: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(
@@ -114,11 +157,25 @@ private fun BillInfo(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            BillNameAndDate()
+            BillNameAndDate(
+                receiptName = receiptName,
+                onReceiptNameUpdate = onReceiptNameUpdate,
+                formattedDate = formattedDate,
+                date = date,
+                onDateUpdated = onDateUpdated,
+                time = time,
+                onTimeUpdated = onTimeUpdated,
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            BillPriceAndDescription()
+            BillPriceAndDescription(
+                receiptPrice = receiptPrice,
+                onReceiptPriceUpdate = onReceiptPriceUpdate,
+                receiptDescription = receiptDescription,
+                onReceiptDescriptionUpdate = onReceiptDescriptionUpdate,
+                modifier = modifier
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -147,9 +204,18 @@ private fun BillHeaderIcon() {
 
 @Composable
 private fun BillNameAndDate(
+    receiptName: String,
+    onReceiptNameUpdate: (String) -> Unit,
+    formattedDate: String,
+    date: Long?,
+    onDateUpdated: (Long?) -> Unit,
+    time: Pair<Int, Int>,
+    onTimeUpdated: (Pair<Int, Int>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var showDialogOptionsChangeDateOrTime by remember { mutableStateOf(false) }
+    var showDatePickerDialog by remember { mutableStateOf(false) }
+    var showTimePickerDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -158,10 +224,8 @@ private fun BillNameAndDate(
         OutlinedTextField(
             singleLine = true,
             modifier = modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {
-
-            },
+            value = receiptName,
+            onValueChange = onReceiptNameUpdate,
             label = { Text(stringResource(com.minhhnn18898.core.R.string.receipt_name)) },
             leadingIcon = {
                 Icon(
@@ -176,7 +240,7 @@ private fun BillNameAndDate(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "12 Dec 2024 | 09:30",
+                text = formattedDate,
                 style = typography.titleSmall,
                 color = MaterialTheme.colorScheme.secondary,
                 overflow = TextOverflow.Ellipsis,
@@ -187,7 +251,7 @@ private fun BillNameAndDate(
 
             Icon(
                 modifier = Modifier.clickable {
-                    expanded = true
+                    showDialogOptionsChangeDateOrTime = true
                 },
                 painter = painterResource(id = R.drawable.edit_calendar_24),
                 contentDescription = "",
@@ -197,35 +261,166 @@ private fun BillNameAndDate(
 
     }
 
-    if(expanded) {
+    if(showDialogOptionsChangeDateOrTime) {
         SelectDateTimeOptionsDialog(
-            onItemSelected = {
-                expanded = false
+            onChangedDateSelected = {
+                showDialogOptionsChangeDateOrTime = false
+                showDatePickerDialog = true
+            },
+            onChangedTimeSelected = {
+                showDialogOptionsChangeDateOrTime = false
+                showTimePickerDialog = true
             },
             onDismissRequest = {
-                expanded = false
+                showDialogOptionsChangeDateOrTime = false
             }
         )
+    }
+
+    if (showDatePickerDialog) {
+        DatePickerWithDialog(
+            date = date,
+            onDateSelected = {
+                onDateUpdated(it)
+                showDatePickerDialog = false
+            },
+            onDismissRequest = {
+                showDatePickerDialog = false
+            }
+        )
+    }
+
+    if(showTimePickerDialog) {
+        TimePickerWithDialog(
+            time = time,
+            onTimeSelected = {
+                onTimeUpdated(it)
+                showTimePickerDialog = false
+            },
+            onDismissRequest = {
+                showTimePickerDialog = false
+            }
+        )
+
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DatePickerWithDialog(
+    date: Long?,
+    onDateSelected: (Long?) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    val dateState = rememberDatePickerState(
+        initialSelectedDateMillis = date
+    )
+
+    DatePickerDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDateSelected.invoke(dateState.selectedDateMillis)
+                }
+            ) {
+                Text(text = stringResource(id = com.minhhnn18898.core.R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismissRequest
+            ) {
+                Text(
+                    text = stringResource(id = com.minhhnn18898.core.R.string.cancel),
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        }
+    ) {
+        DatePicker(
+            state = dateState,
+            showModeToggle = true
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TimePickerWithDialog(
+    time: Pair<Int, Int>,
+    onTimeSelected: (Pair<Int, Int>) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+
+    val timeState = rememberTimePickerState(
+        initialHour = time.first,
+        initialMinute = time.second
+    )
+
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 6.dp,
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                TimePicker(state = timeState)
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .fillMaxWidth(), horizontalArrangement = Arrangement.End
+                ) {
+
+                    TextButton(onClick = onDismissRequest) {
+                        Text(
+                            text = stringResource(id = com.minhhnn18898.core.R.string.cancel),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    TextButton(
+                        onClick = {
+                            onTimeSelected(Pair(timeState.hour, timeState.minute))
+                        }
+                    ) {
+                        Text(text = stringResource(id = com.minhhnn18898.core.R.string.confirm))
+                    }
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun BillPriceAndDescription(
+    receiptPrice: String,
+    onReceiptPriceUpdate: (String) -> Unit,
+    receiptDescription: String,
+    onReceiptDescriptionUpdate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = "Pricing and details of the receipt:",
             style = typography.bodyMedium,
             color = MaterialTheme.colorScheme.secondary
         )
 
-        var priceText by remember { mutableStateOf(TextFieldValue("")) }
         TextField(
-            value = priceText,
-            onValueChange = { newText ->
-                priceText = newText
-            },
+            value = receiptPrice,
+            onValueChange = onReceiptPriceUpdate,
             modifier = modifier.fillMaxWidth(),
             singleLine = true,
             leadingIcon = {
@@ -248,12 +443,9 @@ private fun BillPriceAndDescription(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        var descriptionText by remember { mutableStateOf(TextFieldValue("")) }
         TextField(
-            value = descriptionText,
-            onValueChange = { newText ->
-                descriptionText = newText
-            },
+            value = receiptDescription,
+            onValueChange = onReceiptDescriptionUpdate,
             modifier = modifier.fillMaxWidth(),
             leadingIcon = {
                 Icon(
@@ -637,7 +829,8 @@ fun SelectMemberDialogItem(
 
 @Composable
 private fun SelectDateTimeOptionsDialog(
-    onItemSelected: () -> Unit,
+    onChangedDateSelected: () -> Unit,
+    onChangedTimeSelected: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     Dialog(
@@ -653,9 +846,9 @@ private fun SelectDateTimeOptionsDialog(
                         .padding(16.dp)
                 ) {
                     Text(
-                        modifier = Modifier.clickable {
-                            onItemSelected()
-                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onChangedDateSelected() },
                         text = "Change date",
                         style = typography.titleSmall,
                         color = MaterialTheme.colorScheme.secondary
@@ -664,9 +857,9 @@ private fun SelectDateTimeOptionsDialog(
                     HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
                     Text(
-                        modifier = Modifier.clickable {
-                            onItemSelected()
-                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onChangedTimeSelected() },
                         text = "Change time",
                         style = typography.titleSmall,
                         color = MaterialTheme.colorScheme.secondary

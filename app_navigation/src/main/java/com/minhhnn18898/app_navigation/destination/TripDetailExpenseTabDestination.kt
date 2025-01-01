@@ -23,4 +23,7 @@ data class ManageBillDestination(val parameters: ManageBillDestinationParameters
 
 @Serializable
 @Parcelize
-data class ManageBillDestinationParameters(val tripId: Long): Parcelable
+data class ManageBillDestinationParameters(
+    val tripId: Long,
+    val receiptId: Long = 0
+): Parcelable

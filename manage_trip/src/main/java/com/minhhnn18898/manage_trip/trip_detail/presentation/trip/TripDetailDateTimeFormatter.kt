@@ -14,4 +14,5 @@ interface TripDetailDateTimeFormatter {
     fun getHourMinute(millis: Long): Pair<Int, Int>
     fun combineHourMinutesDayToMillis(dateMillis: Long, hour: Int, minute: Int): Long
     fun getStartOfTheDay(millis: Long): Long
+    fun getFormattedReceiptCreatedDate(millis: Long): String
 }

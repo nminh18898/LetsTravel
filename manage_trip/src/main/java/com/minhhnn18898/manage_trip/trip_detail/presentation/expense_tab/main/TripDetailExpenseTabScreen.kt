@@ -45,6 +45,7 @@ import com.minhhnn18898.ui_components.theme.typography
 
 fun LazyListScope.renderExpenseTabScreen(
     memberInfoContentState: UiState<List<MemberInfoUiState>>,
+    receiptInfoUiState: UiState<List<ReceiptWithAllPayersInfoUiState>>,
     onNavigateManageMemberScreen: () -> Unit,
     onNavigateManageBillScreen: () -> Unit,
     modifier: Modifier = Modifier
@@ -52,19 +53,71 @@ fun LazyListScope.renderExpenseTabScreen(
     item {
         MemberList(
             memberInfoContentState = memberInfoContentState,
-            onClickMemberList = onNavigateManageMemberScreen
+            onClickMemberList = onNavigateManageMemberScreen,
+            modifier = modifier
         )
     }
 
     item {
-        BillInfo(
-            onClickBillDescription = onNavigateManageBillScreen
+        ReceiptInfo(
+            receiptInfoUiState = receiptInfoUiState,
+            onClickBillDescription = onNavigateManageBillScreen,
+            modifier = modifier
         )
     }
 }
 
 @Composable
-private fun BillInfo(
+private fun ReceiptInfo(
+    receiptInfoUiState: UiState<List<ReceiptWithAllPayersInfoUiState>>,
+    onClickBillDescription: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when(receiptInfoUiState) {
+        is UiState.Loading -> {
+            // Handle loading state (optional)
+        }
+
+        is UiState.Error -> {
+            // Handle error state (optional)
+        }
+
+        is UiState.Success -> {
+            ReceiptInfoContent(
+                receiptInfoUiState = receiptInfoUiState.data,
+                onClickBillDescription = onClickBillDescription,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReceiptInfoContent(
+    receiptInfoUiState: List<ReceiptWithAllPayersInfoUiState>,
+    onClickBillDescription: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    if(receiptInfoUiState.isEmpty()) {
+        DefaultEmptyView(
+            text = stringResource(id = R.string.add_your_receipts),
+            modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth(),
+            onClick = onClickBillDescription
+        )
+    } else {
+        ReceiptInfoList(
+            receiptInfoUiState = receiptInfoUiState,
+            onClickBillDescription = onClickBillDescription,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun ReceiptInfoList(
+    receiptInfoUiState: List<ReceiptWithAllPayersInfoUiState>,
     onClickBillDescription: () -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -25,7 +25,7 @@ import com.minhhnn18898.app_navigation.destination.TripDetailDestinationParamete
 import com.minhhnn18898.app_navigation.mapper.CustomNavType
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.BillSplitManageMemberView
-import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_bill.ManageBillView
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_bill.ManageReceiptView
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.AddEditTripActivityScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddEditHotelInfoScreen
@@ -154,7 +154,7 @@ fun NavGraphBuilder.manageTripFeatureComposable(
     composable<ManageBillDestination>(
         typeMap = mapOf(typeOf<ManageBillDestinationParameters>() to CustomNavType(ManageBillDestinationParameters::class.java, ManageBillDestinationParameters.serializer()))
     ) {
-        ManageBillView()
+        ManageReceiptView()
         EmptyActionTopBar(StringUtils.getString(LocalContext.current, ManageBillDestination.title), appBarOnScreenDisplay)
     }
 }

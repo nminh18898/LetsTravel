@@ -47,4 +47,8 @@ class FakeTripDetailDateTimeFormatter: TripDetailDateTimeFormatter {
     override fun getStartOfTheDay(millis: Long): Long {
         return millis.toString().last().digitToInt().toLong()
     }
+
+    override fun getFormattedReceiptCreatedDate(millis: Long): String {
+        return millis.toString()
+    }
 }
