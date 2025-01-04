@@ -8,10 +8,10 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAl
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 
 data class MemberInfoUiState(
-    val memberId: Long,
-    val memberName: String,
-    @DrawableRes val avatarRes: Int,
-    val isDefaultBillOwner: Boolean
+    val memberId: Long = 0,
+    val memberName: String = "",
+    @DrawableRes val avatarRes: Int = 0,
+    val isDefaultBillOwner: Boolean = false
 )
 
 fun MemberInfo.toMemberInfoUiState(
@@ -79,3 +79,8 @@ fun ReceiptPayerInfo.toReceiptPayerInfoUiState(manageMemberResourceProvider: Man
         payAmount = payAmount.toString()
     )
 }
+
+data class MemberInfoSelectionUiState(
+    val memberInfo: MemberInfoUiState = MemberInfoUiState(),
+    val isSelected: Boolean = false
+)

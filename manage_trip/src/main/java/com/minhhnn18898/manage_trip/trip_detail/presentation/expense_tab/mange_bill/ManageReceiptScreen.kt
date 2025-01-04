@@ -1,5 +1,6 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_bill
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -72,9 +73,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.material.color.MaterialColors.ALPHA_DISABLED
-import com.google.android.material.color.MaterialColors.ALPHA_FULL
 import com.minhhnn18898.manage_trip.R
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.memberAvatarList
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
@@ -105,6 +105,9 @@ fun ManageReceiptView(
             onReceiptPriceUpdate = viewModel::onPricesUpdated,
             receiptDescription = receiptUiState.description,
             onReceiptDescriptionUpdate = viewModel::onDescriptionUpdated,
+            receiptOwner = uiState.receiptOwner,
+            receiptOwnerMemberSelection = uiState.updateReceiptOwnerUiState.listMemberReceiptOwnerSelection,
+            onSelectReceiptOwnerMember = viewModel::onSelectNewReceiptOwner,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         
@@ -139,6 +142,9 @@ private fun BillInfo(
     onReceiptPriceUpdate: (String) -> Unit,
     receiptDescription: String,
     onReceiptDescriptionUpdate: (String) -> Unit,
+    receiptOwner: MemberInfoUiState?,
+    receiptOwnerMemberSelection: List<MemberInfoSelectionUiState>,
+    onSelectReceiptOwnerMember: (MemberInfoUiState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -179,7 +185,11 @@ private fun BillInfo(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            PaidByBadge()
+            PaidByBadge(
+                receiptOwner = receiptOwner,
+                listMember = receiptOwnerMemberSelection,
+                onSelectReceiptOwnerMember = onSelectReceiptOwnerMember
+            )
         }
     }
 }
@@ -466,7 +476,11 @@ private fun BillPriceAndDescription(
 }
 
 @Composable
-private fun PaidByBadge() {
+private fun PaidByBadge(
+    receiptOwner: MemberInfoUiState?,
+    listMember: List<MemberInfoSelectionUiState>,
+    onSelectReceiptOwnerMember: (MemberInfoUiState) -> Unit,
+) {
     val color = Color(0xFF00AB41)
 
     var expanded by remember { mutableStateOf(false) }
@@ -483,7 +497,9 @@ private fun PaidByBadge() {
                     color = color
                 )
                 .clickable {
-                    expanded = true
+                    if(listMember.isNotEmpty()) {
+                        expanded = true
+                    }
                 }
                 .padding(vertical = 4.dp, horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -496,14 +512,27 @@ private fun PaidByBadge() {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Image(
-                painter = painterResource(memberAvatarList.first()),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-            )
+            if(receiptOwner != null) {
+                Image(
+                    painter = painterResource(receiptOwner.avatarRes),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+                Image(
+                    painter = painterResource(com.minhhnn18898.ui_components.R.drawable.person_24),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .padding(2.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.width(4.dp))
 
@@ -518,15 +547,9 @@ private fun PaidByBadge() {
 
     if(expanded) {
         SelectMemberDialog(
-            items = memberAvatarList.map {
-                MemberInfoUiState(
-                    memberId = 0,
-                    memberName = getRandomString(8),
-                    avatarRes = it,
-                    isDefaultBillOwner = false
-                )
-            },
-            onItemSelected = { _, _ ->
+            items = listMember,
+            onItemSelected = {
+                onSelectReceiptOwnerMember(it)
                 expanded = false
             },
             onDismissRequest = {
@@ -535,13 +558,6 @@ private fun PaidByBadge() {
         )
     }
 
-}
-
-fun getRandomString(length: Int) : String {
-    val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-    return (1..length)
-        .map { allowedChars.random() }
-        .joinToString("")
 }
 
 @Composable
@@ -713,17 +729,18 @@ private fun AddNewMemberButton() {
 
 @Composable
 private fun SelectMemberDialog(
-    items: List<MemberInfoUiState>,
+    items: List<MemberInfoSelectionUiState>,
     selectedIndex: Int = -1,
-    onItemSelected: (index: Int, item: MemberInfoUiState) -> Unit,
+    onItemSelected: (MemberInfoUiState) -> Unit,
     onDismissRequest: () -> Unit,
-    drawItem: @Composable (MemberInfoUiState, Boolean, Boolean, () -> Unit) -> Unit = { item, selected, itemEnabled, onClick ->
+    drawItem: @Composable (MemberInfoSelectionUiState) -> Unit = { item ->
         SelectMemberDialogItem(
-            memberName = item.memberName,
-            memberAvatar = item.avatarRes,
-            selected = selected,
-            enabled = itemEnabled,
-            onClick = onClick,
+            memberName = item.memberInfo.memberName,
+            memberAvatar = item.memberInfo.avatarRes,
+            selected = item.isSelected,
+            onClick = {
+                onItemSelected(item.memberInfo)
+            },
         )
     },
 ) {
@@ -743,14 +760,7 @@ private fun SelectMemberDialog(
 
                 LazyColumn(modifier = Modifier.fillMaxWidth(), state = listState) {
                     itemsIndexed(items) { index, item ->
-                        val selectedItem = index == selectedIndex
-                        drawItem(
-                            item,
-                            selectedItem,
-                            true
-                        ) {
-                            onItemSelected(index, item)
-                        }
+                        drawItem(item)
 
                         if (index < items.lastIndex) {
                             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
@@ -765,21 +775,15 @@ private fun SelectMemberDialog(
 @Composable
 fun SelectMemberDialogItem(
     memberName: String,
-    memberAvatar: Int,
+    @DrawableRes memberAvatar: Int,
     selected: Boolean,
-    enabled: Boolean,
     onClick: () -> Unit,
 ) {
-    val contentColor = when {
-        !enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = ALPHA_DISABLED)
-        selected -> MaterialTheme.colorScheme.primary.copy(alpha = ALPHA_FULL)
-        else -> MaterialTheme.colorScheme.onSurface.copy(alpha = ALPHA_FULL)
-    }
 
-    CompositionLocalProvider(LocalContentColor provides contentColor) {
+    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
         Row(
             modifier = Modifier
-                .clickable(enabled) { onClick() }
+                .clickable(!selected) { onClick() }
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -792,7 +796,7 @@ fun SelectMemberDialogItem(
                     .weight(1f)
             ) {
                 Image(
-                    painter = painterResource(memberAvatarList.first()),
+                    painter = painterResource(memberAvatar),
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -803,7 +807,7 @@ fun SelectMemberDialogItem(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "Member name",
+                    text = memberName,
                     style = typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary,
                     overflow = TextOverflow.Ellipsis,
@@ -811,18 +815,13 @@ fun SelectMemberDialogItem(
                 )
             }
 
-            IconButton(
-                onClick = {
-
-                },
-                content = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.check_circle_24),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            )
+            if(selected) {
+                Icon(
+                    painter = painterResource(id = R.drawable.check_circle_24),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

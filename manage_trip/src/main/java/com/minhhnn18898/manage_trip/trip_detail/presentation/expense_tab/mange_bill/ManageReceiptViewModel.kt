@@ -3,21 +3,27 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.minhhnn18898.app_navigation.destination.ManageBillDestination
 import com.minhhnn18898.app_navigation.destination.ManageBillDestinationParameters
 import com.minhhnn18898.app_navigation.mapper.CustomNavType
 import com.minhhnn18898.core.utils.DateTimeProvider
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.GetTripDefaultBillOwnerStreamUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.toMemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.reflect.typeOf
 
@@ -31,8 +37,14 @@ data class ReceiptUiState(
     @DrawableRes val receiptOwnerAvatar: Int = 0
 )
 
+data class UpdateReceiptOwnerUiState(
+    val listMemberReceiptOwnerSelection: List<MemberInfoSelectionUiState> = emptyList()
+)
+
 data class ManageReceiptUiState(
     val receiptUiState: ReceiptUiState = ReceiptUiState(),
+    val updateReceiptOwnerUiState: UpdateReceiptOwnerUiState = UpdateReceiptOwnerUiState(),
+    val receiptOwner: MemberInfoUiState? = null,
     val isLoading: Boolean = false,
     val isNotFound: Boolean = false,
     val canDelete: Boolean = false,
@@ -48,8 +60,8 @@ data class ManageReceiptUiState(
 class ManageReceiptViewModel@Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val resourceProvider: ManageMemberResourceProvider,
-    getTripDefaultBillOwnerStreamUseCase: GetTripDefaultBillOwnerStreamUseCase,
-    private val repository: ReceiptRepository,
+    private val getAllMembersUseCase: GetAllMembersUseCase,
+    private val getTripDefaultBillOwnerStreamUseCase: GetTripDefaultBillOwnerStreamUseCase,
     private val dateTimeFormatter: TripDetailDateTimeFormatter,
     private val dateTimeProvider: DateTimeProvider
 ): ViewModel() {
@@ -69,6 +81,10 @@ class ManageReceiptViewModel@Inject constructor(
         )
     )
     val uiState: StateFlow<ManageReceiptUiState> = _uiState.asStateFlow()
+
+    init {
+        loadListMemberInfo()
+    }
 
     private fun checkAllowSaveContent() {
         _uiState.update {
@@ -141,6 +157,56 @@ class ManageReceiptViewModel@Inject constructor(
 
     private fun getDateTimeMillis(date: Long, time: Pair<Int, Int>): Long {
         return dateTimeFormatter.combineHourMinutesDayToMillis(date, time.first, time.second)
+    }
+
+    fun onSelectNewReceiptOwner(member: MemberInfoUiState) {
+        val currentUiState = uiState.value.updateReceiptOwnerUiState
+        val updatedList = currentUiState.listMemberReceiptOwnerSelection.map {
+            it.copy(isSelected = it.memberInfo.memberId == member.memberId)
+        }
+
+        val updatedReceiptOwnerUiState = currentUiState.copy(
+            listMemberReceiptOwnerSelection = updatedList
+        )
+
+        _uiState.update { state ->
+            state.copy(
+                updateReceiptOwnerUiState = updatedReceiptOwnerUiState,
+                receiptOwner = member
+            )
+        }
+    }
+
+    private fun loadListMemberInfo() {
+        viewModelScope.launch {
+            getAllMembersUseCase
+                .execute(tripId)
+                .combine(getTripDefaultBillOwnerStreamUseCase.execute(tripId)) { memberInfo, defaultBillOwner ->
+                    Pair(memberInfo, defaultBillOwner)
+                }
+                .collect { (memberInfo, defaultBillOwner) ->
+                    _uiState.update { state ->
+                        val listMember = memberInfo.map {
+                            it.toMemberInfoUiState(
+                                manageMemberResourceProvider = resourceProvider,
+                                isDefaultBillOwner = defaultBillOwner?.memberId == it.memberId
+                            )
+                        }
+
+                        state.copy(
+                            updateReceiptOwnerUiState = UpdateReceiptOwnerUiState(
+                                listMemberReceiptOwnerSelection = listMember.map {
+                                    MemberInfoSelectionUiState(
+                                        memberInfo = it,
+                                        isSelected = it.isDefaultBillOwner
+                                    )
+                                }
+                            ),
+                            receiptOwner = listMember.firstOrNull { it.isDefaultBillOwner }
+                        )
+                    }
+                }
+        }
     }
 
     enum class ErrorType {
