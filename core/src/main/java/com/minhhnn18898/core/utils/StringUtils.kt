@@ -2,6 +2,8 @@ package com.minhhnn18898.core.utils
 
 import android.content.Context
 import androidx.annotation.StringRes
+import java.text.NumberFormat
+import java.util.Locale
 import java.util.regex.Pattern
 
 object StringUtils {
@@ -26,6 +28,6 @@ fun String.isValidEmail(): Boolean {
     return emailPattern.matcher(this).matches()
 }
 
-fun Long.formatWithCommas(): String {
-    return "%,d".format(this)
-}
+fun Long?.formatWithCommas(): String =
+    NumberFormat.getNumberInstance(Locale.US).format(this ?: 0)
+

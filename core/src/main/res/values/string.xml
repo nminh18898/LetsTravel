@@ -76,4 +76,6 @@
     <string name="expenses">Expenses</string>
     <string name="receipt_name">Receipt name</string>
     <string name="receipt">Receipt</string>
+    <string name="change_date">Change date</string>
+    <string name="change_time">Change time</string>
 </resources>

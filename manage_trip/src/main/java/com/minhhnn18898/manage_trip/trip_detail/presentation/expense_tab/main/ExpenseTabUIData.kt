@@ -65,17 +65,17 @@ fun ReceiptInfo.toReceiptInfoUiState(): ReceiptInfoUiState {
 }
 
 data class ReceiptPayerInfoUiState(
-    val memberId: Long = 0,
-    val memberName: String = "",
-    @DrawableRes val avatarRes: Int,
+    val memberInfo: MemberInfoUiState = MemberInfoUiState(),
     val payAmount: String = ""
 )
 
 fun ReceiptPayerInfo.toReceiptPayerInfoUiState(manageMemberResourceProvider: ManageMemberResourceProvider): ReceiptPayerInfoUiState {
     return ReceiptPayerInfoUiState(
-        memberId = memberId,
-        memberName = memberName,
-        avatarRes = manageMemberResourceProvider.getAvatarResource(memberAvatar),
+        memberInfo = MemberInfoUiState(
+            memberId = memberId,
+            memberName = memberName,
+            avatarRes = manageMemberResourceProvider.getAvatarResource(memberAvatar)
+        ),
         payAmount = payAmount.toString()
     )
 }

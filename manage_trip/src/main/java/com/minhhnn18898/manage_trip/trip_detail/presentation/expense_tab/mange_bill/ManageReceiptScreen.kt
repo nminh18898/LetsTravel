@@ -1,5 +1,6 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_bill
 
+import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,12 +20,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -67,17 +70,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
-import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.memberAvatarList
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.ReceiptPayerInfoUiState
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.ui_components.base_components.NumberCommaTransformation
 import com.minhhnn18898.ui_components.base_components.drawWithoutRect
 import com.minhhnn18898.ui_components.theme.LetsTravelTheme
 import com.minhhnn18898.ui_components.theme.typography
@@ -87,12 +91,17 @@ fun ManageReceiptView(
     modifier: Modifier = Modifier,
     viewModel: ManageReceiptViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val receiptInfoUiState by viewModel.receiptInfoUiState.collectAsStateWithLifecycle()
+    val receiptUiState = receiptInfoUiState.receiptUiState
+    val receiptSplittingUiState by viewModel.receiptSplittingUiState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
 
-    val receiptUiState = uiState.receiptUiState
-
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(
+        modifier = modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         BillInfo(
             receiptName = receiptUiState.name,
             onReceiptNameUpdate = viewModel::onNameUpdated,
@@ -105,8 +114,8 @@ fun ManageReceiptView(
             onReceiptPriceUpdate = viewModel::onPricesUpdated,
             receiptDescription = receiptUiState.description,
             onReceiptDescriptionUpdate = viewModel::onDescriptionUpdated,
-            receiptOwner = uiState.receiptOwner,
-            receiptOwnerMemberSelection = uiState.updateReceiptOwnerUiState.listMemberReceiptOwnerSelection,
+            receiptOwner = receiptInfoUiState.receiptOwner,
+            receiptOwnerMemberSelection = receiptInfoUiState.updateReceiptOwnerUiState.listMemberReceiptOwnerSelection,
             onSelectReceiptOwnerMember = viewModel::onSelectNewReceiptOwner,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
@@ -117,7 +126,10 @@ fun ManageReceiptView(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        BillSplitOptions()
+        BillSplitOptions(
+            selectedSplittingMode = receiptSplittingUiState.splittingMode,
+            onOptionSelected = viewModel::onUpdateReceiptSplittingOption
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -125,7 +137,11 @@ fun ManageReceiptView(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        MemberPaymentItemView()
+        ReceiptPayersInfoView(
+            listPayersInfo = receiptSplittingUiState.payers,
+            enableChangeDueAmount = receiptSplittingUiState.splittingMode.canChangeAmount(),
+            onChangeDueAmount = viewModel::onUpdateCustomAmount
+        )
     }
 }
 
@@ -423,7 +439,7 @@ private fun BillPriceAndDescription(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Pricing and details of the receipt:",
+            text = "${stringResource(id = R.string.pricing_and_details_of_the_receipt)}:",
             style = typography.bodyMedium,
             color = MaterialTheme.colorScheme.secondary
         )
@@ -448,7 +464,8 @@ private fun BillPriceAndDescription(
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number,
-            )
+            ),
+            visualTransformation = NumberCommaTransformation()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -466,7 +483,7 @@ private fun BillPriceAndDescription(
             },
             placeholder = {
                 Text(
-                    text= "Add description here...",
+                    text= "${stringResource(id = R.string.add_description_here)}...",
                     color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
                     style = typography.bodyMedium,
                 )
@@ -497,7 +514,7 @@ private fun PaidByBadge(
                     color = color
                 )
                 .clickable {
-                    if(listMember.isNotEmpty()) {
+                    if (listMember.isNotEmpty()) {
                         expanded = true
                     }
                 }
@@ -505,7 +522,7 @@ private fun PaidByBadge(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Paid by",
+                text = stringResource(id = R.string.paid_by),
                 style = typography.titleSmall,
                 color = color
             )
@@ -563,20 +580,26 @@ private fun PaidByBadge(
 @Composable
 fun BillSplitSectionDescription() {
     Text(
-        text = "Choose how you want to split this receipt",
+        text = stringResource(id = R.string.splitting_mode_option_prompt),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.secondary
     )
 }
 
 @Composable
-fun BillSplitOptions() {
-    val radioOptions = listOf("Split evenly among all members", "Adjust amounts for each member", "Do not split")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
+fun BillSplitOptions(
+    selectedSplittingMode: ManageReceiptViewModel.SplittingMode,
+    onOptionSelected: (ManageReceiptViewModel.SplittingMode)-> Unit,
+) {
+    val radioOptions = listOf(
+        ManageReceiptViewModel.SplittingMode.EVENLY,
+        ManageReceiptViewModel.SplittingMode.CUSTOM,
+        ManageReceiptViewModel.SplittingMode.NO_SPLIT
+    )
 
     Column(Modifier.selectableGroup()) {
-        radioOptions.forEach { text ->
-            val isSelected = text == selectedOption
+        radioOptions.forEach { option ->
+            val isSelected = option == selectedSplittingMode
 
             Row(
                 Modifier
@@ -584,13 +607,13 @@ fun BillSplitOptions() {
                     .height(40.dp)
                     .selectable(
                         selected = isSelected,
-                        onClick = { onOptionSelected(text) },
+                        onClick = { onOptionSelected(option) },
                         role = Role.RadioButton
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (text == selectedOption),
+                    selected = isSelected,
                     onClick = null,
                     colors = RadioButtonDefaults.colors(
                         selectedColor = MaterialTheme.colorScheme.primary,
@@ -598,7 +621,7 @@ fun BillSplitOptions() {
                     )
                 )
                 Text(
-                    text = text,
+                    text = getSplittingOptionsText(context = LocalContext.current, splittingMode = option),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 8.dp),
                     color = if(isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
@@ -609,11 +632,33 @@ fun BillSplitOptions() {
 }
 
 @Composable
-private fun MemberPaymentItemView(
+private fun ReceiptPayersInfoView(
+    listPayersInfo: List<ReceiptPayerInfoUiState>,
+    enableChangeDueAmount: Boolean,
+    onChangeDueAmount: (memberId: Long, newAmount: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var priceText by remember { mutableStateOf(TextFieldValue("")) }
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(32.dp)
+    ) {
+        listPayersInfo.forEach {
+            MemberPaymentItemView(
+                payerInfo = it,
+                enableChangeDueAmount = enableChangeDueAmount,
+                onChangeDueAmount = onChangeDueAmount
+            )
+        }
+    }
+}
 
+@Composable
+private fun MemberPaymentItemView(
+    payerInfo: ReceiptPayerInfoUiState,
+    enableChangeDueAmount: Boolean,
+    onChangeDueAmount: (memberId: Long, newAmount: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -631,9 +676,10 @@ private fun MemberPaymentItemView(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextField(
-                    value = priceText,
-                    onValueChange = { newText ->
-                        priceText = newText
+                    enabled = enableChangeDueAmount,
+                    value = payerInfo.payAmount,
+                    onValueChange = {
+                        onChangeDueAmount(payerInfo.memberInfo.memberId, it)
                     },
                     modifier = modifier
                         .fillMaxWidth()
@@ -660,7 +706,8 @@ private fun MemberPaymentItemView(
                         unfocusedContainerColor = Color.Transparent,
                         disabledContainerColor = Color.Transparent,
                         errorContainerColor = Color.Transparent,
-                    )
+                    ),
+                    visualTransformation = NumberCommaTransformation()
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -691,7 +738,7 @@ private fun MemberPaymentItemView(
         ) {
 
             Image(
-                painter = painterResource(memberAvatarList.first()),
+                painter = painterResource(payerInfo.memberInfo.avatarRes),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -702,7 +749,7 @@ private fun MemberPaymentItemView(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "Member name",
+                text = payerInfo.memberInfo.memberName,
                 style = typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary,
                 overflow = TextOverflow.Ellipsis,
@@ -848,7 +895,7 @@ private fun SelectDateTimeOptionsDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onChangedDateSelected() },
-                        text = "Change date",
+                        text = stringResource(id = com.minhhnn18898.core.R.string.change_date),
                         style = typography.titleSmall,
                         color = MaterialTheme.colorScheme.secondary
                     )
@@ -859,12 +906,20 @@ private fun SelectDateTimeOptionsDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { onChangedTimeSelected() },
-                        text = "Change time",
+                        text = stringResource(id = com.minhhnn18898.core.R.string.change_time),
                         style = typography.titleSmall,
                         color = MaterialTheme.colorScheme.secondary
                     )
                 }
             }
         }
+    }
+}
+
+private fun getSplittingOptionsText(context: Context, splittingMode: ManageReceiptViewModel.SplittingMode): String {
+    return when(splittingMode) {
+        ManageReceiptViewModel.SplittingMode.EVENLY -> StringUtils.getString(context, R.string.splitting_mode_option_evenly)
+        ManageReceiptViewModel.SplittingMode.CUSTOM -> StringUtils.getString(context, R.string.splitting_mode_option_custom)
+        ManageReceiptViewModel.SplittingMode.NO_SPLIT -> StringUtils.getString(context, R.string.splitting_mode_option_no_split)
     }
 }

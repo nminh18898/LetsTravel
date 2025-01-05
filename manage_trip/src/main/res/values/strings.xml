@@ -40,4 +40,11 @@
     <string name="delete_member_dialog_content">Are you sure you want to remove %s from the trip? This will recalculate the total costs for the remaining members.</string>
     <string name="trip_has_no_member_description">There are currently no members associated with this trip.</string>
     <string name="add_your_receipts">Add your receipts</string>
+    <string name="splitting_mode_option_prompt">Choose how you want to split this receipt</string>
+    <string name="splitting_mode_option_evenly">Split evenly among all members</string>
+    <string name="splitting_mode_option_custom">Adjust amounts for each member</string>
+    <string name="splitting_mode_option_no_split">Do not split</string>
+    <string name="pricing_and_details_of_the_receipt">Pricing and details of the receipt</string>
+    <string name="add_description_here">Add description here</string>
+    <string name="paid_by">Paid by</string>
 </resources>

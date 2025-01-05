@@ -50,6 +50,7 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.Dat
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.TimePickerWithDialog
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
+import com.minhhnn18898.ui_components.base_components.InputPriceRow
 import com.minhhnn18898.ui_components.base_components.InputTextRow
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
@@ -224,7 +225,7 @@ private fun InputBasicActivityInfo(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        InputTextRow(
+        InputPriceRow(
             iconRes = R.drawable.payments_24,
             label = stringResource(id = CommonStringRes.prices),
             inputText = prices,

@@ -41,7 +41,8 @@ fun InputPriceRow(
             label = { Text(label) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number,
-            )
+            ),
+            visualTransformation = NumberCommaTransformation()
         )
     }
 }
