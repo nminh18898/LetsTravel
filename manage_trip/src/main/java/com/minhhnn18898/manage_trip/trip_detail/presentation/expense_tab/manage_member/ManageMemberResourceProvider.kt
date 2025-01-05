@@ -7,7 +7,6 @@ interface ManageMemberResourceProvider {
 
     @DrawableRes
     fun getAvatarResource(avatarId: Int): Int
-
 }
 
 class ManageMemberResourceProviderImpl: ManageMemberResourceProvider {
@@ -17,7 +16,12 @@ class ManageMemberResourceProviderImpl: ManageMemberResourceProvider {
         R.drawable.avatar_koala,
         R.drawable.avatar_porcupine,
         R.drawable.avatar_deer,
-        R.drawable.avatar_otter
+        R.drawable.avatar_otter,
+        R.drawable.avatar_wild_boar,
+        R.drawable.avatar_hippo,
+        R.drawable.avatar_penguin,
+        R.drawable.avatar_panda,
+        R.drawable.avatar_platypus
     )
 
     override fun getAvatarResource(avatarId: Int): Int {

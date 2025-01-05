@@ -16,12 +16,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -193,6 +195,7 @@ private fun ActivityItemDescription(
                 modifier = Modifier
                     .width(132.dp)
                     .aspectRatio(1.5f)
+                    .clip(RoundedCornerShape(8.dp))
             )
         } else {
             AsyncImage(
@@ -201,7 +204,8 @@ private fun ActivityItemDescription(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(132.dp)
-                    .aspectRatio(1.5f),
+                    .aspectRatio(1.5f)
+                    .clip(RoundedCornerShape(8.dp)),
                 placeholder = painterResource(id = R.drawable.image_placeholder),
                 error = painterResource(id = R.drawable.empty_image_bg)
             )

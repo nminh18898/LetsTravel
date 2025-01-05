@@ -24,8 +24,7 @@ fun DefaultErrorView(modifier: Modifier) {
             painter = painterResource(id = R.drawable.default_error_illus),
             contentDescription = "",
             modifier = modifier
-                .width(150.dp)
+                .width(200.dp)
                 .height(200.dp))
-
     }
 }
