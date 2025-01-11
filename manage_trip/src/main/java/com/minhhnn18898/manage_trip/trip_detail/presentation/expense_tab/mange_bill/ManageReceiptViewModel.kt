@@ -1,6 +1,5 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_bill
 
-import androidx.annotation.DrawableRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,20 +7,28 @@ import androidx.navigation.toRoute
 import com.minhhnn18898.app_navigation.destination.ManageBillDestination
 import com.minhhnn18898.app_navigation.destination.ManageBillDestinationParameters
 import com.minhhnn18898.app_navigation.mapper.CustomNavType
+import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.DateTimeProvider
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.core.utils.safeDiv
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOwnerInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.GetTripDefaultBillOwnerStreamUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.CreateReceiptUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.ReceiptPayerInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.toMemberInfoUiState
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.toReceiptPayerInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
+import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.AddEditTripActivityViewModel.ErrorType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,7 +45,7 @@ data class ReceiptUiState(
     val formattedDate: String = "",
     val dateCreated: Long? = null,
     val timeCreated: Pair<Int, Int> = Pair(0, 0),
-    @DrawableRes val receiptOwnerAvatar: Int = 0
+    val receiptOwner: MemberInfoUiState? = null
 )
 
 data class UpdateReceiptOwnerUiState(
@@ -57,7 +64,6 @@ data class ReceiptSplittingUiState(
 data class ManageReceiptUiState(
     val receiptUiState: ReceiptUiState = ReceiptUiState(),
     val updateReceiptOwnerUiState: UpdateReceiptOwnerUiState = UpdateReceiptOwnerUiState(),
-    val receiptOwner: MemberInfoUiState? = null,
     val isLoading: Boolean = false,
     val isNotFound: Boolean = false,
     val canDelete: Boolean = false,
@@ -75,6 +81,7 @@ class ManageReceiptViewModel@Inject constructor(
     private val resourceProvider: ManageMemberResourceProvider,
     private val getAllMembersUseCase: GetAllMembersUseCase,
     private val getTripDefaultBillOwnerStreamUseCase: GetTripDefaultBillOwnerStreamUseCase,
+    private val createReceiptUseCase: CreateReceiptUseCase,
     private val dateTimeFormatter: TripDetailDateTimeFormatter,
     private val dateTimeProvider: DateTimeProvider
 ): ViewModel() {
@@ -192,7 +199,9 @@ class ManageReceiptViewModel@Inject constructor(
         _receiptInfoUiState.update { state ->
             state.copy(
                 updateReceiptOwnerUiState = updatedReceiptOwnerUiState,
-                receiptOwner = member
+                receiptUiState = state.receiptUiState.copy(
+                    receiptOwner = member
+                )
             )
         }
     }
@@ -236,7 +245,9 @@ class ManageReceiptViewModel@Inject constructor(
                         )
                     }
                 ),
-                receiptOwner = memberUiStates.firstOrNull { it.isDefaultBillOwner },
+                receiptUiState = state.receiptUiState.copy(
+                    receiptOwner = memberUiStates.firstOrNull { it.isDefaultBillOwner }
+                )
             )
         }
     }
@@ -469,6 +480,87 @@ class ManageReceiptViewModel@Inject constructor(
         }
     }
 
+    fun onDeleteClick() {
+
+    }
+
+    fun onSaveClick() {
+        viewModelScope.launch {
+            val receiptInfo = getReceiptInfo()
+            val receiptPayers = getReceiptPayersInfo()
+
+            if(isUpdateExistingInfo()) {
+
+            } else {
+                createNewReceipt(receiptInfo, receiptPayers)
+            }
+        }
+    }
+
+    private suspend fun createNewReceipt(receiptInfo: ReceiptInfo, payerInfo: List<ReceiptPayerInfo>) {
+        createReceiptUseCase.execute(
+            tripId = tripId,
+            receiptInfo = receiptInfo,
+            payerInfo = payerInfo
+        ).collect { result ->
+            when(result) {
+                is Result.Loading -> _receiptInfoUiState.update { it.copy(isLoading = true) }
+                is Result.Success -> {
+                    _receiptInfoUiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isCreated = true
+                        )
+                    }
+                }
+                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_RECEIPT)
+            }
+        }
+    }
+
+    private fun isUpdateExistingInfo(): Boolean {
+        return receiptId > 0L
+    }
+
+    private fun getReceiptInfo(): ReceiptInfo {
+        val currentReceiptUiState = receiptInfoUiState.value.receiptUiState
+        val receiptSplittingUiState = receiptSplittingUiState
+
+        return ReceiptInfo(
+            receiptId = receiptId.coerceAtLeast(0L),
+            name = currentReceiptUiState.name,
+            description = currentReceiptUiState.description,
+            price = currentReceiptUiState.prices.toLongOrNull() ?: 0L,
+            receiptOwner = currentReceiptUiState.receiptOwner?.memberId ?: 0L,
+            createdTime = currentReceiptUiState.dateCreated ?: 0L,
+            splittingMode = receiptSplittingUiState.value.splittingMode.toInt()
+        )
+    }
+
+    private fun getReceiptPayersInfo(): List<ReceiptPayerInfo> {
+        return receiptSplittingUiState.value.payers.map {
+            it.toReceiptPayerInfo()
+        }
+    }
+
+    private fun showErrorInBriefPeriod(errorType: ErrorType) {
+        viewModelScope.launch {
+            _receiptInfoUiState.update {
+                it.copy(
+                    isLoading = false,
+                    showError = errorType
+                )
+            }
+            delay(3000)
+            _receiptInfoUiState.update {
+                it.copy(
+                    isLoading = false,
+                    showError = ErrorType.ERROR_MESSAGE_NONE
+                )
+            }
+        }
+    }
+
     enum class ErrorType {
         ERROR_MESSAGE_NONE,
         ERROR_MESSAGE_CAN_NOT_CREATE_RECEIPT,
@@ -511,4 +603,12 @@ private fun MemberInfoUiState.toReceiptPayerInfoUiState(): ReceiptPayerInfoUiSta
 
 fun ManageReceiptViewModel.SplittingMode.canChangeAmount(): Boolean {
     return this == ManageReceiptViewModel.SplittingMode.CUSTOM
+}
+
+fun ManageReceiptViewModel.SplittingMode.toInt(): Int {
+    return when(this) {
+        ManageReceiptViewModel.SplittingMode.EVENLY -> ReceiptRepository.SPLITTING_MODE_EVENLY
+        ManageReceiptViewModel.SplittingMode.CUSTOM -> ReceiptRepository.SPLITTING_MODE_CUSTOM
+        ManageReceiptViewModel.SplittingMode.NO_SPLIT -> ReceiptRepository.SPLITTING_MODE_NO_SPLIT
+    }
 }

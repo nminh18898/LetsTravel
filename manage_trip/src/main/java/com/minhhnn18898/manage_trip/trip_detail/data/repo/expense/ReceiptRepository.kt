@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface ReceiptRepository {
 
+    companion object {
+        const val SPLITTING_MODE_EVENLY = 1
+        const val SPLITTING_MODE_CUSTOM = 2
+        const val SPLITTING_MODE_NO_SPLIT = 3
+    }
+
     fun getReceiptsStream(tripId: Long): Flow<List<ReceiptWithAllPayersInfo>>
 
     fun getReceipts(tripId: Long): List<ReceiptWithAllPayersInfo>

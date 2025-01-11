@@ -69,6 +69,14 @@ data class ReceiptPayerInfoUiState(
     val payAmount: String = ""
 )
 
+fun ReceiptPayerInfoUiState.toReceiptPayerInfo(): ReceiptPayerInfo {
+    return ReceiptPayerInfo(
+        memberId = this.memberInfo.memberId,
+        memberName = this.memberInfo.memberName,
+        payAmount = this.payAmount.toLongOrNull() ?: 0L
+    )
+}
+
 fun ReceiptPayerInfo.toReceiptPayerInfoUiState(manageMemberResourceProvider: ManageMemberResourceProvider): ReceiptPayerInfoUiState {
     return ReceiptPayerInfoUiState(
         memberInfo = MemberInfoUiState(

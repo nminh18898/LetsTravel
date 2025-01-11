@@ -2,6 +2,7 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_
 
 import android.content.Context
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -75,6 +76,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.minhhnn18898.app_navigation.appbarstate.TopAppBarState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
@@ -83,21 +85,79 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.Re
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.NumberCommaTransformation
+import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.base_components.drawWithoutRect
 import com.minhhnn18898.ui_components.theme.LetsTravelTheme
 import com.minhhnn18898.ui_components.theme.typography
 
 @Composable
 fun ManageReceiptView(
+    onComposedTopBarActions: (TopAppBarState) -> Unit,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ManageReceiptViewModel = hiltViewModel()
 ) {
-    val receiptInfoUiState by viewModel.receiptInfoUiState.collectAsStateWithLifecycle()
-    val receiptUiState = receiptInfoUiState.receiptUiState
+    val mainUiState by viewModel.receiptInfoUiState.collectAsStateWithLifecycle()
+    val receiptUiState = mainUiState.receiptUiState
     val receiptSplittingUiState by viewModel.receiptSplittingUiState.collectAsStateWithLifecycle()
     val addMoreMemberUiState by viewModel.manageMembersUiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        onComposedTopBarActions(
+            TopAppBarState(
+                screenTitle = StringUtils.getString(context = context, com.minhhnn18898.core.R.string.receipt),
+                actions = {
+                    if(mainUiState.canDelete) {
+                        IconButton(
+                            onClick = {
+                                viewModel.onDeleteClick()
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(com.minhhnn18898.ui_components.R.drawable.delete_24),
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
+                    IconButton(
+                        onClick = {
+                            viewModel.onSaveClick()
+                        },
+                        enabled = mainUiState.allowSaveContent
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.save_as_24),
+                            contentDescription = "",
+                            tint = if(mainUiState.allowSaveContent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(0.3f)
+                        )
+                    }
+                }
+            )
+        )
+    }
+
+    LaunchedEffect(mainUiState.isDeleted) {
+        if(mainUiState.isDeleted) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(mainUiState.isUpdated) {
+        if(mainUiState.isUpdated) {
+            navigateUp()
+        }
+    }
+
+    LaunchedEffect(mainUiState.isCreated) {
+        if(mainUiState.isCreated) {
+            navigateUp()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -116,8 +176,8 @@ fun ManageReceiptView(
             onReceiptPriceUpdate = viewModel::onPricesUpdated,
             receiptDescription = receiptUiState.description,
             onReceiptDescriptionUpdate = viewModel::onDescriptionUpdated,
-            receiptOwner = receiptInfoUiState.receiptOwner,
-            receiptOwnerMemberSelection = receiptInfoUiState.updateReceiptOwnerUiState.listMemberReceiptOwnerSelection,
+            receiptOwner = receiptUiState.receiptOwner,
+            receiptOwnerMemberSelection = mainUiState.updateReceiptOwnerUiState.listMemberReceiptOwnerSelection,
             onSelectReceiptOwnerMember = viewModel::onSelectNewReceiptOwner,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
@@ -149,6 +209,15 @@ fun ManageReceiptView(
             onRemoveMemberFromReceipt = viewModel::onRemoveMemberFromReceipt
         )
     }
+
+    AnimatedVisibility(mainUiState.isLoading) {
+        ProgressDialog()
+    }
+
+    TopMessageBar(
+        shown = mainUiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, mainUiState.showError)
+    )
 }
 
 @Composable
@@ -964,5 +1033,19 @@ private fun getSplittingOptionsText(context: Context, splittingMode: ManageRecei
         ManageReceiptViewModel.SplittingMode.EVENLY -> StringUtils.getString(context, R.string.splitting_mode_option_evenly)
         ManageReceiptViewModel.SplittingMode.CUSTOM -> StringUtils.getString(context, R.string.splitting_mode_option_custom)
         ManageReceiptViewModel.SplittingMode.NO_SPLIT -> StringUtils.getString(context, R.string.splitting_mode_option_no_split)
+    }
+}
+
+private fun ManageReceiptViewModel.ErrorType.isShow(): Boolean {
+    return this != ManageReceiptViewModel.ErrorType.ERROR_MESSAGE_NONE
+}
+
+private fun getMessageError(context: Context, errorType: ManageReceiptViewModel.ErrorType): String {
+    return when(errorType) {
+        ManageReceiptViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_RECEIPT -> StringUtils.getString(context, R.string.error_can_not_create_receipt)
+        ManageReceiptViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_RECEIPT -> StringUtils.getString(context, R.string.error_can_not_update_receipt_info)
+        ManageReceiptViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_RECEIPT -> StringUtils.getString(context, R.string.error_can_not_delete_receipt)
+        ManageReceiptViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_RECEIPT_OWNER -> StringUtils.getString(context, R.string.error_can_not_update_receipt_owner)
+        else -> ""
     }
 }

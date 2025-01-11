@@ -50,4 +50,8 @@
     <string name="paid_by">Paid by</string>
     <string name="remove_member_from_receipt_dialog_title">Are you sure you want to remove %s from this receipt?</string>
     <string name="remove_member_from_receipt_dialog_content">This will recalculate the total costs for the remaining members.</string>
+    <string name="error_can_not_create_receipt">Can not create receipt. Please try again</string>
+    <string name="error_can_not_update_receipt_info">Can not update receipt info. Please try again</string>
+    <string name="error_can_not_delete_receipt">Can not delete receipt. Please try again</string>
+    <string name="error_can_not_update_receipt_owner">Can not update the receipt owner. Please try again</string>
 </resources>

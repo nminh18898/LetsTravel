@@ -154,8 +154,14 @@ fun NavGraphBuilder.manageTripFeatureComposable(
     composable<ManageBillDestination>(
         typeMap = mapOf(typeOf<ManageBillDestinationParameters>() to CustomNavType(ManageBillDestinationParameters::class.java, ManageBillDestinationParameters.serializer()))
     ) {
-        ManageReceiptView()
-        EmptyActionTopBar(StringUtils.getString(LocalContext.current, ManageBillDestination.title), appBarOnScreenDisplay)
+        ManageReceiptView(
+            onComposedTopBarActions = {
+                appBarOnScreenDisplay.invoke(it)
+            },
+            navigateUp = {
+                navController.navigateUp()
+            }
+        )
     }
 }
 
