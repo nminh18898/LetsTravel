@@ -97,8 +97,8 @@ fun NavGraphBuilder.manageTripFeatureComposable(
             onNavigateToBillSlitMemberScreen = { tripId, tripName ->
                 navController.navigateToBillSplitManageMemberScreen(tripId, tripName)
             },
-            onNavigateToManageBillScreen = {
-                navController.navigateToManageBillScreen(it)
+            onNavigateToManageBillScreen = { tripId, receiptId ->
+                navController.navigateToManageBillScreen(tripId, receiptId)
             }
         )
     }
@@ -218,10 +218,10 @@ fun NavHostController.navigateToBillSplitManageMemberScreen(tripId: Long, tripNa
     )
 }
 
-fun NavHostController.navigateToManageBillScreen(tripId: Long) {
+fun NavHostController.navigateToManageBillScreen(tripId: Long, receiptId: Long = 0L) {
     this.navigate(
         route = ManageBillDestination(
-            ManageBillDestinationParameters(tripId)
+            ManageBillDestinationParameters(tripId, receiptId)
         )
     )
 }

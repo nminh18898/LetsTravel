@@ -525,6 +525,8 @@ class ManageReceiptViewModel@Inject constructor(
     private fun getReceiptInfo(): ReceiptInfo {
         val currentReceiptUiState = receiptInfoUiState.value.receiptUiState
         val receiptSplittingUiState = receiptSplittingUiState
+        val currentCreateDate = currentReceiptUiState.dateCreated
+        val createTimeInMillis = if(currentCreateDate != null) getDateTimeMillis(currentCreateDate, currentReceiptUiState.timeCreated) else dateTimeProvider.currentTimeMillis()
 
         return ReceiptInfo(
             receiptId = receiptId.coerceAtLeast(0L),
@@ -532,15 +534,18 @@ class ManageReceiptViewModel@Inject constructor(
             description = currentReceiptUiState.description,
             price = currentReceiptUiState.prices.toLongOrNull() ?: 0L,
             receiptOwner = currentReceiptUiState.receiptOwner?.memberId ?: 0L,
-            createdTime = currentReceiptUiState.dateCreated ?: 0L,
+            createdTime = createTimeInMillis,
             splittingMode = receiptSplittingUiState.value.splittingMode.toInt()
         )
     }
 
     private fun getReceiptPayersInfo(): List<ReceiptPayerInfo> {
-        return receiptSplittingUiState.value.payers.map {
-            it.toReceiptPayerInfo()
-        }
+        val splittingMode = receiptSplittingUiState.value.splittingMode
+
+        return if (splittingMode.isNoSplit()) emptyList() else
+            receiptSplittingUiState.value.payers.map {
+                it.toReceiptPayerInfo()
+            }
     }
 
     private fun showErrorInBriefPeriod(errorType: ErrorType) {
@@ -611,4 +616,8 @@ fun ManageReceiptViewModel.SplittingMode.toInt(): Int {
         ManageReceiptViewModel.SplittingMode.CUSTOM -> ReceiptRepository.SPLITTING_MODE_CUSTOM
         ManageReceiptViewModel.SplittingMode.NO_SPLIT -> ReceiptRepository.SPLITTING_MODE_NO_SPLIT
     }
+}
+
+fun ManageReceiptViewModel.SplittingMode.isNoSplit(): Boolean {
+    return this == ManageReceiptViewModel.SplittingMode.NO_SPLIT
 }

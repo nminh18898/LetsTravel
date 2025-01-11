@@ -2,6 +2,7 @@ package com.minhhnn18898.manage_trip.trip_detail.data.model.expense
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 
 @Entity(
     tableName = "receipt_payer",
@@ -44,10 +45,10 @@ data class ReceiptWithPayersModel(
     val ownerName: String,
     val ownerAvatar: Int,
 
-    val payerId: Long,
-    val payerName: String,
-    val payerAvatar: Int,
-    val payAmount: Long
+    val payerId: Long?,
+    val payerName: String?,
+    val payerAvatar: Int?,
+    val payAmount: Long?
 )
 
 data class ReceiptWithAllPayersInfo(
@@ -84,14 +85,18 @@ private fun List<ReceiptWithPayersModel>.getReceiptOwnerInfo(): MemberInfo {
     return this.firstOrNull()?.getReceiptOwnerInfo() ?: MemberInfo()
 }
 
-private fun List<ReceiptWithPayersModel>.getReceiptPayersInfo(): List<ReceiptPayerInfo> {
+private fun List<ReceiptWithPayersModel>.getReceiptPayersInfo(): List<ReceiptPayerInfo?> {
     return this.map { receiptDetail ->
-        ReceiptPayerInfo(
-            memberId = receiptDetail.payerId,
-            memberName = receiptDetail.payerName,
-            memberAvatar = receiptDetail.payerAvatar,
-            payAmount = receiptDetail.payAmount
-        )
+        if(receiptDetail.splittingMode == ReceiptRepository.SPLITTING_MODE_NO_SPLIT) {
+            null
+        } else {
+            ReceiptPayerInfo(
+                memberId = receiptDetail.payerId ?: 0L,
+                memberName = receiptDetail.payerName ?: "",
+                memberAvatar = receiptDetail.payerAvatar ?: 0,
+                payAmount = receiptDetail.payAmount ?: 0
+            )
+        }
     }
 }
 
@@ -105,7 +110,7 @@ fun List<ReceiptWithPayersModel>.toReceiptWithAllPayersInfo(): List<ReceiptWithA
             ReceiptWithAllPayersInfo(
                 receiptInfo =  it.getReceiptInfo(),
                 receiptOwner = it.getReceiptOwnerInfo(),
-                receiptPayers = it.getReceiptPayersInfo()
+                receiptPayers = it.getReceiptPayersInfo().filterNotNull()
             )
         }
 }

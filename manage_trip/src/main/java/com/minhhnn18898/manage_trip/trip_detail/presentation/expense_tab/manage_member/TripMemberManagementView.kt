@@ -58,7 +58,6 @@ import com.minhhnn18898.ui_components.base_components.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 
-
 @Composable
 fun BillSplitManageMemberView(
     modifier: Modifier = Modifier,

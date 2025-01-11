@@ -54,4 +54,6 @@
     <string name="error_can_not_update_receipt_info">Can not update receipt info. Please try again</string>
     <string name="error_can_not_delete_receipt">Can not delete receipt. Please try again</string>
     <string name="error_can_not_update_receipt_owner">Can not update the receipt owner. Please try again</string>
+    <string name="no_split">No split</string>
+    <string name="add_new_receipt">Add new receipt</string>
 </resources>

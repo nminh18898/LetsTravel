@@ -73,7 +73,6 @@ fun LazyListScope.renderTripActivitySection(
     }
 }
 
-
 fun LazyListScope.renderTripActivityContentList(
     activities: List<ITripActivityDisplay>,
     onClickCreateTripActivity: () -> Unit,

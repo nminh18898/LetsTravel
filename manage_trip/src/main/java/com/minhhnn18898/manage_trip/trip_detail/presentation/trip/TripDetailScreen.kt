@@ -70,7 +70,7 @@ fun TripDetailScreen(
     onNavigateToEditTripScreen: (Long) -> Unit,
     onNavigateEditTripActivityScreen: (tripId: Long, activityId: Long) -> Unit,
     onNavigateToBillSlitMemberScreen: (tripId: Long, tripName: String) -> Unit,
-    onNavigateToManageBillScreen: (Long) -> Unit,
+    onNavigateToManageBillScreen: (tripId: Long, receiptId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
@@ -146,8 +146,11 @@ fun TripDetailScreen(
                 onNavigateManageMemberScreen = {
                     onNavigateToBillSlitMemberScreen(viewModel.tripId, viewModel.tripName)
                 },
-                onNavigateManageBillScreen = {
-                    onNavigateToManageBillScreen(viewModel.tripId)
+                onNavigateManageReceiptScreen = { receiptId ->
+                    onNavigateToManageBillScreen(
+                        viewModel.tripId,
+                        receiptId
+                    )
                 }
             )
         }

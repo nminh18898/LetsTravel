@@ -99,7 +99,8 @@ class TripDetailScreenViewModel @Inject constructor(
         tripId = tripId,
         getAllMembersUseCase = getAllMembersUseCase,
         memberResourceProvider = memberResourceProvider,
-        getAllReceiptsUseCase = getAllReceiptsUseCase
+        getAllReceiptsUseCase = getAllReceiptsUseCase,
+        dateTimeFormatter = dateTimeFormatter
     )
 
     var currentTabSelected: TripDetailTabDestination by mutableStateOf(TripDetailPlanTabDestination)

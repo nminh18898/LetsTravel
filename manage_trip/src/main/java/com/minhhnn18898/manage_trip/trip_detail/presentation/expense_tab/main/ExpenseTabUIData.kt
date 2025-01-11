@@ -1,11 +1,13 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 
 import androidx.annotation.DrawableRes
+import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
+import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 
 data class MemberInfoUiState(
     val memberId: Long = 0,
@@ -33,10 +35,19 @@ data class ReceiptWithAllPayersInfoUiState(
 )
 
 fun ReceiptWithAllPayersInfo.toReceiptWithAllPayersInfoUiState(
-    manageMemberResourceProvider: ManageMemberResourceProvider
+    manageMemberResourceProvider: ManageMemberResourceProvider,
+    dateTimeFormatter: TripDetailDateTimeFormatter
 ): ReceiptWithAllPayersInfoUiState {
+    val minAmount = receiptPayers.minOfOrNull { it.payAmount } ?: 0L
+    val maxAmount = receiptPayers.maxOfOrNull { it.payAmount } ?: 0L
+    val amountPerPerson = when {
+        minAmount == maxAmount && minAmount == 0L -> ""
+        minAmount == maxAmount -> minAmount.formatWithCommas()
+        else -> "${minAmount.formatWithCommas()}-${maxAmount.formatWithCommas()}"
+    }
+
     return ReceiptWithAllPayersInfoUiState(
-        receiptInfo = receiptInfo.toReceiptInfoUiState(),
+        receiptInfo = receiptInfo.toReceiptInfoUiState(amountPerPerson, dateTimeFormatter),
         receiptOwner = receiptOwner.toMemberInfoUiState(manageMemberResourceProvider),
         receiptPayers = receiptPayers.map {
             it.toReceiptPayerInfoUiState(manageMemberResourceProvider)
@@ -50,17 +61,20 @@ data class ReceiptInfoUiState(
     val description: String = "",
     val price: String = "",
     val createdTime: String = "",
-    val splittingMode: Int = 0
+    val pricePerPersonDescription: String= ""
 )
 
-fun ReceiptInfo.toReceiptInfoUiState(): ReceiptInfoUiState {
+fun ReceiptInfo.toReceiptInfoUiState(
+    pricePerPersonDescription: String,
+    dateTimeFormatter: TripDetailDateTimeFormatter
+): ReceiptInfoUiState {
     return ReceiptInfoUiState(
         receiptId = this.receiptId,
         name = this.name,
         description = this.description,
-        price = this.price.toString(),
-        createdTime = this.createdTime.toString(),
-        splittingMode = this.splittingMode
+        price = this.price.formatWithCommas(),
+        createdTime = dateTimeFormatter.getFormattedReceiptCreatedDate(this.createdTime),
+        pricePerPersonDescription = pricePerPersonDescription
     )
 }
 
