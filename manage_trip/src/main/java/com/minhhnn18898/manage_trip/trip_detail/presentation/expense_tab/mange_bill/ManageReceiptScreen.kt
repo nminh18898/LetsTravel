@@ -81,6 +81,7 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.Me
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.ReceiptPayerInfoUiState
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.NumberCommaTransformation
 import com.minhhnn18898.ui_components.base_components.drawWithoutRect
 import com.minhhnn18898.ui_components.theme.LetsTravelTheme
@@ -94,6 +95,7 @@ fun ManageReceiptView(
     val receiptInfoUiState by viewModel.receiptInfoUiState.collectAsStateWithLifecycle()
     val receiptUiState = receiptInfoUiState.receiptUiState
     val receiptSplittingUiState by viewModel.receiptSplittingUiState.collectAsStateWithLifecycle()
+    val addMoreMemberUiState by viewModel.manageMembersUiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -133,14 +135,18 @@ fun ManageReceiptView(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        AddNewMemberButton()
+        AddNewMemberButton(
+            items = addMoreMemberUiState.listMembers,
+            onSelectMember = viewModel::onAddMemberToReceipt
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         ReceiptPayersInfoView(
             listPayersInfo = receiptSplittingUiState.payers,
             enableChangeDueAmount = receiptSplittingUiState.splittingMode.canChangeAmount(),
-            onChangeDueAmount = viewModel::onUpdateCustomAmount
+            onChangeDueAmount = viewModel::onUpdateCustomAmount,
+            onRemoveMemberFromReceipt = viewModel::onRemoveMemberFromReceipt
         )
     }
 }
@@ -636,6 +642,7 @@ private fun ReceiptPayersInfoView(
     listPayersInfo: List<ReceiptPayerInfoUiState>,
     enableChangeDueAmount: Boolean,
     onChangeDueAmount: (memberId: Long, newAmount: String) -> Unit,
+    onRemoveMemberFromReceipt: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -646,7 +653,8 @@ private fun ReceiptPayersInfoView(
             MemberPaymentItemView(
                 payerInfo = it,
                 enableChangeDueAmount = enableChangeDueAmount,
-                onChangeDueAmount = onChangeDueAmount
+                onChangeDueAmount = onChangeDueAmount,
+                onRemoveMemberFromReceipt = onRemoveMemberFromReceipt
             )
         }
     }
@@ -657,8 +665,11 @@ private fun MemberPaymentItemView(
     payerInfo: ReceiptPayerInfoUiState,
     enableChangeDueAmount: Boolean,
     onChangeDueAmount: (memberId: Long, newAmount: String) -> Unit,
+    onRemoveMemberFromReceipt: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showDialogConfirmRemoveMember by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -714,7 +725,7 @@ private fun MemberPaymentItemView(
 
                 IconButton(
                     onClick = {
-
+                        showDialogConfirmRemoveMember = true
                     },
                     content = {
                         Icon(
@@ -757,21 +768,53 @@ private fun MemberPaymentItemView(
             )
         }
     }
+
+
+    if(showDialogConfirmRemoveMember) {
+        DeleteConfirmationDialog(
+            title = stringResource(id = R.string.remove_member_from_receipt_dialog_title, payerInfo.memberInfo.memberName),
+            description = stringResource(id = R.string.remove_member_from_receipt_dialog_content),
+            onConfirmation = {
+                showDialogConfirmRemoveMember = false
+                onRemoveMemberFromReceipt(payerInfo.memberInfo.memberId)
+            },
+            onDismissRequest = {
+                showDialogConfirmRemoveMember = false
+            }
+        )
+    }
 }
 
 @Composable
-private fun AddNewMemberButton() {
+private fun AddNewMemberButton(
+    items: List<MemberInfoSelectionUiState>,
+    onSelectMember: (MemberInfoUiState) -> Unit,
+) {
+    var showDialogSelectMember by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopEnd) {
         CreateNewDefaultButton(
-            text = stringResource(id = R.string.add_new_member),
+            text = stringResource(id = R.string.add_member),
             onClick = {
-
+                showDialogSelectMember = true
             }
         )
     }
 
+    if(showDialogSelectMember) {
+        SelectMemberDialog(
+            items = items,
+            onItemSelected = {
+                onSelectMember(it)
+                showDialogSelectMember = false
+            },
+            onDismissRequest = {
+                showDialogSelectMember = false
+            }
+        )
+    }
 }
 
 @Composable

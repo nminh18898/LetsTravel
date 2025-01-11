@@ -11,6 +11,8 @@ import com.minhhnn18898.app_navigation.mapper.CustomNavType
 import com.minhhnn18898.core.utils.DateTimeProvider
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.core.utils.safeDiv
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOwnerInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.GetTripDefaultBillOwnerStreamUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
@@ -41,6 +43,10 @@ data class ReceiptUiState(
 
 data class UpdateReceiptOwnerUiState(
     val listMemberReceiptOwnerSelection: List<MemberInfoSelectionUiState> = emptyList()
+)
+
+data class ManageMembersUiState(
+    val listMembers: List<MemberInfoSelectionUiState> = emptyList()
 )
 
 data class ReceiptSplittingUiState(
@@ -91,6 +97,9 @@ class ManageReceiptViewModel@Inject constructor(
 
     private val _receiptSplittingUiState = MutableStateFlow(ReceiptSplittingUiState())
     val receiptSplittingUiState: StateFlow<ReceiptSplittingUiState> = _receiptSplittingUiState.asStateFlow()
+
+    private val _manageMembersUiState = MutableStateFlow(ManageMembersUiState())
+    val manageMembersUiState: StateFlow<ManageMembersUiState> = _manageMembersUiState.asStateFlow()
 
     init {
         loadListMemberInfo()
@@ -190,47 +199,72 @@ class ManageReceiptViewModel@Inject constructor(
 
     private fun loadListMemberInfo() {
         viewModelScope.launch {
-            getAllMembersUseCase
-                .execute(tripId)
-                .combine(getTripDefaultBillOwnerStreamUseCase.execute(tripId)) { memberInfo, defaultBillOwner ->
-                    Pair(memberInfo, defaultBillOwner)
+            getAllMembersUseCase.execute(tripId)
+                .combine(getTripDefaultBillOwnerStreamUseCase.execute(tripId)) { members, defaultBillOwner ->
+                    Pair(members, defaultBillOwner)
                 }
-                .collect { (memberInfo, defaultBillOwner) ->
-                    val listMember = memberInfo.map {
-                        it.toMemberInfoUiState(
-                            manageMemberResourceProvider = resourceProvider,
-                            isDefaultBillOwner = defaultBillOwner?.memberId == it.memberId
-                        )
-                    }
+                .collect { (members, defaultBillOwner) ->
+                    val memberUiStates = createMemberUiStates(members, defaultBillOwner)
 
-                    _receiptInfoUiState.update { state ->
-                        state.copy(
-                            updateReceiptOwnerUiState = UpdateReceiptOwnerUiState(
-                                listMemberReceiptOwnerSelection = listMember.map {
-                                    MemberInfoSelectionUiState(
-                                        memberInfo = it,
-                                        isSelected = it.isDefaultBillOwner
-                                    )
-                                }
-                            ),
-                            receiptOwner = listMember.firstOrNull { it.isDefaultBillOwner }
-                        )
-                    }
-
-                    _receiptSplittingUiState.update { state ->
-                        state.copy(
-                            splittingMode = SplittingMode.EVENLY,
-                            payers = listMember
-                                .toReceiptPayerInfoUiState(receiptInfoUiState
-                                .value
-                                .receiptUiState
-                                .prices
-                                .toLongOrNull() ?: 0L
-                            )
-                        )
-                    }
+                    updateReceiptInfoState(memberUiStates)
+                    updateReceiptSplittingState(memberUiStates)
+                    updateManageMemberUiState(memberUiStates)
                 }
         }
+    }
+
+    private fun createMemberUiStates(
+        members: List<MemberInfo>,
+        defaultBillOwner: DefaultBillOwnerInfo?
+    ): List<MemberInfoUiState> {
+        return members.map { member ->
+            member.toMemberInfoUiState(
+                manageMemberResourceProvider = resourceProvider,
+                isDefaultBillOwner = defaultBillOwner?.memberId == member.memberId
+            )
+        }
+    }
+
+    private fun updateReceiptInfoState(memberUiStates: List<MemberInfoUiState>) {
+        _receiptInfoUiState.update { state ->
+            state.copy(
+                updateReceiptOwnerUiState = UpdateReceiptOwnerUiState(
+                    listMemberReceiptOwnerSelection = memberUiStates.map { memberUiState ->
+                        MemberInfoSelectionUiState(
+                            memberInfo = memberUiState,
+                            isSelected = memberUiState.isDefaultBillOwner
+                        )
+                    }
+                ),
+                receiptOwner = memberUiStates.firstOrNull { it.isDefaultBillOwner },
+            )
+        }
+    }
+
+    private fun updateReceiptSplittingState(memberUiStates: List<MemberInfoUiState>) {
+        val totalPrices = receiptInfoUiState.value.receiptUiState.prices.toLongOrNull() ?: 0L
+        _receiptSplittingUiState.update { state ->
+            state.copy(
+                payers = memberUiStates.toReceiptPayerInfoUiState(totalPrices)
+            )
+        }
+    }
+
+    private fun updateManageMemberUiState(memberUiStates: List<MemberInfoUiState>) {
+        _manageMembersUiState.update { state ->
+            state.copy(
+                listMembers = memberUiStates.map { memberUiState ->
+                    MemberInfoSelectionUiState(
+                        memberInfo = memberUiState,
+                        isSelected = true
+                    )
+                }
+            )
+        }
+    }
+
+    private fun updatePayersAmount() {
+        updatePayersAmount(receiptSplittingUiState.value.splittingMode)
     }
 
     private fun updatePayersAmount(splittingMode: SplittingMode) {
@@ -379,6 +413,62 @@ class ManageReceiptViewModel@Inject constructor(
         }
     }
 
+    fun onRemoveMemberFromReceipt(memberId: Long) {
+        updateReceiptSplittingStateWhenMemberRemoved(memberId)
+        updateManageMemberMembersState(memberId, ManageMemberOperation.REMOVE)
+        updatePayersAmount()
+    }
+
+    private fun updateReceiptSplittingStateWhenMemberRemoved(memberId: Long) {
+        _receiptSplittingUiState.update { currentState ->
+            val updatedPayers = currentState.payers.filter { payer ->
+                payer.memberInfo.memberId != memberId
+            }
+            currentState.copy(
+                payers = updatedPayers,
+                splittingMode = SplittingMode.EVENLY
+            )
+        }
+    }
+
+    fun onAddMemberToReceipt(member: MemberInfoUiState) {
+        updateReceiptSplittingStateWhenMemberAdded(member)
+        updateManageMemberMembersState(memberId = member.memberId, operation = ManageMemberOperation.ADD)
+        updatePayersAmount()
+    }
+
+    private fun updateReceiptSplittingStateWhenMemberAdded(member: MemberInfoUiState) {
+        _receiptSplittingUiState.update { currentState ->
+            val updatedPayers = currentState
+                .payers
+                .toMutableList()
+                .apply {
+                    add(member.toReceiptPayerInfoUiState())
+                }
+
+            currentState.copy(
+                payers = updatedPayers,
+                splittingMode = SplittingMode.EVENLY
+            )
+        }
+    }
+
+    private fun updateManageMemberMembersState(memberId: Long, operation: ManageMemberOperation) {
+        _manageMembersUiState.update { currentState ->
+            currentState.copy(
+                listMembers = currentState.listMembers.map { member ->
+                    if (member.memberInfo.memberId == memberId) {
+                        member.copy(isSelected = operation == ManageMemberOperation.ADD)
+                    } else {
+                        member
+                    }
+                }.sortedBy {
+                    it.isSelected
+                }
+            )
+        }
+    }
+
     enum class ErrorType {
         ERROR_MESSAGE_NONE,
         ERROR_MESSAGE_CAN_NOT_CREATE_RECEIPT,
@@ -391,6 +481,11 @@ class ManageReceiptViewModel@Inject constructor(
         EVENLY,
         CUSTOM,
         NO_SPLIT
+    }
+
+    enum class ManageMemberOperation {
+        ADD,
+        REMOVE
     }
 }
 
@@ -405,6 +500,13 @@ private fun List<MemberInfoUiState>.toReceiptPayerInfoUiState(
                 .toString()
         )
     }
+}
+
+private fun MemberInfoUiState.toReceiptPayerInfoUiState(): ReceiptPayerInfoUiState {
+    return ReceiptPayerInfoUiState(
+        memberInfo = this,
+        payAmount = "0"
+    )
 }
 
 fun ManageReceiptViewModel.SplittingMode.canChangeAmount(): Boolean {

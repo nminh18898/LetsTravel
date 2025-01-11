@@ -30,6 +30,7 @@
     <string name="error_activity_schedule_is_invalid">Schedule is invalid</string>
     <string name="add_member_to_your_trip">Add member to your trip</string>
     <string name="add_new_member">Add new member</string>
+    <string name="add_member">Add member</string>
     <string name="update_member_dialog_title">Change member name</string>
     <string name="update_member_dialog_content">Please enter new name for %s:</string>
     <string name="manage_member_error_limit_reach">You cannot add more members to this group. The maximum limit has been reached.</string>
@@ -47,4 +48,6 @@
     <string name="pricing_and_details_of_the_receipt">Pricing and details of the receipt</string>
     <string name="add_description_here">Add description here</string>
     <string name="paid_by">Paid by</string>
+    <string name="remove_member_from_receipt_dialog_title">Are you sure you want to remove %s from this receipt?</string>
+    <string name="remove_member_from_receipt_dialog_content">This will recalculate the total costs for the remaining members.</string>
 </resources>
