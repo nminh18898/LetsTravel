@@ -79,6 +79,32 @@ interface ReceiptDao {
     @Query("SELECT * FROM receipt WHERE trip_id=:tripId")
     fun getReceipts(tripId: Long): List<ReceiptModel>
 
-    @Query("SELECT * FROM receipt WHERE receipt_id=:receiptId")
-    fun getReceipt(receiptId: Long): ReceiptModel?
+    @Query("""
+        SELECT 
+            r.receipt_id AS receiptId,
+            r.name AS receiptName,
+            r.description,
+            r.price,
+            r.receipt_owner AS receiptOwnerId,
+            o.name AS ownerName,
+            o.avatar AS ownerAvatar,
+            r.created_time AS createdTime,
+            r.splitting_mode AS splittingMode,
+            r.trip_id AS tripId,
+            p.member_id AS payerId,
+            m.name AS payerName,
+            m.avatar AS payerAvatar,
+            p.pay_amount AS payAmount
+        FROM 
+            receipt r
+        LEFT JOIN 
+            member_info o ON r.receipt_owner = o.member_id
+        LEFT JOIN 
+            receipt_payer p ON r.receipt_id = p.receipt_id
+        LEFT JOIN 
+            member_info m ON p.member_id = m.member_id
+        WHERE 
+            r.receipt_id = :receiptId
+    """)
+    fun getReceipt(receiptId: Long): Flow<List<ReceiptWithPayersModel>?>
 }

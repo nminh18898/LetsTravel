@@ -17,9 +17,7 @@ interface ReceiptRepository {
 
     fun getReceiptsStream(tripId: Long): Flow<List<ReceiptWithAllPayersInfo>>
 
-    fun getReceipts(tripId: Long): List<ReceiptWithAllPayersInfo>
-
-    suspend fun getReceipt(receiptId: Long): ReceiptWithAllPayersInfo?
+    fun getReceipt(receiptId: Long): Flow<ReceiptWithAllPayersInfo?>
 
     suspend fun insertReceipt(
         tripId: Long,

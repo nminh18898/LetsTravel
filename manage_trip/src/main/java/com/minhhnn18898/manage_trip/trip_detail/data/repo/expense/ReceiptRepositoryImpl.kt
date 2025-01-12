@@ -22,15 +22,19 @@ class ReceiptRepositoryImpl(
 ): ReceiptRepository {
 
     override fun getReceiptsStream(tripId: Long): Flow<List<ReceiptWithAllPayersInfo>> {
-        return receiptDao.getAllReceipts(tripId).map { it.toReceiptWithAllPayersInfo() }
+        return receiptDao
+            .getAllReceipts(tripId)
+            .map {
+                it.toReceiptWithAllPayersInfo()
+            }
     }
 
-    override fun getReceipts(tripId: Long): List<ReceiptWithAllPayersInfo> {
-        return emptyList()
-    }
-
-    override suspend fun getReceipt(receiptId: Long): ReceiptWithAllPayersInfo? {
-        return null
+    override fun getReceipt(receiptId: Long): Flow<ReceiptWithAllPayersInfo?> {
+        return receiptDao
+            .getReceipt(receiptId)
+            .map {
+                it?.toReceiptWithAllPayersInfo()?.firstOrNull()
+            }
     }
 
     override suspend fun insertReceipt(

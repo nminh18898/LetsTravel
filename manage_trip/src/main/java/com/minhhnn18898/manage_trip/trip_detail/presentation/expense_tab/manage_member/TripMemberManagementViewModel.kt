@@ -106,14 +106,6 @@ class BillSplitManageMemberViewModel @Inject constructor(
                 initialValue = UiState.Loading
             )
 
-    init {
-
-        viewModelScope.launch {
-            repository.getReceipts(tripId)
-        }
-
-    }
-
     fun onAddNewMember() {
         val name = uiState.value.newMemberName
         val contentState = memberInfoContentState.value

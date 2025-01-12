@@ -102,6 +102,14 @@ fun ReceiptPayerInfo.toReceiptPayerInfoUiState(manageMemberResourceProvider: Man
     )
 }
 
+fun ReceiptPayerInfo.toMemberInfoUiState(manageMemberResourceProvider: ManageMemberResourceProvider): MemberInfoUiState {
+    return MemberInfoUiState(
+        memberId = memberId,
+        memberName = memberName,
+        avatarRes = manageMemberResourceProvider.getAvatarResource(memberAvatar)
+    )
+}
+
 data class MemberInfoSelectionUiState(
     val memberInfo: MemberInfoUiState = MemberInfoUiState(),
     val isSelected: Boolean = false

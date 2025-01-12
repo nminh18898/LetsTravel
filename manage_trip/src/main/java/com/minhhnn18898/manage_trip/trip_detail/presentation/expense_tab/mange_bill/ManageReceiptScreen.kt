@@ -83,6 +83,7 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.Me
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.ReceiptPayerInfoUiState
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
 import com.minhhnn18898.ui_components.base_components.NumberCommaTransformation
 import com.minhhnn18898.ui_components.base_components.ProgressDialog
@@ -99,7 +100,7 @@ fun ManageReceiptView(
     viewModel: ManageReceiptViewModel = hiltViewModel()
 ) {
     val mainUiState by viewModel.receiptInfoUiState.collectAsStateWithLifecycle()
-    val receiptUiState = mainUiState.receiptUiState
+    val receiptUiState = mainUiState.receiptDetailUiState
     val receiptSplittingUiState by viewModel.receiptSplittingUiState.collectAsStateWithLifecycle()
     val addMoreMemberUiState by viewModel.manageMembersUiState.collectAsStateWithLifecycle()
 
@@ -159,55 +160,59 @@ fun ManageReceiptView(
         }
     }
 
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        BillInfo(
-            receiptName = receiptUiState.name,
-            onReceiptNameUpdate = viewModel::onNameUpdated,
-            formattedDate = receiptUiState.formattedDate,
-            date = receiptUiState.dateCreated,
-            onDateUpdated = viewModel::onDateUpdated,
-            time = receiptUiState.timeCreated,
-            onTimeUpdated = viewModel::onTimeUpdated,
-            receiptPrice = receiptUiState.prices,
-            onReceiptPriceUpdate = viewModel::onPricesUpdated,
-            receiptDescription = receiptUiState.description,
-            onReceiptDescriptionUpdate = viewModel::onDescriptionUpdated,
-            receiptOwner = receiptUiState.receiptOwner,
-            receiptOwnerMemberSelection = mainUiState.updateReceiptOwnerUiState.listMemberReceiptOwnerSelection,
-            onSelectReceiptOwnerMember = viewModel::onSelectNewReceiptOwner,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
+    if(mainUiState.isNotFound) {
+        DefaultErrorView(modifier = modifier)
+    } else {
+        Column(
+            modifier = modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            BillInfo(
+                receiptName = receiptUiState.name,
+                onReceiptNameUpdate = viewModel::onNameUpdated,
+                formattedDate = receiptUiState.formattedDate,
+                date = receiptUiState.dateCreated,
+                onDateUpdated = viewModel::onDateUpdated,
+                time = receiptUiState.timeCreated,
+                onTimeUpdated = viewModel::onTimeUpdated,
+                receiptPrice = receiptUiState.prices,
+                onReceiptPriceUpdate = viewModel::onPricesUpdated,
+                receiptDescription = receiptUiState.description,
+                onReceiptDescriptionUpdate = viewModel::onDescriptionUpdated,
+                receiptOwner = receiptUiState.receiptOwner,
+                receiptOwnerMemberSelection = mainUiState.updateReceiptOwnerUiState.listMemberReceiptOwnerSelection,
+                onSelectReceiptOwnerMember = viewModel::onSelectNewReceiptOwner,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
 
-        BillSplitSectionDescription()
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+            BillSplitSectionDescription()
 
-        BillSplitOptions(
-            selectedSplittingMode = receiptSplittingUiState.splittingMode,
-            onOptionSelected = viewModel::onUpdateReceiptSplittingOption
-        )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+            BillSplitOptions(
+                selectedSplittingMode = receiptSplittingUiState.splittingMode,
+                onOptionSelected = viewModel::onUpdateReceiptSplittingOption
+            )
 
-        AddNewMemberButton(
-            items = addMoreMemberUiState.listMembers,
-            onSelectMember = viewModel::onAddMemberToReceipt
-        )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
+            AddNewMemberButton(
+                items = addMoreMemberUiState.listMembers,
+                onSelectMember = viewModel::onAddMemberToReceipt
+            )
 
-        ReceiptPayersInfoView(
-            listPayersInfo = receiptSplittingUiState.payers,
-            enableChangeDueAmount = receiptSplittingUiState.splittingMode.canChangeAmount(),
-            onChangeDueAmount = viewModel::onUpdateCustomAmount,
-            onRemoveMemberFromReceipt = viewModel::onRemoveMemberFromReceipt
-        )
+            Spacer(modifier = Modifier.height(20.dp))
+
+            ReceiptPayersInfoView(
+                listPayersInfo = receiptSplittingUiState.payers,
+                enableChangeDueAmount = receiptSplittingUiState.splittingMode.canChangeAmount(),
+                onChangeDueAmount = viewModel::onUpdateCustomAmount,
+                onRemoveMemberFromReceipt = viewModel::onRemoveMemberFromReceipt
+            )
+        }
     }
 
     AnimatedVisibility(mainUiState.isLoading) {
