@@ -302,7 +302,8 @@ class ManageReceiptViewModel@Inject constructor(
         val receiptOwner =  memberUiStates.firstOrNull { it.isDefaultBillOwner }
         updateReceiptInfoState(
             receiptDetailUiState = ReceiptDetailUiState(
-                receiptOwner = receiptOwner
+                receiptOwner = receiptOwner,
+                formattedDate = dateTimeFormatter.getFormattedReceiptCreatedDate(dateTimeProvider.currentTimeMillis())
             ),
             memberUiStates = memberUiStates,
             receiptOwnerId = receiptOwner?.memberId ?: 0L
