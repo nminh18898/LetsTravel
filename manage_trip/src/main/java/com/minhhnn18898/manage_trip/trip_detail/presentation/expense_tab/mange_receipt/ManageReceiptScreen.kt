@@ -104,6 +104,8 @@ fun ManageReceiptView(
     val receiptSplittingUiState by viewModel.receiptSplittingUiState.collectAsStateWithLifecycle()
     val addMoreMemberUiState by viewModel.manageMembersUiState.collectAsStateWithLifecycle()
 
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
@@ -114,7 +116,7 @@ fun ManageReceiptView(
                     if(mainUiState.canDelete) {
                         IconButton(
                             onClick = {
-                                viewModel.onDeleteClick()
+                                showDeleteConfirmation = true
                             }
                         ) {
                             Icon(
@@ -217,6 +219,18 @@ fun ManageReceiptView(
 
     AnimatedVisibility(mainUiState.isLoading) {
         ProgressDialog()
+    }
+
+    if(showDeleteConfirmation) {
+        DeleteConfirmationDialog(
+            onConfirmation = {
+                viewModel.onDeleteConfirmed()
+                showDeleteConfirmation = false
+            },
+            onDismissRequest = {
+                showDeleteConfirmation = false
+            }
+        )
     }
 
     TopMessageBar(

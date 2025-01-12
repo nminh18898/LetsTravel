@@ -75,6 +75,10 @@ class ReceiptRepositoryImpl(
     }
 
     override suspend fun deleteReceipt(receiptId: Long) {
+        val result = receiptDao.deleteReceipt(receiptId)
 
+        if(result <= 0) {
+            throw ExceptionDeleteReceipt()
+        }
     }
 }

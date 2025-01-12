@@ -87,7 +87,14 @@ interface ReceiptDao {
     }
 
     @Query("DELETE FROM receipt WHERE receipt_id=:receiptId")
-    suspend fun delete(receiptId: Long): Int
+    suspend fun deleteReceipt(receiptId: Long): Int
+
+    @Transaction
+    suspend fun deleteReceiptAndPayers(receiptId: Long): Int {
+        deleteAllPayers(receiptId)
+        val receiptResult = deleteReceipt(receiptId)
+        return receiptResult
+    }
 
     @Query("SELECT * FROM receipt WHERE trip_id=:tripId")
     fun getReceiptsStream(tripId: Long): Flow<List<ReceiptModel>>

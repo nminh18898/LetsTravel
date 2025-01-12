@@ -20,6 +20,7 @@ import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptReposit
 import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.GetTripDefaultBillOwnerStreamUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.CreateReceiptUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.DeleteReceiptUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.GetReceiptInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.UpdateReceiptUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
@@ -86,6 +87,7 @@ class ManageReceiptViewModel@Inject constructor(
     private val getTripDefaultBillOwnerStreamUseCase: GetTripDefaultBillOwnerStreamUseCase,
     private val createReceiptUseCase: CreateReceiptUseCase,
     private val updateReceiptUseCase: UpdateReceiptUseCase,
+    private val deleteReceiptUseCase: DeleteReceiptUseCase,
     private val dateTimeFormatter: TripDetailDateTimeFormatter,
     private val dateTimeProvider: DateTimeProvider,
     private val getReceiptInfoUseCase: GetReceiptInfoUseCase
@@ -598,8 +600,10 @@ class ManageReceiptViewModel@Inject constructor(
         }
     }
 
-    fun onDeleteClick() {
-
+    fun onDeleteConfirmed() {
+        viewModelScope.launch {
+            deleteReceipt()
+        }
     }
 
     fun onSaveClick() {
@@ -622,17 +626,19 @@ class ManageReceiptViewModel@Inject constructor(
             payerInfo = payerInfo
         ).collect { result ->
             when(result) {
-                is Result.Loading -> _receiptInfoUiState.update { it.copy(isLoading = true) }
-                is Result.Success -> {
-                    _receiptInfoUiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isCreated = true
-                        )
-                    }
-                }
+                is Result.Loading -> showLoading()
+                is Result.Success -> showStateCreateSuccess()
                 is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_RECEIPT)
             }
+        }
+    }
+
+    private fun showStateCreateSuccess() {
+        _receiptInfoUiState.update {
+            it.copy(
+                isLoading = false,
+                isCreated = true
+            )
         }
     }
 
@@ -687,6 +693,29 @@ class ManageReceiptViewModel@Inject constructor(
             receiptSplittingUiState.value.payers.map {
                 it.toReceiptPayerInfo()
             }
+    }
+
+    private suspend fun deleteReceipt() {
+        if(receiptId <= 0) {
+            return
+        }
+
+        deleteReceiptUseCase.execute(receiptId).collect { result ->
+            when(result) {
+                is Result.Loading -> showLoading()
+                is Result.Success -> showStateDeleteSuccess()
+                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_RECEIPT)
+            }
+        }
+    }
+
+    private fun showStateDeleteSuccess() {
+        _receiptInfoUiState.update {
+            it.copy(
+                isLoading = false,
+                isDeleted = true
+            )
+        }
     }
 
     private fun showErrorInBriefPeriod(errorType: ErrorType) {
