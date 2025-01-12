@@ -1,6 +1,11 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,10 +23,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,10 +47,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
+import com.minhhnn18898.ui_components.base_components.DefaultErrorView
+import com.minhhnn18898.ui_components.base_components.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
 
 fun LazyListScope.renderExpenseTabScreen(
@@ -78,11 +89,15 @@ private fun LazyListScope.renderReceiptInfoSection(
 ) {
     when(receiptInfoUiState) {
         is UiState.Loading -> {
-            // Handle loading state (optional)
+            item {
+                ReceiptListSectionLoading()
+            }
         }
 
         is UiState.Error -> {
-            // Handle error state (optional)
+            item {
+                DefaultErrorView()
+            }
         }
 
         is UiState.Success -> {
@@ -293,11 +308,11 @@ private fun MemberList(
 ) {
     when(memberInfoContentState) {
         is UiState.Loading -> {
-            // Handle loading state (optional)
+            MemberListSectionLoading(modifier)
         }
 
         is UiState.Error -> {
-            // Handle error state (optional)
+            ErrorTextView(error = StringUtils.getString(LocalContext.current, com.minhhnn18898.core.R.string.error_general))
         }
 
         is UiState.Success -> {
@@ -536,4 +551,80 @@ private fun MemberItemMoreDisplayWithText(
             )
         }
     }
+}
+
+@Composable
+private fun ReceiptListSectionLoading(modifier: Modifier = Modifier) {
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 1000
+                0.7f at 500
+            },
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        repeat(5) {
+            ReceiptListSkeletonItem(
+                alpha = alpha,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReceiptListSkeletonItem(alpha: Float, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .height(100.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .background(
+                color = Color.LightGray.copy(alpha = alpha),
+                shape = RoundedCornerShape(16.dp)
+            )
+    )
+}
+
+@Composable
+private fun MemberListSectionLoading(modifier: Modifier = Modifier) {
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 1000
+                0.7f at 500
+            },
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+    MemberListSkeletonItem(
+        alpha = alpha,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun MemberListSkeletonItem(alpha: Float, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .height(100.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .background(
+                color = Color.LightGray.copy(alpha = alpha),
+                shape = RoundedCornerShape(100.dp)
+            )
+    )
 }

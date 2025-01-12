@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.minhhnn18898.ui_components.R
 
 @Composable
-fun DefaultErrorView(modifier: Modifier) {
+fun DefaultErrorView(modifier: Modifier = Modifier) {
     Box(modifier = modifier
         .fillMaxWidth()
         .wrapContentSize()

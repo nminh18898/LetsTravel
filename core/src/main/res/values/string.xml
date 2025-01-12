@@ -78,4 +78,5 @@
     <string name="receipt">Receipt</string>
     <string name="change_date">Change date</string>
     <string name="change_time">Change time</string>
+    <string name="error_general">An unexpected error occurred. Please try again later.</string>
 </resources>

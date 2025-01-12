@@ -21,7 +21,7 @@ import com.minhhnn18898.ui_components.theme.typography
 @Composable
 fun ErrorTextView(
     error: String,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
