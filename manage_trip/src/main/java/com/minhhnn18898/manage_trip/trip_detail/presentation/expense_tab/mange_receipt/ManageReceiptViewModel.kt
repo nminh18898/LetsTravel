@@ -1,4 +1,4 @@
-package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_bill
+package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_receipt
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -21,6 +21,7 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.default_bill_owner.GetTri
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.CreateReceiptUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.GetReceiptInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.UpdateReceiptUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoSelectionUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.ReceiptPayerInfoUiState
@@ -84,6 +85,7 @@ class ManageReceiptViewModel@Inject constructor(
     private val getAllMembersUseCase: GetAllMembersUseCase,
     private val getTripDefaultBillOwnerStreamUseCase: GetTripDefaultBillOwnerStreamUseCase,
     private val createReceiptUseCase: CreateReceiptUseCase,
+    private val updateReceiptUseCase: UpdateReceiptUseCase,
     private val dateTimeFormatter: TripDetailDateTimeFormatter,
     private val dateTimeProvider: DateTimeProvider,
     private val getReceiptInfoUseCase: GetReceiptInfoUseCase
@@ -264,10 +266,6 @@ class ManageReceiptViewModel@Inject constructor(
 
     private fun showLoading() {
         _receiptInfoUiState.update { it.copy(isLoading = true) }
-    }
-
-    private fun hideLoading() {
-        _receiptInfoUiState.update { it.copy(isLoading = false) }
     }
 
     private fun initializeStateCreateNew() {
@@ -610,7 +608,7 @@ class ManageReceiptViewModel@Inject constructor(
             val receiptPayers = getReceiptPayersInfo()
 
             if(isUpdateExistingInfo()) {
-
+                updateReceiptInfo(receiptInfo, receiptPayers)
             } else {
                 createNewReceipt(receiptInfo, receiptPayers)
             }
@@ -635,6 +633,29 @@ class ManageReceiptViewModel@Inject constructor(
                 }
                 is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_CREATE_RECEIPT)
             }
+        }
+    }
+
+    private suspend fun updateReceiptInfo(receiptInfo: ReceiptInfo, payerInfo: List<ReceiptPayerInfo>) {
+        updateReceiptUseCase.execute(
+            tripId = tripId,
+            receiptInfo = receiptInfo,
+            payerInfo = payerInfo
+        ).collect { result ->
+            when(result) {
+                is Result.Loading -> showLoading()
+                is Result.Success -> showStateUpdateSuccess()
+                is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_UPDATE_RECEIPT)
+            }
+        }
+    }
+
+    private fun showStateUpdateSuccess() {
+        _receiptInfoUiState.update {
+            it.copy(
+                isLoading = false,
+                isUpdated = true
+            )
         }
     }
 

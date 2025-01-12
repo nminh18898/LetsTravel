@@ -45,8 +45,14 @@ interface ReceiptDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertReceipt(receiptModel: ReceiptModel): Long
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPayers(payers: List<ReceiptPayerModel>)
+
+    @Update
+    suspend fun updateReceipt(receiptModel: ReceiptModel): Int
+
+    @Query("DELETE FROM receipt_payer WHERE receipt_id = :receiptId")
+    suspend fun deleteAllPayers(receiptId: Long): Int
 
     @Transaction
     suspend fun insertReceiptAndPayers(receiptModel: ReceiptModel, payersInfo: List<ReceiptPayerModel>): Long {
@@ -67,8 +73,18 @@ interface ReceiptDao {
         return receiptId
     }
 
-    @Update
-    suspend fun update(receiptModel: ReceiptModel): Int
+    @Transaction
+    suspend fun updateReceiptAndPayers(receiptModel: ReceiptModel, payersInfo: List<ReceiptPayerModel>): Int {
+        val receiptUpdated = updateReceipt(receiptModel)
+
+        if(receiptUpdated > 0) {
+            deleteAllPayers(receiptModel.receiptId)
+            insertPayers(payersInfo)
+            return 1
+        }
+
+        return 0
+    }
 
     @Query("DELETE FROM receipt WHERE receipt_id=:receiptId")
     suspend fun delete(receiptId: Long): Int

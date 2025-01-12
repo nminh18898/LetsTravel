@@ -3,9 +3,7 @@ package com.minhhnn18898.manage_trip.trip_detail.data.repo.expense
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.ReceiptDao
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.toReceiptModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.toReceiptPayerModel
@@ -59,8 +57,21 @@ class ReceiptRepositoryImpl(
         result
     }
 
-    override suspend fun updateReceipt(tripId: Long, receiptModel: ReceiptModel, payerModel: ReceiptPayerModel) {
+    override suspend fun updateReceipt(tripId: Long, receiptInfo: ReceiptInfo, payerInfo: List<ReceiptPayerInfo>) {
+        val receiptId = receiptInfo.receiptId
 
+        val result = receiptDao.updateReceiptAndPayers(
+            receiptModel = receiptInfo
+                .toReceiptModel(tripId),
+            payersInfo = payerInfo
+                .map {
+                    it.toReceiptPayerModel(receiptId)
+                }
+        )
+
+        if (result <= 0) {
+            throw ExceptionUpdateReceipt()
+        }
     }
 
     override suspend fun deleteReceipt(receiptId: Long) {
