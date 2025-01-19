@@ -51,9 +51,9 @@ import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoViewModel.ItineraryType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatterImpl
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
-import com.minhhnn18898.ui_components.base_components.InputPriceRow
-import com.minhhnn18898.ui_components.base_components.InputTextRow
-import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.input.InputPriceRow
+import com.minhhnn18898.ui_components.input.InputTextRow
+import com.minhhnn18898.ui_components.loading_view.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes

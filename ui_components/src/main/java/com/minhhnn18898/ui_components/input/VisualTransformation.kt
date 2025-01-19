@@ -1,4 +1,4 @@
-package com.minhhnn18898.ui_components.base_components
+package com.minhhnn18898.ui_components.input
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping

@@ -1,4 +1,4 @@
-package com.minhhnn18898.ui_components.base_components
+package com.minhhnn18898.ui_components.chart
 
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
@@ -40,13 +40,13 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.ui_components.base_components.BarChartDefaults.barCornerSize
-import com.minhhnn18898.ui_components.base_components.BarChartDefaults.barSpacing
-import com.minhhnn18898.ui_components.base_components.BarChartDefaults.barVisualMaxThreshold
-import com.minhhnn18898.ui_components.base_components.BarChartDefaults.barVisualMinThreshold
-import com.minhhnn18898.ui_components.base_components.BarChartDefaults.barWidth
-import com.minhhnn18898.ui_components.base_components.BarChartDefaults.groupBarAndLabelContainerHeight
-import com.minhhnn18898.ui_components.base_components.BarChartDefaults.groupBarContainerHeight
+import com.minhhnn18898.ui_components.chart.BarChartDefaults.barCornerSize
+import com.minhhnn18898.ui_components.chart.BarChartDefaults.barSpacing
+import com.minhhnn18898.ui_components.chart.BarChartDefaults.barVisualMaxThreshold
+import com.minhhnn18898.ui_components.chart.BarChartDefaults.barVisualMinThreshold
+import com.minhhnn18898.ui_components.chart.BarChartDefaults.barWidth
+import com.minhhnn18898.ui_components.chart.BarChartDefaults.groupBarAndLabelContainerHeight
+import com.minhhnn18898.ui_components.chart.BarChartDefaults.groupBarContainerHeight
 import com.minhhnn18898.ui_components.theme.typography
 import kotlin.math.abs
 

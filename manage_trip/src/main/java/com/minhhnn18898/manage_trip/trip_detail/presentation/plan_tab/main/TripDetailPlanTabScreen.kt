@@ -29,9 +29,9 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.r
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.FlightDetailBody
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.HotelDetailBody
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.DetailSection
-import com.minhhnn18898.ui_components.base_components.PieChartData
-import com.minhhnn18898.ui_components.base_components.PieChartItem
-import com.minhhnn18898.ui_components.base_components.PieChartWithLabel
+import com.minhhnn18898.ui_components.chart.PieChartData
+import com.minhhnn18898.ui_components.chart.PieChartItem
+import com.minhhnn18898.ui_components.chart.PieChartWithLabel
 import com.minhhnn18898.ui_components.base_components.SectionCtaData
 import com.minhhnn18898.ui_components.theme.typography
 

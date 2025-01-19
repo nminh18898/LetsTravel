@@ -1,4 +1,4 @@
-package com.minhhnn18898.ui_components.base_components
+package com.minhhnn18898.ui_components.loading_view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

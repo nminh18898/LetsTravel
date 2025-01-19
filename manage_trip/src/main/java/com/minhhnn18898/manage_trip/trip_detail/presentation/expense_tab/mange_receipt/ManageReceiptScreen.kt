@@ -84,10 +84,10 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.Me
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.ReceiptPayerInfoUiState
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
-import com.minhhnn18898.ui_components.base_components.DefaultErrorView
+import com.minhhnn18898.ui_components.error_view.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
-import com.minhhnn18898.ui_components.base_components.NumberCommaTransformation
-import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.input.NumberCommaTransformation
+import com.minhhnn18898.ui_components.loading_view.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.base_components.drawWithoutRect
 import com.minhhnn18898.ui_components.theme.LetsTravelTheme

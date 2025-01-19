@@ -51,8 +51,8 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.discover.presentation.ui_models.ArticleDisplayInfo
 import com.minhhnn18898.ui_components.R
-import com.minhhnn18898.ui_components.base_components.DefaultErrorView
-import com.minhhnn18898.ui_components.base_components.ErrorTextView
+import com.minhhnn18898.ui_components.error_view.DefaultErrorView
+import com.minhhnn18898.ui_components.error_view.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 

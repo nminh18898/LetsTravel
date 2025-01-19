@@ -38,7 +38,7 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.TripA
 import com.minhhnn18898.ui_components.R
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
-import com.minhhnn18898.ui_components.base_components.ErrorTextView
+import com.minhhnn18898.ui_components.error_view.ErrorTextView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 

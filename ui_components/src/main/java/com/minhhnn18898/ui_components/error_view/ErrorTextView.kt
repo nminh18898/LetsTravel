@@ -1,4 +1,4 @@
-package com.minhhnn18898.ui_components.base_components
+package com.minhhnn18898.ui_components.error_view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

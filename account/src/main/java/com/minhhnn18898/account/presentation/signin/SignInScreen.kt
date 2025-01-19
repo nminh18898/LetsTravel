@@ -26,7 +26,7 @@ import com.minhhnn18898.account.presentation.base.EmailField
 import com.minhhnn18898.account.presentation.base.PasswordTextField
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
-import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.loading_view.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.core.R.string as CommonStringRes
 

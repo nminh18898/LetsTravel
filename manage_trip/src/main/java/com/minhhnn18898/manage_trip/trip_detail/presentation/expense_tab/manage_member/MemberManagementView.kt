@@ -53,8 +53,8 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.MemberInfoUiState
-import com.minhhnn18898.ui_components.base_components.ErrorTextView
-import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.error_view.ErrorTextView
+import com.minhhnn18898.ui_components.loading_view.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 

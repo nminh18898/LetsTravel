@@ -1,4 +1,4 @@
-package com.minhhnn18898.ui_components.base_components
+package com.minhhnn18898.ui_components.chart
 
 import android.graphics.Paint
 import android.graphics.Typeface

@@ -49,10 +49,10 @@ import com.minhhnn18898.app_navigation.destination.EditTripInfoDestination
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
-import com.minhhnn18898.ui_components.base_components.DefaultErrorView
+import com.minhhnn18898.ui_components.error_view.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
-import com.minhhnn18898.ui_components.base_components.InputTextRow
-import com.minhhnn18898.ui_components.base_components.ProgressDialog
+import com.minhhnn18898.ui_components.input.InputTextRow
+import com.minhhnn18898.ui_components.loading_view.ProgressDialog
 import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
