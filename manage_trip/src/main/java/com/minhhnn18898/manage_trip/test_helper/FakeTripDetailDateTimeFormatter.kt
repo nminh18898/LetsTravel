@@ -8,6 +8,10 @@ class FakeTripDetailDateTimeFormatter: TripDetailDateTimeFormatter {
         return millis.toString()
     }
 
+    override fun getReceiptFormattedDateSeparatorString(millis: Long): String {
+        return millis.toString()
+    }
+
     override fun findFlightDurationFormattedString(from: Long, to: Long): String {
         return (to - from).toString()
     }

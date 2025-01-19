@@ -62,7 +62,7 @@ import com.minhhnn18898.ui_components.theme.typography
 
 fun LazyListScope.renderExpenseTabScreen(
     memberInfoContentState: UiState<List<MemberInfoUiState>>,
-    receiptInfoUiState: UiState<List<ReceiptWithAllPayersInfoUiState>>,
+    receiptInfoUiState: UiState<List<ReceiptWithAllPayersInfoItemDisplay>>,
     memberReceiptPaymentStatisticContentState: UiState<List<MemberReceiptPaymentStatisticUiState>>,
     onNavigateManageMemberScreen: () -> Unit,
     onNavigateManageReceiptScreen: (Long) -> Unit,
@@ -169,7 +169,7 @@ private fun List<MemberReceiptPaymentStatisticUiState>.shouldRenderStatisticChar
 }
 
 private fun LazyListScope.renderReceiptInfoSection(
-    receiptInfoUiState: UiState<List<ReceiptWithAllPayersInfoUiState>>,
+    receiptInfoUiState: UiState<List<ReceiptWithAllPayersInfoItemDisplay>>,
     onClickReceiptDescription: (Long) -> Unit,
     onClickCreateNewReceipt: () -> Unit,
     modifier: Modifier = Modifier
@@ -199,7 +199,7 @@ private fun LazyListScope.renderReceiptInfoSection(
 }
 
 fun LazyListScope.renderReceiptContentList(
-    receiptInfoUiState: List<ReceiptWithAllPayersInfoUiState>,
+    receiptInfoUiState: List<ReceiptWithAllPayersInfoItemDisplay>,
     onClickCreateNewReceipt: () -> Unit,
     onClickReceiptDescription: (Long) -> Unit,
     modifier: Modifier = Modifier
@@ -224,12 +224,33 @@ fun LazyListScope.renderReceiptContentList(
         }
 
         items(receiptInfoUiState) { item ->
-            ReceiptInfoItem(
-                receiptInfoUiState = item,
-                onClickReceiptDescription = onClickReceiptDescription,
-                modifier = modifier
-            )
+
+            if(item is ReceiptWithAllPayersInfoUiState) {
+                ReceiptInfoItem(
+                    receiptInfoUiState = item,
+                    onClickReceiptDescription = onClickReceiptDescription,
+                    modifier = modifier
+                )
+            } else if(item is ReceiptWithAllPayersInfoDateSeparatorUiState) {
+                ReceiptInfoItemDateSeparator(item)
+            }
         }
+    }
+}
+
+@Composable
+private fun ReceiptInfoItemDateSeparator(
+    item: ReceiptWithAllPayersInfoDateSeparatorUiState,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.padding(horizontal = 16.dp)) {
+        Text(
+            text = item.description,
+            style = typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
     }
 }
 

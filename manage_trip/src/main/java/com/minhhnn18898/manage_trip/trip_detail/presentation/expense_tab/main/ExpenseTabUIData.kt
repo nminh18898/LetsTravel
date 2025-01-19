@@ -30,11 +30,13 @@ fun MemberInfo.toMemberInfoUiState(
     )
 }
 
+interface ReceiptWithAllPayersInfoItemDisplay
+
 data class ReceiptWithAllPayersInfoUiState(
     val receiptInfo: ReceiptInfoUiState,
     val receiptOwner: MemberInfoUiState,
     val receiptPayers: List<ReceiptPayerInfoUiState>
-)
+): ReceiptWithAllPayersInfoItemDisplay
 
 fun ReceiptWithAllPayersInfo.toReceiptWithAllPayersInfoUiState(
     manageMemberResourceProvider: ManageMemberResourceProvider,
@@ -56,6 +58,10 @@ fun ReceiptWithAllPayersInfo.toReceiptWithAllPayersInfoUiState(
         }
     )
 }
+
+data class ReceiptWithAllPayersInfoDateSeparatorUiState(
+    val description: String
+): ReceiptWithAllPayersInfoItemDisplay
 
 data class ReceiptInfoUiState(
     val receiptId: Long = 0,

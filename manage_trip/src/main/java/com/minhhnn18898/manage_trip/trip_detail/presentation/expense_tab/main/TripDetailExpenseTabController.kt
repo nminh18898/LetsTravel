@@ -2,6 +2,7 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.WhileUiSubscribed
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetMemberReceiptPaymentStatisticInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.GetAllReceiptsUseCase
@@ -63,20 +64,13 @@ class TripDetailExpenseTabController(
                 initialValue = UiState.Loading
             )
 
-    val receiptInfoContentState: StateFlow<UiState<List<ReceiptWithAllPayersInfoUiState>>> =
+    val receiptInfoContentState: StateFlow<UiState<List<ReceiptWithAllPayersInfoItemDisplay>>> =
         getAllReceiptsUseCase
             .execute(tripId)
-            .map { receiptInfo ->
-                UiState.Success(
-                    receiptInfo.map {
-                        it.toReceiptWithAllPayersInfoUiState(
-                            manageMemberResourceProvider = memberResourceProvider,
-                            dateTimeFormatter = dateTimeFormatter
-                        )
-                    }
-                )
+            .map {
+                UiState.Success(it.makeListReceiptInfoDisplay())
             }
-            .catch<UiState<List<ReceiptWithAllPayersInfoUiState>>> {
+            .catch<UiState<List<ReceiptWithAllPayersInfoItemDisplay>>> {
                 emit(UiState.Error())
             }
             .stateIn(
@@ -84,4 +78,22 @@ class TripDetailExpenseTabController(
                 started = WhileUiSubscribed,
                 initialValue = UiState.Loading
             )
+
+    private fun Map<Long, List<ReceiptWithAllPayersInfo>>.makeListReceiptInfoDisplay(): List<ReceiptWithAllPayersInfoItemDisplay> {
+        val itemRender = mutableListOf<ReceiptWithAllPayersInfoItemDisplay>()
+
+        this.forEach { (date, receiptInfo) ->
+            itemRender.add(ReceiptWithAllPayersInfoDateSeparatorUiState(description = dateTimeFormatter.getReceiptFormattedDateSeparatorString(date)))
+            itemRender.addAll(
+                receiptInfo.map {
+                    it.toReceiptWithAllPayersInfoUiState(
+                        manageMemberResourceProvider = memberResourceProvider,
+                        dateTimeFormatter = dateTimeFormatter
+                    )
+                }
+            )
+        }
+
+        return itemRender
+    }
 }

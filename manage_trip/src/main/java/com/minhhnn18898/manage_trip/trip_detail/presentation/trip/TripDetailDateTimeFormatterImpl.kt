@@ -21,9 +21,14 @@ open class TripDetailDateTimeFormatterImpl @Inject constructor(
     private val flightDateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMMM, yyyy", Locale.getDefault())
 
     private val receiptDateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM, yyyy | HH:mm", Locale.getDefault())
+    private val receiptDateFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
 
     override fun getActivityFormattedDateSeparatorString(millis: Long): String {
         return baseDateTimeFormatter.millisToFormattedString(millis, activityDateSeparatorFormatter)
+    }
+
+    override fun getReceiptFormattedDateSeparatorString(millis: Long): String {
+        return baseDateTimeFormatter.millisToFormattedString(millis, receiptDateFormatter)
     }
 
     override fun findFlightDurationFormattedString(from: Long, to: Long): String {

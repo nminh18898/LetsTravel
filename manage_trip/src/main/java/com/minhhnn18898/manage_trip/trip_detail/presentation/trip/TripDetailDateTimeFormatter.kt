@@ -4,6 +4,7 @@ import java.time.LocalDate
 
 interface TripDetailDateTimeFormatter {
     fun getActivityFormattedDateSeparatorString(millis: Long): String
+    fun getReceiptFormattedDateSeparatorString(millis: Long): String
     fun findFlightDurationFormattedString(from: Long, to: Long): String
     fun getHotelNights(from: Long, to: Long): Long
     fun getFormattedFlightDateTimeString(millis: Long): String
