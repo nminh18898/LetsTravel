@@ -81,6 +81,7 @@ fun TripDetailScreen(
 
     val expenseTabMemberContentState by viewModel.expenseTabController.memberInfoContentState.collectAsStateWithLifecycle()
     val expenseTabReceiptContentState by viewModel.expenseTabController.receiptInfoContentState.collectAsStateWithLifecycle()
+    val expenseTabMemberPaymentStatisticContentState by viewModel.expenseTabController.memberPaymentStatisticContent.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -143,6 +144,7 @@ fun TripDetailScreen(
             renderExpenseTabScreen(
                 memberInfoContentState = expenseTabMemberContentState,
                 receiptInfoUiState = expenseTabReceiptContentState,
+                memberReceiptPaymentStatisticContentState = expenseTabMemberPaymentStatisticContentState,
                 onNavigateManageMemberScreen = {
                     onNavigateToBillSlitMemberScreen(viewModel.tripId, viewModel.tripName)
                 },

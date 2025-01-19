@@ -58,8 +58,14 @@ class MemberInfoRepositoryImpl(
         )
 
         val resultCode = memberInfoDao.insert(memberInfoModel)
+
         if(resultCode == -1L) {
             throw ExceptionAddMember()
+        }
+
+        // Default bill owner do not exist, so set this member as default bill owner
+        if(defaultBillOwnerDao.getBillOwner(tripId) == null) {
+            upsertDefaultBillOwner(tripId, resultCode)
         }
 
         resultCode
@@ -85,11 +91,16 @@ class MemberInfoRepositoryImpl(
        }
    }
 
-    override suspend fun deleteMember(memberId: Long) = withContext(ioDispatcher) {
+    override suspend fun deleteMember(tripId: Long, memberId: Long) = withContext(ioDispatcher) {
         val result = memberInfoDao.delete(memberId)
 
         if(result <= 0) {
             throw ExceptionDeleteMember()
+        }
+
+        // Verify if this member is the default bill owner and remove the corresponding information
+        if(defaultBillOwnerDao.getBillOwner(tripId)?.memberId == memberId) {
+            defaultBillOwnerDao.delete(tripId)
         }
     }
 

@@ -25,6 +25,10 @@ class ManageMemberResourceProviderImpl: ManageMemberResourceProvider {
     )
 
     override fun getAvatarResource(avatarId: Int): Int {
+        if(avatarId < 0) {
+            return R.drawable.avatar_empty
+        }
+
         return memberAvatarResourceList[avatarId % memberAvatarResourceList.size]
     }
 

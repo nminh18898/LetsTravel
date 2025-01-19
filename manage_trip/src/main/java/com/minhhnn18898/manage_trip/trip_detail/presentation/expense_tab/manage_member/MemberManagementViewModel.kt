@@ -211,7 +211,7 @@ class BillSplitManageMemberViewModel @Inject constructor(
 
     fun onDeleteMemberConfirmed(memberId: Long) {
         viewModelScope.launch {
-            deleteMemberUseCase.execute(memberId).collect { result ->
+            deleteMemberUseCase.execute(tripId, memberId).collect { result ->
                 when(result) {
                     is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
                     is Result.Success -> {

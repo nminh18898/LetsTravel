@@ -20,7 +20,7 @@ interface MemberInfoRepository {
 
     suspend fun updateMemberInfo(tripId: Long, memberId: Long, memberName: String)
 
-    suspend fun deleteMember(memberId: Long)
+    suspend fun deleteMember(tripId: Long, memberId: Long)
 
     suspend fun getDefaultBillOwner(tripId: Long): DefaultBillOwnerInfo?
 

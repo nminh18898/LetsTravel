@@ -31,3 +31,10 @@ fun String.isValidEmail(): Boolean {
 fun Long?.formatWithCommas(): String =
     NumberFormat.getNumberInstance(Locale.US).format(this ?: 0)
 
+fun Long.toCompactString(locale: Locale = Locale.US, numberOfFloatingPoint: Int = 1): String {
+    return when {
+        this >= 1_000_000 -> String.format(locale, "%.${numberOfFloatingPoint}fM", this / 1_000_000.0)
+        this >= 1_000 -> String.format(locale, "%.${numberOfFloatingPoint}fK", this / 1_000.0)
+        else -> this.toString()
+    }.replace('.', ',') // Replace the default dot with a comma for decimal separator
+}

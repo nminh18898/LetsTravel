@@ -41,9 +41,9 @@ data class ReceiptWithPayersModel(
     val splittingMode: Int,
     val tripId: Long,
 
-    val receiptOwnerId: Long,
-    val ownerName: String,
-    val ownerAvatar: Int,
+    val receiptOwnerId: Long?,
+    val ownerName: String?,
+    val ownerAvatar: Int?,
 
     val payerId: Long?,
     val payerName: String?,
@@ -63,7 +63,7 @@ private fun ReceiptWithPayersModel.getReceiptInfo(): ReceiptInfo {
         name = this.receiptName,
         description = this.description,
         price = this.price,
-        receiptOwner = this.receiptOwnerId,
+        receiptOwner = this.receiptOwnerId ?: 0,
         createdTime = this.createdTime,
         splittingMode = this.splittingMode
     )
@@ -75,9 +75,9 @@ private fun List<ReceiptWithPayersModel>.getReceiptInfo(): ReceiptInfo {
 
 private fun ReceiptWithPayersModel.getReceiptOwnerInfo(): MemberInfo {
     return MemberInfo(
-        memberId = this.receiptOwnerId,
-        memberName = this.ownerName,
-        avatarId = this.ownerAvatar
+        memberId = this.receiptOwnerId ?: 0,
+        memberName = this.ownerName ?: "",
+        avatarId = this.ownerAvatar ?: -1
     )
 }
 

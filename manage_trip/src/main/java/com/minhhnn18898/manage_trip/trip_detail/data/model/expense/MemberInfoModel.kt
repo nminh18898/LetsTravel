@@ -34,7 +34,7 @@ data class MemberInfoModel(
 data class MemberInfo(
     val memberId: Long = 0,
     val memberName: String = "",
-    val avatarId: Int = 0
+    val avatarId: Int = -1
 )
 
 fun MemberInfo.toMemberInfoModel(tripId: Long): MemberInfoModel {
@@ -57,3 +57,10 @@ fun MemberInfoModel.toMemberInfo(): MemberInfo {
 fun List<MemberInfoModel>.toMemberInfo(): List<MemberInfo> {
     return this.map { it.toMemberInfo() }
 }
+
+data class MemberReceiptPaymentStatisticInfo(
+    val memberId: Long,
+    val memberName: String,
+    val paidAmount: Long,
+    val ownedAmount: Long
+)

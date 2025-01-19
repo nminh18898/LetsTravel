@@ -17,6 +17,7 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetSortedListTri
 import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetMemberReceiptPaymentStatisticInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.GetAllReceiptsUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.TripDetailExpenseTabController
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
@@ -51,7 +52,8 @@ class TripDetailScreenViewModel @Inject constructor(
     dateTimeFormatter: TripDetailDateTimeFormatter,
     getAllMembersUseCase: GetAllMembersUseCase,
     memberResourceProvider: ManageMemberResourceProvider,
-    getAllReceiptsUseCase: GetAllReceiptsUseCase
+    getAllReceiptsUseCase: GetAllReceiptsUseCase,
+    getMemberPaymentStatisticInfo: GetMemberReceiptPaymentStatisticInfo
 ): ViewModel() {
 
     private val parameters = savedStateHandle.toRoute<TripDetailDestination>(
@@ -100,7 +102,8 @@ class TripDetailScreenViewModel @Inject constructor(
         getAllMembersUseCase = getAllMembersUseCase,
         memberResourceProvider = memberResourceProvider,
         getAllReceiptsUseCase = getAllReceiptsUseCase,
-        dateTimeFormatter = dateTimeFormatter
+        dateTimeFormatter = dateTimeFormatter,
+        getMemberReceiptPaymentStatisticInfo = getMemberPaymentStatisticInfo
     )
 
     var currentTabSelected: TripDetailTabDestination by mutableStateOf(TripDetailPlanTabDestination)

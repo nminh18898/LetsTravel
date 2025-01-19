@@ -50,6 +50,10 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.manage_trip.R
+import com.minhhnn18898.ui_components.base_components.BarGraph
+import com.minhhnn18898.ui_components.base_components.BarGroup
+import com.minhhnn18898.ui_components.base_components.BarItem
+import com.minhhnn18898.ui_components.base_components.CategoryItem
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
 import com.minhhnn18898.ui_components.base_components.DefaultErrorView
@@ -59,6 +63,7 @@ import com.minhhnn18898.ui_components.theme.typography
 fun LazyListScope.renderExpenseTabScreen(
     memberInfoContentState: UiState<List<MemberInfoUiState>>,
     receiptInfoUiState: UiState<List<ReceiptWithAllPayersInfoUiState>>,
+    memberReceiptPaymentStatisticContentState: UiState<List<MemberReceiptPaymentStatisticUiState>>,
     onNavigateManageMemberScreen: () -> Unit,
     onNavigateManageReceiptScreen: (Long) -> Unit,
     modifier: Modifier = Modifier
@@ -71,6 +76,11 @@ fun LazyListScope.renderExpenseTabScreen(
         )
     }
 
+    renderMemberPaymentStatisticSection(
+        memberReceiptPaymentStatisticContentState = memberReceiptPaymentStatisticContentState,
+        modifier = modifier
+    )
+
     renderReceiptInfoSection(
         receiptInfoUiState = receiptInfoUiState,
         onClickReceiptDescription = onNavigateManageReceiptScreen,
@@ -79,6 +89,83 @@ fun LazyListScope.renderExpenseTabScreen(
         },
         modifier = modifier
     )
+}
+
+private fun LazyListScope.renderMemberPaymentStatisticSection(
+    memberReceiptPaymentStatisticContentState: UiState<List<MemberReceiptPaymentStatisticUiState>>,
+    modifier: Modifier = Modifier
+) {
+    when(memberReceiptPaymentStatisticContentState) {
+        is UiState.Loading -> {
+            // Optional
+        }
+
+        is UiState.Error -> {
+            // Optional
+        }
+
+        is UiState.Success -> {
+            renderMemberPaymentChart(
+                memberReceiptPaymentStatisticUiState = memberReceiptPaymentStatisticContentState.data
+            )
+        }
+    }
+}
+
+private fun LazyListScope.renderMemberPaymentChart(
+    memberReceiptPaymentStatisticUiState: List<MemberReceiptPaymentStatisticUiState>,
+){
+    item {
+        if(memberReceiptPaymentStatisticUiState.shouldRenderStatisticChart()) {
+            Box(modifier = Modifier.padding(horizontal = 8.dp)) {
+                val graphBgColor = Color(0xFFF4C145)
+                val paidExpenseColor = barChartColor.getOrNull(0) ?: MaterialTheme.colorScheme.primary
+                val ownedExpenseColor = barChartColor.getOrNull(1) ?: MaterialTheme.colorScheme.secondary
+
+                BarGraph(
+                    barGroups = memberReceiptPaymentStatisticUiState.map {
+                        BarGroup(
+                            label = it.memberName,
+                            values = mutableListOf(
+                                BarItem(
+                                    value = it.paidAmount,
+                                    color = paidExpenseColor,
+                                    description = it.paidAmountDesc,
+                                    descriptionColor = MaterialTheme.colorScheme.onPrimary
+                                ),
+                                BarItem(
+                                    value = it.ownedAmount,
+                                    color = ownedExpenseColor,
+                                    description = it.ownedAmountDesc,
+                                    descriptionColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            )
+                        )
+                    },
+                    backgroundColorStart = graphBgColor.copy(alpha = 0.3f),
+                    backgroundColorEnd = graphBgColor,
+                    categories = mutableListOf(
+                        CategoryItem(
+                            itemColor = paidExpenseColor,
+                            description = StringUtils.getString(LocalContext.current, com.minhhnn18898.core.R.string.paid_expense),
+                            descriptionColor = MaterialTheme.colorScheme.primary
+                        ),
+
+                        CategoryItem(
+                            itemColor = ownedExpenseColor,
+                            description = StringUtils.getString(LocalContext.current, com.minhhnn18898.core.R.string.owned_expense),
+                            descriptionColor = MaterialTheme.colorScheme.primary
+                        )
+                    ),
+                    onGroupSelectionChanged = {}
+                )
+            }
+        }
+    }
+}
+
+private fun List<MemberReceiptPaymentStatisticUiState>.shouldRenderStatisticChart(): Boolean {
+    return this.any { it.ownedAmount != 0 || it.paidAmount != 0 }
 }
 
 private fun LazyListScope.renderReceiptInfoSection(
@@ -628,3 +715,9 @@ private fun MemberListSkeletonItem(alpha: Float, modifier: Modifier = Modifier) 
             )
     )
 }
+
+
+private val barChartColor = mutableListOf(
+    Color(0xFF4CB140),
+    Color(0xFF5752D1)
+)

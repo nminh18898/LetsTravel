@@ -2,7 +2,9 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 
 import androidx.annotation.DrawableRes
 import com.minhhnn18898.core.utils.formatWithCommas
+import com.minhhnn18898.core.utils.toCompactString
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
+import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberReceiptPaymentStatisticInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
@@ -102,15 +104,27 @@ fun ReceiptPayerInfo.toReceiptPayerInfoUiState(manageMemberResourceProvider: Man
     )
 }
 
-fun ReceiptPayerInfo.toMemberInfoUiState(manageMemberResourceProvider: ManageMemberResourceProvider): MemberInfoUiState {
-    return MemberInfoUiState(
-        memberId = memberId,
-        memberName = memberName,
-        avatarRes = manageMemberResourceProvider.getAvatarResource(memberAvatar)
-    )
-}
-
 data class MemberInfoSelectionUiState(
     val memberInfo: MemberInfoUiState = MemberInfoUiState(),
     val isSelected: Boolean = false
 )
+
+data class MemberReceiptPaymentStatisticUiState(
+    val memberId: Long,
+    val memberName: String,
+    val paidAmount: Int,
+    val ownedAmount: Int,
+    val paidAmountDesc: String,
+    val ownedAmountDesc: String
+)
+
+fun MemberReceiptPaymentStatisticInfo.toMemberReceiptPaymentStatisticUiState(): MemberReceiptPaymentStatisticUiState {
+    return MemberReceiptPaymentStatisticUiState(
+        memberId = memberId,
+        memberName = memberName,
+        paidAmount = paidAmount.toInt(),
+        ownedAmount = ownedAmount.toInt(),
+        paidAmountDesc = paidAmount.toCompactString(),
+        ownedAmountDesc = ownedAmount.toCompactString()
+    )
+}

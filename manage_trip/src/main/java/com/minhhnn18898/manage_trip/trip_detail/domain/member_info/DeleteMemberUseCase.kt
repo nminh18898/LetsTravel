@@ -9,9 +9,9 @@ import javax.inject.Inject
 
 class DeleteMemberUseCase @Inject constructor(private val repository: MemberInfoRepository) {
 
-    fun execute(memberId: Long): Flow<Result<Unit>> = flow {
+    fun execute(tripId: Long, memberId: Long): Flow<Result<Unit>> = flow {
         emit(Result.Loading)
-        repository.deleteMember(memberId)
+        repository.deleteMember(tripId, memberId)
         emit(Result.Success(Unit))
     }.catch {
         emit(Result.Error(it))

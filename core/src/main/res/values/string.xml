@@ -79,4 +79,6 @@
     <string name="change_date">Change date</string>
     <string name="change_time">Change time</string>
     <string name="error_general">An unexpected error occurred. Please try again later.</string>
+    <string name="paid_expense">Paid expense</string>
+    <string name="owned_expense">Owned expense</string>
 </resources>
