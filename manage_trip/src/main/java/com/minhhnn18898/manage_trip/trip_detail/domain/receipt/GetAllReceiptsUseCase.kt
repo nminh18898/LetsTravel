@@ -14,9 +14,11 @@ class GetAllReceiptsUseCase @Inject constructor(
 
     fun execute(tripId: Long): Flow<Map<Long, List<ReceiptWithAllPayersInfo>>> {
         return repository.getReceiptsStream(tripId).map { receipts ->
-            receipts.groupBy {
-                dateTimeFormatter.getStartOfTheDay(it.receiptInfo.createdTime)
-            }
+            receipts
+                .groupBy {
+                    dateTimeFormatter.getStartOfTheDay(it.receiptInfo.createdTime)
+                }
+                .toSortedMap(reverseOrder())
         }
     }
 }

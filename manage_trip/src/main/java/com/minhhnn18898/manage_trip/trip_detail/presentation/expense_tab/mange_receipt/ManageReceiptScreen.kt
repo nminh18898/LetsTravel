@@ -1,6 +1,7 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.mange_receipt
 
 import android.content.Context
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -196,7 +197,8 @@ fun ManageReceiptView(
 
             BillSplitOptions(
                 selectedSplittingMode = receiptSplittingUiState.splittingMode,
-                onOptionSelected = viewModel::onUpdateReceiptSplittingOption
+                onOptionSelected = viewModel::onUpdateReceiptSplittingOption,
+                enableChangeOptions = !receiptSplittingUiState.disableChangeMode
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -683,6 +685,7 @@ fun BillSplitSectionDescription() {
 @Composable
 fun BillSplitOptions(
     selectedSplittingMode: ManageReceiptViewModel.SplittingMode,
+    enableChangeOptions: Boolean,
     onOptionSelected: (ManageReceiptViewModel.SplittingMode)-> Unit,
 ) {
     val radioOptions = listOf(
@@ -691,7 +694,7 @@ fun BillSplitOptions(
         ManageReceiptViewModel.SplittingMode.NO_SPLIT
     )
 
-    Column(Modifier.selectableGroup()) {
+    Column(modifier = Modifier.selectableGroup()) {
         radioOptions.forEach { option ->
             val isSelected = option == selectedSplittingMode
 
@@ -702,7 +705,8 @@ fun BillSplitOptions(
                     .selectable(
                         selected = isSelected,
                         onClick = { onOptionSelected(option) },
-                        role = Role.RadioButton
+                        role = Role.RadioButton,
+                        enabled = enableChangeOptions
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -712,7 +716,8 @@ fun BillSplitOptions(
                     colors = RadioButtonDefaults.colors(
                         selectedColor = MaterialTheme.colorScheme.primary,
                         unselectedColor = MaterialTheme.colorScheme.secondary
-                    )
+                    ),
+                    enabled = enableChangeOptions
                 )
                 Text(
                     text = getSplittingOptionsText(context = LocalContext.current, splittingMode = option),
@@ -880,13 +885,20 @@ private fun AddNewMemberButton(
 ) {
     var showDialogSelectMember by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopEnd) {
         CreateNewDefaultButton(
             text = stringResource(id = R.string.add_member),
             onClick = {
-                showDialogSelectMember = true
+                if(items.isNotEmpty()) {
+                    showDialogSelectMember = true
+                }
+                else {
+                    Toast.makeText(context, StringUtils.getString(context, R.string.trip_has_no_member_description_short), Toast.LENGTH_LONG).show()
+                }
             }
         )
     }

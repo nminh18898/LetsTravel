@@ -117,8 +117,16 @@ private fun LazyListScope.renderMemberPaymentChart(
 ){
     item {
         if(memberReceiptPaymentStatisticUiState.shouldRenderStatisticChart()) {
-            Box(modifier = Modifier.padding(horizontal = 8.dp)) {
-                val graphBgColor = Color(0xFFF4C145)
+            Box(modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(12.dp)
+                )
+            ) {
+                val graphBgColorStart = Color.Unspecified
+                val graphBgColorEnd = Color.Unspecified
                 val paidExpenseColor = barChartColor.getOrNull(0) ?: MaterialTheme.colorScheme.primary
                 val ownedExpenseColor = barChartColor.getOrNull(1) ?: MaterialTheme.colorScheme.secondary
 
@@ -131,19 +139,19 @@ private fun LazyListScope.renderMemberPaymentChart(
                                     value = it.paidAmount,
                                     color = paidExpenseColor,
                                     description = it.paidAmountDesc,
-                                    descriptionColor = MaterialTheme.colorScheme.onPrimary
+                                    descriptionColor = Color.Black
                                 ),
                                 BarItem(
                                     value = it.ownedAmount,
                                     color = ownedExpenseColor,
                                     description = it.ownedAmountDesc,
-                                    descriptionColor = MaterialTheme.colorScheme.onPrimary
+                                    descriptionColor = Color.DarkGray
                                 )
                             )
                         )
                     },
-                    backgroundColorStart = graphBgColor.copy(alpha = 0.3f),
-                    backgroundColorEnd = graphBgColor,
+                    backgroundColorStart = graphBgColorStart,
+                    backgroundColorEnd = graphBgColorEnd,
                     categories = mutableListOf(
                         CategoryItem(
                             itemColor = paidExpenseColor,
@@ -740,5 +748,5 @@ private fun MemberListSkeletonItem(alpha: Float, modifier: Modifier = Modifier) 
 
 private val barChartColor = mutableListOf(
     Color(0xFF4CB140),
-    Color(0xFF5752D1)
+    Color(0xFFF4C145)
 )

@@ -62,7 +62,8 @@ data class ManageMembersUiState(
 
 data class ReceiptSplittingUiState(
     val splittingMode: ManageReceiptViewModel.SplittingMode = ManageReceiptViewModel.SplittingMode.EVENLY,
-    val payers: List<ReceiptPayerInfoUiState> = emptyList()
+    val payers: List<ReceiptPayerInfoUiState> = emptyList(),
+    val disableChangeMode: Boolean = false
 )
 
 data class ManageReceiptUiState(
@@ -235,7 +236,11 @@ class ManageReceiptViewModel@Inject constructor(
                         val memberUiStates = createMemberUiStates(memberInfo, null)
 
                         updateReceiptInfoStateUpdate(memberUiStates, receiptWithPayersInfo)
-                        updateReceiptSplittingStateUpdate(receiptInfo = receiptWithPayersInfo.receiptInfo, receiptWithPayersInfo.receiptPayers)
+                        updateReceiptSplittingStateUpdate(
+                            receiptInfo = receiptWithPayersInfo.receiptInfo,
+                            payers = receiptWithPayersInfo.receiptPayers,
+                            memberUiStates = memberUiStates
+                        )
                         updateManageMemberUiStateUpdated(memberUiStates, receiptWithPayersInfo.receiptPayers)
 
                         updateStateReceiptFound()
@@ -348,18 +353,24 @@ class ManageReceiptViewModel@Inject constructor(
         val totalPrices = receiptInfoUiState.value.receiptDetailUiState.prices.toLongOrNull() ?: 0L
         _receiptSplittingUiState.update { state ->
             state.copy(
-                payers = memberUiStates.toReceiptPayerInfoUiState(totalPrices)
+                payers = memberUiStates.toReceiptPayerInfoUiState(totalPrices),
+                disableChangeMode = memberUiStates.isEmpty()
             )
         }
     }
 
-    private fun updateReceiptSplittingStateUpdate(receiptInfo: ReceiptInfo, payers: List<ReceiptPayerInfo>) {
+    private fun updateReceiptSplittingStateUpdate(
+        receiptInfo: ReceiptInfo,
+        payers: List<ReceiptPayerInfo>,
+        memberUiStates: List<MemberInfoUiState>
+    ) {
         _receiptSplittingUiState.update { state ->
             state.copy(
                 splittingMode = receiptInfo.splittingMode.toSplittingMode(),
                 payers = payers.map {
                     it.toReceiptPayerInfoUiState(manageMemberResourceProvider = resourceProvider)
-                }
+                },
+                disableChangeMode = memberUiStates.isEmpty()
             )
         }
     }

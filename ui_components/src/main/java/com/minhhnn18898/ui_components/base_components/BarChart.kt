@@ -34,7 +34,6 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
@@ -83,12 +82,6 @@ private fun mapToThreshold(
     return targetMin + (value - sourceMin) * (targetRange / sourceRange)
 }
 
-fun mapToUnitRange(value: Float, a: Float, b: Float): Float {
-    if (a == b) return 0f
-
-    return (value - a) / (b - a)
-}
-
 @Composable
 fun BarGraph(
     barGroups: List<BarGroup>,
@@ -102,7 +95,11 @@ fun BarGraph(
     )
 
     Column(
-        modifier = Modifier.background(backgroundBrush)
+        modifier = Modifier
+            .background(
+                brush = backgroundBrush,
+                shape = RoundedCornerShape(12.dp)
+            )
     ) {
         BarGroupContent(barGroups = barGroups, onGroupSelectionChanged)
 
@@ -229,14 +226,13 @@ fun ChartBarGroup(
             values.forEachIndexed { index, item ->
                 val realPercentage = mapToThreshold(
                     value = item.value.toFloat(),
-                    sourceMin = valueRange.first.toFloat(),
+                    sourceMin = 0f,
                     sourceMax =  valueRange.last.toFloat()
                 ).toInt()
 
                 val color = item.color
                 val yOffset: Int
-                val applyFadingEffect = realPercentage < barVisualMinThreshold
-                val percentage = realPercentage.coerceIn(barVisualMinThreshold + 1, barVisualMaxThreshold - 1)
+                val percentage = realPercentage.coerceAtLeast(1)
 
                 yOffset = if (percentage >= 0) {
                     abs(barVisualMinThreshold)
@@ -251,11 +247,7 @@ fun ChartBarGroup(
                 ) {
                     ChartBar(
                         percentage = percentage,
-                        brush = if (applyFadingEffect) {
-                            Brush.verticalGradient(listOf(color, color.copy(alpha = 0f)))
-                        } else {
-                            Brush.verticalGradient(listOf(color, color))
-                        },
+                        brush = Brush.verticalGradient(listOf(color, color)),
                         isHighlighted = isSelected || isNothingSelected,
                         description = item.description,
                         descriptionColor = item.descriptionColor
@@ -335,8 +327,7 @@ fun DescriptionText(
                     ),
                     style = TextStyle(
                         fontSize = 12.sp,
-                        color = textColor,
-                        fontWeight = FontWeight.Bold
+                        color = textColor
                     )
                 )
 
