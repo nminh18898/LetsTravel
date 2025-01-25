@@ -54,11 +54,11 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.getResult
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.hasError
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.hasResult
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.isContentLoading
-import com.minhhnn18898.ui_components.loading_view.BasicLoadingView
 import com.minhhnn18898.ui_components.base_components.CreateNewDefaultButton
-import com.minhhnn18898.ui_components.error_view.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.HexagonShape
 import com.minhhnn18898.ui_components.base_components.SectionCtaData
+import com.minhhnn18898.ui_components.error_view.DefaultErrorView
+import com.minhhnn18898.ui_components.loading_view.BasicLoadingView
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes

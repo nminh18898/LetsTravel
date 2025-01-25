@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.MemberInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.ReceiptDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.memories.TripPhotoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.AirportInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.FlightInfoDao
@@ -13,6 +14,7 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOw
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfoModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerModel
+import com.minhhnn18898.manage_trip.trip_detail.data.model.memories.TripPhotoModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfoModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfoModel
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfoModel
@@ -29,7 +31,8 @@ import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
     MemberInfoModel::class,
     DefaultBillOwnerModel::class,
     ReceiptModel::class,
-    ReceiptPayerModel::class
+    ReceiptPayerModel::class,
+    TripPhotoModel::class
 ],
     version = 1,
     exportSchema = false
@@ -51,4 +54,6 @@ abstract class UserTripDatabase : RoomDatabase() {
     abstract fun defaultBillOwnerDao(): DefaultBillOwnerDao
 
     abstract fun receiptDao(): ReceiptDao
+
+    abstract fun tripPhotoDao(): TripPhotoDao
 }

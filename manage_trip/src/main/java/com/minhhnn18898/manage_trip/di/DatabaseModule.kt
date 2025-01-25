@@ -71,4 +71,9 @@ object DatabaseModule {
     fun provideReceiptDao(database: UserTripDatabase): ReceiptDao {
         return database.receiptDao()
     }
+
+    @Provides
+    fun provideTripPhotoDao(database: UserTripDatabase): TripInfoDao {
+        return database.tripInfoDao()
+    }
 }

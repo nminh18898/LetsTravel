@@ -1,10 +1,12 @@
 package com.minhhnn18898.manage_trip.di
 
+import android.content.Context
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.MemberInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.ReceiptDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.memories.TripPhotoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.AirportInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.FlightInfoDao
@@ -13,6 +15,8 @@ import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.MemberInfoRepo
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.MemberInfoRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepositoryImpl
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.TripPhotoRepository
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.TripPhotoRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatterImpl
@@ -22,6 +26,7 @@ import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 
@@ -79,6 +84,20 @@ object RepositoryModule {
         return ReceiptRepositoryImpl(
             ioDispatcher = ioDispatcher,
             receiptDao = receiptDao
+        )
+    }
+
+    @Provides
+    fun provideTripPhotoRepository(
+        @IODispatcher
+        ioDispatcher: CoroutineDispatcher,
+        tripPhotoDao: TripPhotoDao,
+        @ApplicationContext appContext: Context
+    ): TripPhotoRepository {
+        return TripPhotoRepositoryImpl(
+            ioDispatcher = ioDispatcher,
+            photoInfoDao = tripPhotoDao,
+            context = appContext
         )
     }
 }

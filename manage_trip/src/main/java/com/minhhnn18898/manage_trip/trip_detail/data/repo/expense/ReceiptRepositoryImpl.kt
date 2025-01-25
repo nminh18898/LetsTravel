@@ -57,7 +57,7 @@ class ReceiptRepositoryImpl(
         result
     }
 
-    override suspend fun updateReceipt(tripId: Long, receiptInfo: ReceiptInfo, payerInfo: List<ReceiptPayerInfo>) {
+    override suspend fun updateReceipt(tripId: Long, receiptInfo: ReceiptInfo, payerInfo: List<ReceiptPayerInfo>) = withContext(ioDispatcher) {
         val receiptId = receiptInfo.receiptId
 
         val result = receiptDao.updateReceiptAndPayers(
@@ -74,7 +74,7 @@ class ReceiptRepositoryImpl(
         }
     }
 
-    override suspend fun deleteReceipt(receiptId: Long) {
+    override suspend fun deleteReceipt(receiptId: Long) = withContext(ioDispatcher) {
         val result = receiptDao.deleteReceipt(receiptId)
 
         if(result <= 0) {
