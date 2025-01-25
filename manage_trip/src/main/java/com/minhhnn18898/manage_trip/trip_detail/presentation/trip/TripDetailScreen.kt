@@ -196,7 +196,8 @@ fun TripDetailScreen(
                                 ActivityResultContracts.PickVisualMedia.ImageOnly
                             )
                         )
-                    }
+                    },
+                    onClickRemovePhoto = viewModel::onRemovePhoto
                 )
             }
         }

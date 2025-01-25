@@ -21,6 +21,7 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUse
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetMemberReceiptPaymentStatisticInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.AddTripPhotoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.photo.DeleteTripPhotoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllTripPhotosUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.GetAllReceiptsUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.TripDetailExpenseTabController
@@ -71,7 +72,8 @@ class TripDetailScreenViewModel @Inject constructor(
     getAllReceiptsUseCase: GetAllReceiptsUseCase,
     getMemberPaymentStatisticInfo: GetMemberReceiptPaymentStatisticInfo,
     getAllTripPhotosUseCase: GetAllTripPhotosUseCase,
-    private val addTripPhotoUseCase: AddTripPhotoUseCase
+    private val addTripPhotoUseCase: AddTripPhotoUseCase,
+    private val removeTripPhotoUseCase: DeleteTripPhotoUseCase
 ): ViewModel() {
 
     private val parameters = savedStateHandle.toRoute<TripDetailDestination>(
@@ -148,10 +150,20 @@ class TripDetailScreenViewModel @Inject constructor(
             ).collect { result ->
                 when(result) {
                     is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
-                    is Result.Success -> {
-                        _uiState.update { it.copy(isLoading = false) }
-                    }
+                    is Result.Success -> _uiState.update { it.copy(isLoading = false) }
                     is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_PHOTO)
+                }
+            }
+        }
+    }
+
+    fun onRemovePhoto(photoId: Long) {
+        viewModelScope.launch {
+            removeTripPhotoUseCase.execute(photoId).collect { result ->
+                when(result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true) }
+                    is Result.Success -> _uiState.update { it.copy(isLoading = false) }
+                    is Result.Error -> showErrorInBriefPeriod(ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_PHOTO)
                 }
             }
         }
