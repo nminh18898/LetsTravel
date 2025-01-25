@@ -82,6 +82,7 @@ fun TripDetailScreen(
     onNavigateEditTripActivityScreen: (tripId: Long, activityId: Long) -> Unit,
     onNavigateToBillSlitMemberScreen: (tripId: Long, tripName: String) -> Unit,
     onNavigateToManageBillScreen: (tripId: Long, receiptId: Long) -> Unit,
+    onNavigateToViewFullPhotoScreen: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TripDetailScreenViewModel = hiltViewModel()
 ) {
@@ -197,7 +198,8 @@ fun TripDetailScreen(
                             )
                         )
                     },
-                    onClickRemovePhoto = viewModel::onRemovePhoto
+                    onClickRemovePhoto = viewModel::onRemovePhoto,
+                    onClickViewPhoto = onNavigateToViewFullPhotoScreen
                 )
             }
         }

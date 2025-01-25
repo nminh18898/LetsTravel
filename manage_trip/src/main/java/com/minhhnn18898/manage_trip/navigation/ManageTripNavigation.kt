@@ -32,6 +32,7 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddE
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo.EditTripScreen
 import com.minhhnn18898.manage_trip.trip_info.presentation.triplisting.TripInfoListingScreen
+import com.minhhnn18898.photo_view.navigation.navigateToPhotoViewFullScreen
 import kotlin.reflect.typeOf
 
 @Suppress("UNUSED_PARAMETER")
@@ -99,6 +100,9 @@ fun NavGraphBuilder.manageTripFeatureComposable(
             },
             onNavigateToManageBillScreen = { tripId, receiptId ->
                 navController.navigateToManageBillScreen(tripId, receiptId)
+            },
+            onNavigateToViewFullPhotoScreen = {
+                navController.navigateToPhotoViewFullScreen(it)
             }
         )
     }

@@ -47,6 +47,7 @@ fun LazyListScope.renderMemoriesTabScreen(
     photoInfoContentState: UiState<List<PhotoItemUiState>>,
     onClickAddPhoto: () -> Unit,
     onClickRemovePhoto: (Long) -> Unit,
+    onClickViewPhoto: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     when(photoInfoContentState) {
@@ -62,7 +63,8 @@ fun LazyListScope.renderMemoriesTabScreen(
             renderPhotoList(
                 photoInfoUiState = photoInfoContentState.data,
                 onClickAddPhoto = onClickAddPhoto,
-                onClickRemovePhoto = onClickRemovePhoto
+                onClickRemovePhoto = onClickRemovePhoto,
+                onClickViewPhoto = onClickViewPhoto
             )
         }
     }
@@ -73,6 +75,7 @@ private fun LazyListScope.renderPhotoList(
     photoInfoUiState: List<PhotoItemUiState>,
     onClickAddPhoto: () -> Unit,
     onClickRemovePhoto: (Long) -> Unit,
+    onClickViewPhoto: (String) -> Unit,
 ) {
     if(photoInfoUiState.isEmpty()) {
         item {
@@ -106,7 +109,7 @@ private fun LazyListScope.renderPhotoList(
                             .height(itemWidth)
                             .combinedClickable(
                                 onClick = {
-
+                                    onClickViewPhoto(photoItemUiState.uri)
                                 },
                                 onLongClick = {
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)

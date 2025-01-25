@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":app_navigation"))
     implementation(project(":core"))
     implementation(project(":architecture"))
+    implementation(project(":photo_view"))
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.core.testing)
