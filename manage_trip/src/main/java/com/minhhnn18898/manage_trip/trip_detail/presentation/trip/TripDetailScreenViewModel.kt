@@ -142,11 +142,11 @@ class TripDetailScreenViewModel @Inject constructor(
         currentTabSelected = tab
     }
 
-    fun onAddTripPhoto(url: Uri) {
+    fun onAddTripPhoto(uris: List<Uri>) {
         viewModelScope.launch {
             addTripPhotoUseCase.execute(
                 tripId = tripId,
-                uri = url,
+                uris = uris,
             ).collect { result ->
                 when(result) {
                     is Result.Loading -> _uiState.update { it.copy(isLoading = true) }

@@ -10,11 +10,11 @@ import javax.inject.Inject
 
 class AddTripPhotoUseCase @Inject constructor(private val repository: TripPhotoRepository) {
 
-    fun execute(tripId: Long, uri: Uri): Flow<Result<Long>> = flow {
+    fun execute(tripId: Long, uris: List<Uri>): Flow<Result<Int>> = flow {
         emit(Result.Loading)
         val result = repository.insertPhoto(
             tripId = tripId,
-            photoUri = uri
+            photoUris = uris
         )
         emit(Result.Success(result))
     }.catch {

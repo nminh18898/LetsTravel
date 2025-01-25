@@ -1,6 +1,7 @@
 package com.minhhnn18898.manage_trip.trip_detail.data.repo.memories
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.core.utils.imageSize
@@ -28,24 +29,36 @@ class TripPhotoRepositoryImpl(
 
     }
 
-    override suspend fun insertPhoto(tripId: Long, photoUri: Uri): Long = withContext(ioDispatcher) {
-        val (width, height) = photoUri.imageSize(context)
+    override suspend fun insertPhoto(tripId: Long, photoUris: List<Uri>): Int = withContext(ioDispatcher) {
+        photoUris.grantReadPermission()
 
-        val photoModel = TripPhotoModel(
-            photoId = 0,
-            photoUri = photoUri.toString(),
-            width = width,
-            height = height,
-            tripId = tripId
-        )
+        val photoModels = photoUris.map { photoUri ->
+            val (width, height) = photoUri.imageSize(context)
 
-        val resultCode = photoInfoDao.insert(photoModel)
+            TripPhotoModel(
+                photoId = 0,
+                photoUri = photoUri.toString(),
+                width = width,
+                height = height,
+                tripId = tripId
+            )
+        }
 
-        if(resultCode == -1L) {
+        val resultCode = photoInfoDao.insertAll(photoModels).size
+
+        if(resultCode <= 0) {
             throw ExceptionAddTripPhoto()
         }
 
         resultCode
+    }
+
+    private fun List<Uri>.grantReadPermission() {
+        forEach {
+            context
+                .contentResolver
+                .takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
     }
 
     override suspend fun deletePhoto(photoId: Long) = withContext(ioDispatcher) {

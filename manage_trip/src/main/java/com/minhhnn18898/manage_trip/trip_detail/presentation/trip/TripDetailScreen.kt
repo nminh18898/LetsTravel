@@ -1,7 +1,6 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.trip
 
 import android.content.Context
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -100,13 +99,9 @@ fun TripDetailScreen(
     val context = LocalContext.current
 
     val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            uri?.let {
-                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                context.contentResolver.takePersistableUriPermission(uri, flag)
-                viewModel.onAddTripPhoto(uri)
-            }
+        contract = ActivityResultContracts.PickMultipleVisualMedia(30),
+        onResult = {
+            viewModel.onAddTripPhoto(it)
         }
     )
 
@@ -194,7 +189,7 @@ fun TripDetailScreen(
                     onClickAddPhoto = {
                         imagePicker.launch(
                             PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                                mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
                             )
                         )
                     },

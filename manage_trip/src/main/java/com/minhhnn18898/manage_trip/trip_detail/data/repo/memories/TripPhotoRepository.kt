@@ -8,7 +8,7 @@ interface TripPhotoRepository {
 
     fun getPhotosStream(tripId: Long): Flow<List<TripPhotoInfo>>
 
-    suspend fun insertPhoto(tripId: Long, photoUri: Uri): Long
+    suspend fun insertPhoto(tripId: Long, photoUris: List<Uri>): Int
 
     suspend fun deletePhoto(photoId: Long)
 }

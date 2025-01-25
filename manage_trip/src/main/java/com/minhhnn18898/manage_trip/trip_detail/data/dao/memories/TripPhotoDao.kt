@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TripPhotoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(tripPhotoModel: TripPhotoModel): Long
+    suspend fun insertAll(tripPhotoModels: List<TripPhotoModel>): List<Long>
 
     @Query("DELETE FROM trip_photos WHERE photo_id = :photoId")
     suspend fun delete(photoId: Long): Int
