@@ -103,3 +103,7 @@ fun TripDetailTabDestination.isExpenseTab(): Boolean {
     return this == ExpenseTabDestination
 }
 
+fun TripDetailTabDestination.isMemoriesTab(): Boolean {
+    return this == MemoryTabDestination
+}
+

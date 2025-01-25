@@ -1,7 +1,13 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.trip
 
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -48,15 +54,20 @@ import com.minhhnn18898.app_navigation.destination.ExpenseTabDestination
 import com.minhhnn18898.app_navigation.destination.MemoryTabDestination
 import com.minhhnn18898.app_navigation.destination.TripDetailPlanTabDestination
 import com.minhhnn18898.app_navigation.destination.isExpenseTab
+import com.minhhnn18898.app_navigation.destination.isMemoriesTab
 import com.minhhnn18898.app_navigation.destination.isPlanTab
 import com.minhhnn18898.core.utils.StringUtils
+import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.navigation.TripDetailTabRow
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.renderExpenseTabScreen
+import com.minhhnn18898.manage_trip.trip_detail.presentation.memories_tab.renderMemoriesTabScreen
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.renderPlanTabUI
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.UserTripDisplay
 import com.minhhnn18898.ui_components.base_components.SectionCtaData
+import com.minhhnn18898.ui_components.base_components.TopMessageBar
+import com.minhhnn18898.ui_components.loading_view.ProgressDialog
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
@@ -83,7 +94,22 @@ fun TripDetailScreen(
     val expenseTabReceiptContentState by viewModel.expenseTabController.receiptInfoContentState.collectAsStateWithLifecycle()
     val expenseTabMemberPaymentStatisticContentState by viewModel.expenseTabController.memberPaymentStatisticContent.collectAsStateWithLifecycle()
 
+    val memoriesTabContent by viewModel.memoriesTabController.tripPhotoContentState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
+
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let {
+                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                context.contentResolver.takePersistableUriPermission(uri, flag)
+                viewModel.onAddTripPhoto(uri)
+            }
+        }
+    )
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = true) {
         onComposedTopBarActions(
@@ -129,34 +155,61 @@ fun TripDetailScreen(
             )
         }
 
-        if(currentTab.isPlanTab()) {
-            renderPlanTabUI(
-                flightContentState = flightContentState,
-                hotelContentState = hotelContentState,
-                activityContentState = activityContentState,
-                budgetDisplay = viewModel.planTabUIController.budgetDisplay,
-                tripId = viewModel.tripId,
-                onNavigateToEditFlightInfoScreen = onNavigateToEditFlightInfoScreen,
-                onNavigateEditHotelScreen = onNavigateEditHotelScreen,
-                onNavigateEditTripActivityScreen = onNavigateEditTripActivityScreen
-            )
-        } else if(currentTab.isExpenseTab()) {
-            renderExpenseTabScreen(
-                memberInfoContentState = expenseTabMemberContentState,
-                receiptInfoUiState = expenseTabReceiptContentState,
-                memberReceiptPaymentStatisticContentState = expenseTabMemberPaymentStatisticContentState,
-                onNavigateManageMemberScreen = {
-                    onNavigateToBillSlitMemberScreen(viewModel.tripId, viewModel.tripName)
-                },
-                onNavigateManageReceiptScreen = { receiptId ->
-                    onNavigateToManageBillScreen(
-                        viewModel.tripId,
-                        receiptId
-                    )
-                }
-            )
+        when {
+
+            currentTab.isPlanTab() -> {
+                renderPlanTabUI(
+                    flightContentState = flightContentState,
+                    hotelContentState = hotelContentState,
+                    activityContentState = activityContentState,
+                    budgetDisplay = viewModel.planTabUIController.budgetDisplay,
+                    tripId = viewModel.tripId,
+                    onNavigateToEditFlightInfoScreen = onNavigateToEditFlightInfoScreen,
+                    onNavigateEditHotelScreen = onNavigateEditHotelScreen,
+                    onNavigateEditTripActivityScreen = onNavigateEditTripActivityScreen
+                )
+            }
+
+            currentTab.isExpenseTab() -> {
+                renderExpenseTabScreen(
+                    memberInfoContentState = expenseTabMemberContentState,
+                    receiptInfoUiState = expenseTabReceiptContentState,
+                    memberReceiptPaymentStatisticContentState = expenseTabMemberPaymentStatisticContentState,
+                    onNavigateManageMemberScreen = {
+                        onNavigateToBillSlitMemberScreen(viewModel.tripId, viewModel.tripName)
+                    },
+                    onNavigateManageReceiptScreen = { receiptId ->
+                        onNavigateToManageBillScreen(
+                            viewModel.tripId,
+                            receiptId
+                        )
+                    }
+                )
+            }
+
+            currentTab.isMemoriesTab() -> {
+                renderMemoriesTabScreen(
+                    photoInfoContentState = memoriesTabContent,
+                    onClickAddPhoto = {
+                        imagePicker.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                        )
+                    }
+                )
+            }
         }
     }
+
+    AnimatedVisibility(uiState.isLoading) {
+        ProgressDialog()
+    }
+
+    TopMessageBar(
+        shown = uiState.showError.isShow(),
+        text = getMessageError(LocalContext.current, uiState.showError)
+    )
 }
 
 @Composable
@@ -333,4 +386,16 @@ fun DetailSection(
 
         content()
     }
+}
+
+private fun getMessageError(context: Context, errorType: TripDetailScreenViewModel.ErrorType): String {
+    return when(errorType) {
+        TripDetailScreenViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_ADD_PHOTO -> StringUtils.getString(context, R.string.error_can_not_add_photo_to_trip)
+        TripDetailScreenViewModel.ErrorType.ERROR_MESSAGE_CAN_NOT_DELETE_PHOTO -> StringUtils.getString(context, R.string.error_can_not_delete_photo_to_trip)
+        else -> ""
+    }
+}
+
+private fun TripDetailScreenViewModel.ErrorType.isShow(): Boolean {
+    return this != TripDetailScreenViewModel.ErrorType.ERROR_MESSAGE_NONE
 }

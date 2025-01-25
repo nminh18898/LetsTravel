@@ -6,6 +6,7 @@ import com.minhhnn18898.manage_trip.database.UserTripDatabase
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.MemberInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.ReceiptDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.memories.TripPhotoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.AirportInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.FlightInfoDao
@@ -73,7 +74,7 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideTripPhotoDao(database: UserTripDatabase): TripInfoDao {
-        return database.tripInfoDao()
+    fun provideTripPhotoDao(database: UserTripDatabase): TripPhotoDao {
+        return database.tripPhotoDao()
     }
 }

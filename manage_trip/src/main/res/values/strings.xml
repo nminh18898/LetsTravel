@@ -57,4 +57,7 @@
     <string name="error_can_not_update_receipt_owner">Can not update the receipt owner. Please try again</string>
     <string name="no_split">No split</string>
     <string name="add_new_receipt">Add new receipt</string>
+    <string name="add_photos_to_preserve_your_memories">Add photos to preserve your memories</string>
+    <string name="error_can_not_add_photo_to_trip">Can not add photo to trip. Please try again</string>
+    <string name="error_can_not_delete_photo_to_trip">Can not delete photo. Please try again</string>
 </resources>
