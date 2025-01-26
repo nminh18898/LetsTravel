@@ -66,4 +66,5 @@
     <string name="photo_frame_colorful_name">Colorful</string>
     <string name="photo_frame_flower_name">Flower</string>
     <string name="change_photo_frame">Change photo frame</string>
+    <string name="error_can_not_change_photo_frame">Can not change photo frame. Please try again</string>
 </resources>

@@ -22,7 +22,7 @@ data class TripMemoriesConfigModel(
     @ColumnInfo("trip_id")
     val tripId: Long,
 
-    @ColumnInfo("member_id")
+    @ColumnInfo("photo_frame_type")
     val photoFrameType: Int
 )
 

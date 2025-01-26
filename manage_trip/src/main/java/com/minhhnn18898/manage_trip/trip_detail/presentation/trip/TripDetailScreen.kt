@@ -94,8 +94,9 @@ fun TripDetailScreen(
     val expenseTabReceiptContentState by viewModel.expenseTabController.receiptInfoContentState.collectAsStateWithLifecycle()
     val expenseTabMemberPaymentStatisticContentState by viewModel.expenseTabController.memberPaymentStatisticContent.collectAsStateWithLifecycle()
 
-    val memoriesTabContent by viewModel.memoriesTabController.tripPhotoContentState.collectAsStateWithLifecycle()
+    val memoriesTabPhotoContent by viewModel.memoriesTabController.tripPhotoContentState.collectAsStateWithLifecycle()
     val memoriesTabPhotoFrameOptions by viewModel.memoriesTabController.photoFrameSelectionUiState.collectAsStateWithLifecycle()
+    val memoriesTabMainContentState by viewModel.memoriesTabController.uiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -186,7 +187,8 @@ fun TripDetailScreen(
 
             currentTab.isMemoriesTab() -> {
                 renderMemoriesTabScreen(
-                    photoInfoContentState = memoriesTabContent,
+                    photoInfoContentState = memoriesTabPhotoContent,
+                    memoriesTabMainUiState = memoriesTabMainContentState,
                     photoFrameOptionsUiState = memoriesTabPhotoFrameOptions.options,
                     onClickAddPhoto = {
                         imagePicker.launch(
