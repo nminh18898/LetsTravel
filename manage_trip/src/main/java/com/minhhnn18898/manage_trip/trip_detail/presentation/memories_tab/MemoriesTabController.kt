@@ -1,8 +1,11 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.memories_tab
 
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.WhileUiSubscribed
+import com.minhhnn18898.manage_trip.trip_detail.data.model.memories.TripMemoriesConfigInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.memories_config.GetMemoriesConfigUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_config.UpdateMemoriesConfigUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllPhotoFrameTypeUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllTripPhotosUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +26,8 @@ class MemoriesTabController(
     getAllTripPhotosUseCase: GetAllTripPhotosUseCase,
     private val getMemoriesConfigUseCase: GetMemoriesConfigUseCase,
     private val getAllPhotoFrameTypeUseCase: GetAllPhotoFrameTypeUseCase,
-    private val resourceProvider: MemoriesTabResourceProvider
+    private val resourceProvider: MemoriesTabResourceProvider,
+    private val updateMemoriesConfigUseCase: UpdateMemoriesConfigUseCase
 ) {
     private val _photoFrameSelectionUiState = MutableStateFlow(
         PhotoFrameSelectionUiState(
@@ -36,10 +40,10 @@ class MemoriesTabController(
         getAllTripPhotosUseCase
             .execute(tripId)
             .combine(getMemoriesConfigUseCase.execute(tripId)) { photoInfo, photoConfig ->
-                val photoFrameResource = resourceProvider.getPhotoFrameResources(photoConfig.photoFrameType)
                 UiState.Success(
-                    photoInfo.map {
-                        it.toPhotoItemUiState(
+                    photoInfo.mapIndexed { index, tripPhotoInfo ->
+                        val photoFrameResource = resourceProvider.getPhotoFrameResources(photoConfig.photoFrameType, index)
+                        tripPhotoInfo.toPhotoItemUiState(
                             backgroundRes = photoFrameResource.first,
                             decorationRes = photoFrameResource.second
                         )
@@ -62,14 +66,18 @@ class MemoriesTabController(
     private fun loadMemoriesConfig() {
         viewModelScope.launch {
             getMemoriesConfigUseCase.execute(tripId).collect { currentConfig ->
-                _photoFrameSelectionUiState.update { state ->
-                    state.copy(
-                        options = state.options.map { option ->
-                            option.copy(isSelected = option.photoFrameType == currentConfig.photoFrameType)
-                        }
-                    )
-                }
+                updateNewSelectedPhotoFrame(currentConfig.photoFrameType)
             }
+        }
+    }
+
+    private fun updateNewSelectedPhotoFrame(currentPhotoFrameType: Int) {
+        _photoFrameSelectionUiState.update { state ->
+            state.copy(
+                options = state.options.map { option ->
+                    option.copy(isSelected = option.photoFrameType == currentPhotoFrameType)
+                }
+            )
         }
     }
 
@@ -86,6 +94,24 @@ class MemoriesTabController(
                     decorationRes = photoFrameResource.second
                 )
             }
+    }
+
+    fun onChangePhotoFrameType(type: Int) {
+        viewModelScope.launch {
+            updateMemoriesConfigUseCase.execute(
+                tripId = tripId,
+                memoriesConfig = TripMemoriesConfigInfo(photoFrameType = type)
+            ).collect { result ->
+                when(result) {
+                    is Result.Success -> {
+
+                    }
+                    else -> {
+
+                    }
+                }
+            }
+        }
     }
 
 }

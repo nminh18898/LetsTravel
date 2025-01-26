@@ -6,30 +6,47 @@ import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.MemoriesConfi
 
 interface MemoriesTabResourceProvider {
 
-    fun getPhotoFrameResources(photoFrameType: Int): Pair<Int?, Int?>
+    fun getPhotoFrameResources(photoFrameType: Int, index: Int = 0): Pair<Int?, Int?>
 
     @StringRes
     fun getPhotoFrameNameRes(photoFrameType: Int): Int
 }
 
 class MemoriesTabResourceProviderImpl: MemoriesTabResourceProvider {
-    private val photoFrameBackgroundRes: Map<Int, Int> = mutableMapOf(
-        MemoriesConfigRepository.PHOTO_FRAME_DEFAULT to R.drawable.memories_right_photo_background,
-        MemoriesConfigRepository.PHOTO_FRAME_VINTAGE to R.drawable.memories_right_photo_background,
-        MemoriesConfigRepository.PHOTO_FRAME_FLOWER to R.drawable.memories_right_photo_background,
-        MemoriesConfigRepository.PHOTO_FRAME_COLORFUL to R.drawable.memories_right_photo_background
+    private val photoFrameTypeDefault = mutableListOf(
+        Pair<Int, Int?>(R.drawable.photo_frame_default_background, null)
     )
 
-    private val photoFrameDecorationRes: Map<Int, Int> = mutableMapOf(
-        MemoriesConfigRepository.PHOTO_FRAME_DEFAULT to R.drawable.memories_right_photo_decoration,
-        MemoriesConfigRepository.PHOTO_FRAME_VINTAGE to R.drawable.memories_right_photo_decoration,
-        MemoriesConfigRepository.PHOTO_FRAME_FLOWER to R.drawable.memories_right_photo_decoration,
-        MemoriesConfigRepository.PHOTO_FRAME_COLORFUL to R.drawable.memories_right_photo_decoration
+    private val photoFrameTypeFlower = mutableListOf(
+        Pair<Int, Int?>(R.drawable.photo_frame_flower_blue_background, R.drawable.photo_frame_flower_blue_decoration),
+        Pair<Int, Int?>(R.drawable.photo_frame_flower_red_background, R.drawable.photo_frame_flower_red_decoration),
+        Pair<Int, Int?>(R.drawable.photo_frame_flower_yellow_background, R.drawable.photo_frame_flower_yellow_decoration),
+        Pair<Int, Int?>(R.drawable.photo_frame_flower_purple_background, R.drawable.photo_frame_flower_purple_decoration)
+    )
+
+    private val photoFrameTypeVintage = mutableListOf(
+        Pair<Int, Int?>(R.drawable.photo_frame_vintage_type_one, null),
+        Pair<Int, Int?>(R.drawable.photo_frame_vintage_type_two, null)
+    )
+
+    private val photoFrameTypeColorful = mutableListOf(
+        Pair<Int, Int?>(R.drawable.photo_frame_colorful_red, null),
+        Pair<Int, Int?>(R.drawable.photo_frame_colorful_blue, null),
+        Pair<Int, Int?>(R.drawable.photo_frame_colorful_yellow, null),
+        Pair<Int, Int?>(R.drawable.photo_frame_colorful_green, null)
+    )
+
+    private val photoFrameMap: Map<Int, List<Pair<Int?, Int?>>> = mutableMapOf(
+        MemoriesConfigRepository.PHOTO_FRAME_DEFAULT to photoFrameTypeDefault,
+        MemoriesConfigRepository.PHOTO_FRAME_VINTAGE to photoFrameTypeVintage,
+        MemoriesConfigRepository.PHOTO_FRAME_FLOWER to photoFrameTypeFlower,
+        MemoriesConfigRepository.PHOTO_FRAME_COLORFUL to photoFrameTypeColorful
     )
 
 
-    override fun getPhotoFrameResources(photoFrameType: Int): Pair<Int?, Int?> {
-       return Pair(photoFrameBackgroundRes[photoFrameType], photoFrameDecorationRes[photoFrameType])
+    override fun getPhotoFrameResources(photoFrameType: Int, index: Int): Pair<Int?, Int?> {
+        val photoFrame = photoFrameMap[photoFrameType] ?: return Pair(null, null)
+        return photoFrame.getOrNull(index % photoFrame.size) ?: Pair(null, null)
     }
 
     @StringRes

@@ -65,5 +65,5 @@
     <string name="photo_frame_vintage_name">Vintage</string>
     <string name="photo_frame_colorful_name">Colorful</string>
     <string name="photo_frame_flower_name">Flower</string>
-
+    <string name="change_photo_frame">Change photo frame</string>
 </resources>

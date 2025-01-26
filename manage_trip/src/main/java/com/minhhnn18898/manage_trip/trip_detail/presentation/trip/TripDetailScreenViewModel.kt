@@ -21,6 +21,7 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUse
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetMemberReceiptPaymentStatisticInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.memories_config.GetMemoriesConfigUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_config.UpdateMemoriesConfigUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.AddTripPhotoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.DeleteTripPhotoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllPhotoFrameTypeUseCase
@@ -79,7 +80,8 @@ class TripDetailScreenViewModel @Inject constructor(
     private val removeTripPhotoUseCase: DeleteTripPhotoUseCase,
     getMemoriesConfigUseCase: GetMemoriesConfigUseCase,
     getAllPhotoFrameTypeUseCase: GetAllPhotoFrameTypeUseCase,
-    memoriesTabResourceProvider: MemoriesTabResourceProvider
+    memoriesTabResourceProvider: MemoriesTabResourceProvider,
+    updateMemoriesConfigUseCase: UpdateMemoriesConfigUseCase
 ): ViewModel() {
 
     private val parameters = savedStateHandle.toRoute<TripDetailDestination>(
@@ -138,7 +140,8 @@ class TripDetailScreenViewModel @Inject constructor(
         getAllTripPhotosUseCase = getAllTripPhotosUseCase,
         getMemoriesConfigUseCase = getMemoriesConfigUseCase,
         getAllPhotoFrameTypeUseCase = getAllPhotoFrameTypeUseCase,
-        resourceProvider = memoriesTabResourceProvider
+        resourceProvider = memoriesTabResourceProvider,
+        updateMemoriesConfigUseCase = updateMemoriesConfigUseCase
     )
 
     private val _uiState = MutableStateFlow(TripDetailMainUiState())
