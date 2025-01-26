@@ -6,6 +6,7 @@ import com.minhhnn18898.core.utils.BaseDateTimeFormatterImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.DefaultBillOwnerDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.MemberInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.expense.ReceiptDao
+import com.minhhnn18898.manage_trip.trip_detail.data.dao.memories.TripMemoriesConfigDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.memories.TripPhotoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.ActivityInfoDao
 import com.minhhnn18898.manage_trip.trip_detail.data.dao.plan.AirportInfoDao
@@ -15,6 +16,8 @@ import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.MemberInfoRepo
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.MemberInfoRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepositoryImpl
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.MemoriesConfigRepository
+import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.MemoriesConfigRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.TripPhotoRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.TripPhotoRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepository
@@ -98,6 +101,18 @@ object RepositoryModule {
             ioDispatcher = ioDispatcher,
             photoInfoDao = tripPhotoDao,
             context = appContext
+        )
+    }
+
+    @Provides
+    fun provideMemoriesConfigRepository(
+        @IODispatcher
+        ioDispatcher: CoroutineDispatcher,
+        memoriesConfigDao: TripMemoriesConfigDao
+    ): MemoriesConfigRepository {
+        return MemoriesConfigRepositoryImpl(
+            ioDispatcher = ioDispatcher,
+            configInfoDao = memoriesConfigDao
         )
     }
 }

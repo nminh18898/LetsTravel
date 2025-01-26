@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="empty_string"/>
     <string name="hotel_name">Hotel name</string>
     <string name="error_can_not_create_hotel_info">Can not create hotel info. Please try again</string>
     <string name="error_can_not_load_hotel_info">Can not load hotel info. Please try again</string>
@@ -60,4 +61,9 @@
     <string name="add_photos_to_preserve_your_memories">Add photos to preserve your memories</string>
     <string name="error_can_not_add_photo_to_trip">Can not add photo to trip. Please try again</string>
     <string name="error_can_not_delete_photo_to_trip">Can not delete photo. Please try again</string>
+    <string name="photo_frame_default_name">Default</string>
+    <string name="photo_frame_vintage_name">Vintage</string>
+    <string name="photo_frame_colorful_name">Colorful</string>
+    <string name="photo_frame_flower_name">Flower</string>
+
 </resources>

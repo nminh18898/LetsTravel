@@ -118,11 +118,13 @@ private fun LazyListScope.renderPhotoList(
                             )
                     ) {
 
-                        Image(
-                            painter = painterResource(id = R.drawable.memories_right_photo_background),
-                            contentDescription = "",
-                            modifier = Modifier.fillMaxSize()
-                        )
+                        if(photoItemUiState.backgroundRes != null) {
+                            Image(
+                                painter = painterResource(id = photoItemUiState.backgroundRes),
+                                contentDescription = "",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
 
                         AsyncImage(
                             model = photoItemUiState.uri,
@@ -134,6 +136,14 @@ private fun LazyListScope.renderPhotoList(
                             placeholder = painterResource(id = com.minhhnn18898.ui_components.R.drawable.image_placeholder),
                             error = painterResource(id = com.minhhnn18898.ui_components.R.drawable.empty_image_bg)
                         )
+
+                        if(photoItemUiState.decorationRes != null) {
+                            Image(
+                                painter = painterResource(id = photoItemUiState.decorationRes),
+                                contentDescription = "",
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
                 }
             }

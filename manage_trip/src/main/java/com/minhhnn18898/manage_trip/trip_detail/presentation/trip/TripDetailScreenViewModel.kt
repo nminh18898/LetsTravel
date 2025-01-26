@@ -20,14 +20,17 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetListFlightInfoU
 import com.minhhnn18898.manage_trip.trip_detail.domain.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetMemberReceiptPaymentStatisticInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_config.GetMemoriesConfigUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.AddTripPhotoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.DeleteTripPhotoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllPhotoFrameTypeUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllTripPhotosUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.GetAllReceiptsUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.TripDetailExpenseTabController
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.BillSplitManageMemberViewModel.ErrorType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 import com.minhhnn18898.manage_trip.trip_detail.presentation.memories_tab.MemoriesTabController
+import com.minhhnn18898.manage_trip.trip_detail.presentation.memories_tab.MemoriesTabResourceProvider
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.TripDetailPlanTabController
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
@@ -73,7 +76,10 @@ class TripDetailScreenViewModel @Inject constructor(
     getMemberPaymentStatisticInfo: GetMemberReceiptPaymentStatisticInfo,
     getAllTripPhotosUseCase: GetAllTripPhotosUseCase,
     private val addTripPhotoUseCase: AddTripPhotoUseCase,
-    private val removeTripPhotoUseCase: DeleteTripPhotoUseCase
+    private val removeTripPhotoUseCase: DeleteTripPhotoUseCase,
+    getMemoriesConfigUseCase: GetMemoriesConfigUseCase,
+    getAllPhotoFrameTypeUseCase: GetAllPhotoFrameTypeUseCase,
+    memoriesTabResourceProvider: MemoriesTabResourceProvider
 ): ViewModel() {
 
     private val parameters = savedStateHandle.toRoute<TripDetailDestination>(
@@ -129,7 +135,10 @@ class TripDetailScreenViewModel @Inject constructor(
     val memoriesTabController = MemoriesTabController(
         viewModelScope = viewModelScope,
         tripId = tripId,
-        getAllTripPhotosUseCase = getAllTripPhotosUseCase
+        getAllTripPhotosUseCase = getAllTripPhotosUseCase,
+        getMemoriesConfigUseCase = getMemoriesConfigUseCase,
+        getAllPhotoFrameTypeUseCase = getAllPhotoFrameTypeUseCase,
+        resourceProvider = memoriesTabResourceProvider
     )
 
     private val _uiState = MutableStateFlow(TripDetailMainUiState())
