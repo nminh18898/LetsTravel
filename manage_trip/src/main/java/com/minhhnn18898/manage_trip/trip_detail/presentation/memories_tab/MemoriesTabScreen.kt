@@ -1,5 +1,11 @@
 package com.minhhnn18898.manage_trip.trip_detail.presentation.memories_tab
 
+import android.content.Context
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,26 +54,40 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.ui_components.base_components.DefaultEmptyView
+import com.minhhnn18898.ui_components.base_components.TopMessageBar
+import com.minhhnn18898.ui_components.error_view.DefaultErrorView
 import com.minhhnn18898.ui_components.theme.typography
 
 fun LazyListScope.renderMemoriesTabScreen(
     photoInfoContentState: UiState<List<PhotoItemUiState>>,
+    memoriesTabMainUiState: MemoriesTabMainUiState,
     photoFrameOptionsUiState: List<PhotoFrameUiState>,
     onClickAddPhoto: () -> Unit,
     onClickRemovePhoto: (Long) -> Unit,
     onClickViewPhoto: (String) -> Unit,
-    onChangePhotoFrameLayout: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    onChangePhotoFrameLayout: (Int) -> Unit
 ) {
+    item {
+        TopMessageBar(
+            shown = memoriesTabMainUiState.showError.isShow(),
+            text = getMessageError(LocalContext.current, memoriesTabMainUiState.showError)
+        )
+    }
+
     when(photoInfoContentState) {
         is UiState.Loading -> {
-            // Optional
+            item {
+                GridPhotoSectionLoading()
+            }
         }
 
         is UiState.Error -> {
-            // Optional
+            item {
+                DefaultErrorView()
+            }
         }
 
         is UiState.Success -> {
@@ -367,5 +388,59 @@ private fun PhotoActionsSheet(
                 onRemovePhoto(photoId)
             }
         )
+    }
+}
+
+private fun getMessageError(context: Context, errorType: MemoriesTabController.ErrorType): String {
+    return when(errorType) {
+        MemoriesTabController.ErrorType.ERROR_CAN_NOT_CHANGE_FRAME_LAYOUT -> StringUtils.getString(context, R.string.error_can_not_change_photo_frame)
+        else -> ""
+    }
+}
+
+private fun MemoriesTabController.ErrorType.isShow(): Boolean {
+    return this != MemoriesTabController.ErrorType.ERROR_MESSAGE_NONE
+}
+
+@Composable
+private fun GridPhotoSectionLoading() {
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite loading")
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 1000
+                0.7f at 500
+            },
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alpha"
+    )
+
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        repeat(4) {
+            GridPhotoSkeletonRow(alpha = alpha)
+        }
+    }
+}
+
+@Composable
+private fun GridPhotoSkeletonRow(alpha: Float) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val padding = 8.dp
+    val itemWidth = (screenWidth - padding * 4) / 3
+
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        repeat(3) {
+            Box(
+                modifier = Modifier
+                    .size(itemWidth)
+                    .background(Color.LightGray.copy(alpha = alpha))
+            )
+        }
     }
 }
