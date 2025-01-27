@@ -69,7 +69,7 @@ Let's Travel is your all-in-one travel companion, designed to make planning and 
 ### Jetpack Compose for UI
 
 - Entire UI is built using **Jetpack Compose**, with components like:
-    + List, Grid, ViewPager, Charts (Custom Canvas), Carousel, Dialos, and more.
+    + List, Grid, ViewPager, Charts (Custom Canvas), Carousel, Dialogs, and more.
 
 - App navigation is powered by the latest **Jetpack Navigation** library (integrated with Compose).
 
