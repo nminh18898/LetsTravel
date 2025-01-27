@@ -155,6 +155,10 @@ class TripDetailScreenViewModel @Inject constructor(
     }
 
     fun onAddTripPhoto(uris: List<Uri>) {
+        if(uris.isEmpty()) {
+            return
+        }
+
         viewModelScope.launch {
             addTripPhotoUseCase.execute(
                 tripId = tripId,

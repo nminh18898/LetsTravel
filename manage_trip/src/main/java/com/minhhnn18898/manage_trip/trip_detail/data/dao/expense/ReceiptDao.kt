@@ -39,6 +39,7 @@ interface ReceiptDao {
             member_info m ON p.member_id = m.member_id
         WHERE 
             r.trip_id = :tripId
+        ORDER BY r.created_time DESC
     """)
     fun getAllReceipts(tripId: Long): Flow<List<ReceiptWithPayersModel>>
 
