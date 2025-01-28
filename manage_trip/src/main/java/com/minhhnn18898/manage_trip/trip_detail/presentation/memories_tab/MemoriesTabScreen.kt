@@ -70,11 +70,13 @@ fun LazyListScope.renderMemoriesTabScreen(
     onClickViewPhoto: (String) -> Unit,
     onChangePhotoFrameLayout: (Int) -> Unit
 ) {
-    item {
-        TopMessageBar(
-            shown = memoriesTabMainUiState.showError.isShow(),
-            text = getMessageError(LocalContext.current, memoriesTabMainUiState.showError)
-        )
+    if(memoriesTabMainUiState.showError.isShow()) {
+        item {
+            TopMessageBar(
+                shown = memoriesTabMainUiState.showError.isShow(),
+                text = getMessageError(LocalContext.current, memoriesTabMainUiState.showError)
+            )
+        }
     }
 
     when(photoInfoContentState) {

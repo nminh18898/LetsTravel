@@ -208,10 +208,6 @@ class AddEditFlightInfoViewModel @Inject constructor(
             )
         }
 
-        if(itineraryType == ItineraryType.ARRIVAL) {
-            checkInvalidFlightTimeRangeAndNotify()
-        }
-
         checkAllowSaveContent()
     }
 
@@ -222,6 +218,10 @@ class AddEditFlightInfoViewModel @Inject constructor(
             it.copy(
                 flightUiState = it.flightUiState.copy(flightTime = currentValue)
             )
+        }
+
+        if(itineraryType == ItineraryType.ARRIVAL) {
+            checkInvalidFlightTimeRangeAndNotify()
         }
 
         checkAllowSaveContent()
