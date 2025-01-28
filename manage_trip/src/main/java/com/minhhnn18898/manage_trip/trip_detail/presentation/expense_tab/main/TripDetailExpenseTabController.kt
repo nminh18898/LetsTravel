@@ -3,9 +3,9 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
-import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetAllMembersUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.member_info.GetMemberReceiptPaymentStatisticInfo
-import com.minhhnn18898.manage_trip.trip_detail.domain.receipt.GetAllReceiptsUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.member_info.GetAllMembersUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.member_info.GetMemberReceiptPaymentStatisticInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.receipt.GetAllReceiptsUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import kotlinx.coroutines.CoroutineScope

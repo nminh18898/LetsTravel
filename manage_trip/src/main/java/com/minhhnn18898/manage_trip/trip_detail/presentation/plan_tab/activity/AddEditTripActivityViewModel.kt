@@ -7,10 +7,10 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.domain.activity.CreateTripActivityInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.activity.DeleteTripActivityInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.activity.GetTripActivityInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.activity.UpdateTripActivityInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.CreateTripActivityInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.DeleteTripActivityInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetTripActivityInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.UpdateTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

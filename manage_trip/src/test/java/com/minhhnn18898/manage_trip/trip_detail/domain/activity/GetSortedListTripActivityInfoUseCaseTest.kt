@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertActivityInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -9,10 +9,10 @@ import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.domain.flight.CreateNewFlightInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.flight.DeleteFlightInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.flight.GetFlightInfoUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.flight.UpdateFlightInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.CreateNewFlightInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.DeleteFlightInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.GetFlightInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.UpdateFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoViewModel
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightInfoViewModel.ItineraryType
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.AddEditFlightUiState

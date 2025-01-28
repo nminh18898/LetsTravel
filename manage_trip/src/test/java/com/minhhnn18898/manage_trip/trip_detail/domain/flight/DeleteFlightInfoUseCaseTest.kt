@@ -7,6 +7,7 @@ import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionDeleteFlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertAirportInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi

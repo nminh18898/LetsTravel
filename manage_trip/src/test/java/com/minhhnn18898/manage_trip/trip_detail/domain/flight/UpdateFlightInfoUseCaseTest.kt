@@ -8,6 +8,7 @@ import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionUpdateFlightInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.UpdateFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertFlightAndAirportEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi

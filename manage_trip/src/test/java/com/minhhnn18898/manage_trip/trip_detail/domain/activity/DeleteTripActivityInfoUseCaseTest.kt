@@ -6,6 +6,7 @@ import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionDeleteTripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.DeleteTripActivityInfoUseCase
 import com.minhhnn18898.test_utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList

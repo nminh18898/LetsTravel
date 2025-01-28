@@ -4,10 +4,10 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.manage_trip.trip_detail.data.model.memories.TripMemoriesConfigInfo
-import com.minhhnn18898.manage_trip.trip_detail.domain.memories_config.GetMemoriesConfigUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.memories_config.UpdateMemoriesConfigUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllPhotoFrameTypeUseCase
-import com.minhhnn18898.manage_trip.trip_detail.domain.photo.GetAllTripPhotosUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.memories_config.GetMemoriesConfigUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.memories_config.UpdateMemoriesConfigUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.photo.GetAllPhotoFrameTypeUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.photo.GetAllTripPhotosUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.BillSplitManageMemberViewModel.ErrorType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
