@@ -91,7 +91,7 @@ Let's Travel is your all-in-one travel companion, designed to make planning and 
 
 ### Image Loading
 
-**Coil:** Used for fast and lightweight asynchronous photo loading in the app.
+- **Coil:** Used for fast and lightweight asynchronous photo loading in the app.
 
 ### Testing
 
