@@ -6,6 +6,10 @@
 
 Let's Travel is your all-in-one travel companion, designed to make planning and organizing trips effortless and enjoyable. Whether you're exploring a new city, planning a getaway with friends, or embarking on an epic solo adventure, Let's Travel ensures you stay organized and stress-free from start to finish.
 
+Features demonstration (Youtube video):
+
+[![Features Demonstration](https://i.ytimg.com/vi/RHtEXYhgKPI/maxresdefault.jpg)](https://youtu.be/RHtEXYhgKPI "Features Demonstration")
+
 ## ✈️ Key Features
 
 ### 🗺️ Trip Planning Made Easy
