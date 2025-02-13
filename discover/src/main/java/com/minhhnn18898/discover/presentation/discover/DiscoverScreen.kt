@@ -203,7 +203,7 @@ fun ArticlesPager(
             verticalAlignment = Alignment.CenterVertically,
             pageSize = PageSize.Fill,
             modifier = modifier
-                .height(450.dp)
+                .height(475.dp)
         ) { page ->
             val pageInfo = articles[page]
 
