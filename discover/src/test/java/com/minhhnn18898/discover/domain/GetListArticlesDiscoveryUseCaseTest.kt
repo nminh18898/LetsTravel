@@ -3,7 +3,8 @@ package com.minhhnn18898.discover.domain
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.discover.data.model.Article
+import com.minhhnn18898.discover.data.model.ArticlePreview
+import com.minhhnn18898.discover.data.model.toArticlePreview
 import com.minhhnn18898.discover.data.repo.ExceptionGetDiscoverArticle
 import com.minhhnn18898.discover.test_helper.FakeDiscoveryRepository
 import com.minhhnn18898.discover.test_helper.australiaArticleTest
@@ -45,11 +46,11 @@ class GetListArticlesDiscoveryUseCaseTest {
         Truth.assertThat(result).hasSize(2)
         Truth.assertThat(result[0]).isInstanceOf(Result.Loading::class.java)
         Truth.assertThat(result[1]).isInstanceOf(Result.Success::class.java)
-        Truth.assertThat((result[1] as Result.Success<List<Article>>).data).isEqualTo(mutableListOf(
+        Truth.assertThat((result[1] as Result.Success<List<ArticlePreview>>).data).isEqualTo(mutableListOf(
             vietnamArticleTest,
             icelandArticleTest,
             australiaArticleTest
-        ))
+        ).map { it.toArticlePreview() })
     }
 
     @Test

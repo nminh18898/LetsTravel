@@ -29,3 +29,13 @@ fun Article.toDisplayInfo(baseDateTimeFormatter: BaseDateTimeFormatter): Article
         tag = this.tag
     )
 }
+
+fun ArticleDisplayInfo.toArticlePreviewDisplayInfo(): ArticlePreviewDisplayInfo {
+    return ArticlePreviewDisplayInfo(
+        id = this.id,
+        title = this.title,
+        content = this.content,
+        thumbUrl = this.thumbUrl,
+        lastEdited = this.lastEdited
+    )
+}

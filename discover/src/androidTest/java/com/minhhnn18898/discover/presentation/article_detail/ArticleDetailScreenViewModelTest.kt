@@ -6,7 +6,7 @@ import com.google.common.truth.Truth
 import com.minhhnn18898.account.domain.CheckValidSignedInUserUseCase
 import com.minhhnn18898.account.domain.GetAuthStateUseCase
 import com.minhhnn18898.account.test_helper.FakeAccountService
-import com.minhhnn18898.app_navigation.destination.route.DiscoveryFeatureRoute
+import com.minhhnn18898.app_navigation.destination.DiscoveryArticleDetailScreenParameters
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.test_helper.FakeDateTimeFormatter
 import com.minhhnn18898.core.utils.BaseDateTimeFormatter
@@ -38,6 +38,7 @@ class ArticleDetailScreenViewModelTest {
     private lateinit var fakeAccountService: FakeAccountService
     private lateinit var checkValidSignedInUserUseCase: CheckValidSignedInUserUseCase
     private lateinit var getAuthStateUseCase: GetAuthStateUseCase
+    private lateinit var savedStateHandle: SavedStateHandle
 
     @Mock
     private lateinit var dateTimeFormatter: BaseDateTimeFormatter
@@ -55,8 +56,16 @@ class ArticleDetailScreenViewModelTest {
     }
 
     private fun setupViewModel(articleIdArg: String = "") {
+        savedStateHandle = SavedStateHandle(
+            mapOf("parameters" to DiscoveryArticleDetailScreenParameters(
+                articleId = articleIdArg,
+                articlePosition = 0,
+                listArticles = emptyList()
+            ))
+        )
+
         viewModel = ArticleDetailScreenViewModel(
-            savedStateHandle = SavedStateHandle(mapOf(DiscoveryFeatureRoute.articleIdArg to articleIdArg)),
+            savedStateHandle = savedStateHandle,
             getArticlesDiscoveryUseCase = getArticlesDiscoveryUseCase,
             baseDateTimeFormatter = dateTimeFormatter,
             checkValidSignedInUserUseCase = checkValidSignedInUserUseCase,

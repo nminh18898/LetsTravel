@@ -7,6 +7,8 @@ import com.minhhnn18898.architecture.api.ApiResult
 import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.discover.data.model.Article
 import com.minhhnn18898.discover.data.model.ArticleModel
+import com.minhhnn18898.discover.data.model.ArticlePreview
+import com.minhhnn18898.discover.data.model.ArticlePreviewModel
 import com.minhhnn18898.firebase.gsUriToHttpsUrl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -22,13 +24,14 @@ class DiscoverRepositoryImpl @Inject constructor(
     companion object {
         private const val TAG = "DiscoverRepositoryImpl"
         private const val ARTICLES = "articles"
+        private const val ARTICLES_PREVIEW = "articles_preview"
     }
 
-    override suspend fun getArticles(): List<Article> = withContext(ioDispatcher) {
-        return@withContext when(val apiResult = fetchRemoteArticles()) {
-            is ApiResult.Success -> apiResult.data.map { it.toArticle() }
+    override suspend fun getArticlesPreview(): List<ArticlePreview> = withContext(ioDispatcher) {
+        return@withContext when(val apiResult = fetchRemoteArticlesPreview()) {
+            is ApiResult.Success -> apiResult.data.map { it.toArticlePreview() }
             is ApiResult.Error -> throw ExceptionGetDiscoverArticle()
-            else -> emptyList<Article>()
+            else -> emptyList<ArticlePreview>()
         }
     }
 
@@ -61,19 +64,19 @@ class DiscoverRepositoryImpl @Inject constructor(
                 }
         }
 
-    private suspend fun fetchRemoteArticles(): ApiResult<List<ArticleModel>> =
+    private suspend fun fetchRemoteArticlesPreview(): ApiResult<List<ArticlePreviewModel>> =
         suspendCoroutine { cont ->
             val db = Firebase.firestore
-            val collectionRef = db.collection(ARTICLES)
+            val collectionRef = db.collection(ARTICLES_PREVIEW)
 
             collectionRef
                 .limit(50)
                 .get()
                 .addOnSuccessListener { querySnapShot ->
                     Log.w(TAG, "Get data success ")
-                    val result = mutableListOf<ArticleModel>()
+                    val result = mutableListOf<ArticlePreviewModel>()
                     querySnapShot.forEach { snapShot ->
-                        result.add(snapShot.toObject(ArticleModel::class.java).copy(id = snapShot.id))
+                        result.add(snapShot.toObject(ArticlePreviewModel::class.java).copy(id = snapShot.id))
                     }
                     cont.resume(ApiResult.Success(result))
                 }
@@ -93,6 +96,16 @@ class DiscoverRepositoryImpl @Inject constructor(
             lastEdited = this.lastEdited,
             originalSrc = this.originalSrc,
             tag = this.tag
+        )
+    }
+
+    private suspend fun ArticlePreviewModel.toArticlePreview(): ArticlePreview {
+        return ArticlePreview(
+            id = this.id,
+            title = this.title,
+            content = this.content,
+            thumbUrl = this.thumbUrl.gsUriToHttpsUrl(),
+            lastEdited = this.lastEdited
         )
     }
 }

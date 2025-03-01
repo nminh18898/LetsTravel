@@ -53,7 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.discover.R
-import com.minhhnn18898.discover.presentation.ui_models.ArticleDisplayInfo
+import com.minhhnn18898.discover.presentation.ui_models.ArticlePreviewDisplayInfo
 import com.minhhnn18898.ui_components.base_components.DefaultCtaButton
 import com.minhhnn18898.ui_components.theme.typography
 import kotlinx.coroutines.launch
@@ -150,7 +150,7 @@ private fun RequireSignInPromptSuggestThumbElement(
 
 @Composable
 fun ExploreArticlesSection(
-    articlesContentState: UiState<List<ArticleDisplayInfo>>,
+    articlesContentState: UiState<List<ArticlePreviewDisplayInfo>>,
     onNavigateToArticlesDetailScreen: (id: String, position: Int, listArticles: List<Pair<String, String>>) -> Unit,
     modifier: Modifier
 ) {
@@ -178,7 +178,7 @@ fun ExploreArticlesSection(
 
 @Composable
 fun ArticlesPager(
-    articles: List<ArticleDisplayInfo>,
+    articles: List<ArticlePreviewDisplayInfo>,
     onClickReadMore: (id: String, position: Int, listArticles: List<Pair<String, String>>) -> Unit,
     modifier: Modifier = Modifier
 ) {

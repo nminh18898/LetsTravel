@@ -10,9 +10,9 @@ import com.minhhnn18898.account.domain.GetAuthStateUseCase
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.BaseDateTimeFormatter
-import com.minhhnn18898.discover.data.model.Article
+import com.minhhnn18898.discover.data.model.ArticlePreview
 import com.minhhnn18898.discover.domain.GetListArticlesDiscoveryUseCase
-import com.minhhnn18898.discover.presentation.ui_models.ArticleDisplayInfo
+import com.minhhnn18898.discover.presentation.ui_models.ArticlePreviewDisplayInfo
 import com.minhhnn18898.discover.presentation.ui_models.toDisplayInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class DiscoverViewModel @Inject constructor(
     var verifiedUserState by mutableStateOf(checkValidSignedInUserUseCase.execute())
         private set
 
-    var articlesContentState: UiState<List<ArticleDisplayInfo>> by mutableStateOf(UiState.Loading)
+    var articlesContentState: UiState<List<ArticlePreviewDisplayInfo>> by mutableStateOf(UiState.Loading)
         private set
 
     init {
@@ -63,7 +63,7 @@ class DiscoverViewModel @Inject constructor(
         }
     }
 
-    private fun handleResultLoadArticles(articles: List<Article>) {
+    private fun handleResultLoadArticles(articles: List<ArticlePreview>) {
        articlesContentState = UiState.Success(articles.map { it.toDisplayInfo(baseDateTimeFormatter) })
     }
 }

@@ -81,6 +81,7 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.kotlin.mockito.kotlin)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.mockk)
     testImplementation(project(":test_utils"))
 
     androidTestImplementation(libs.androidx.junit)
@@ -91,6 +92,7 @@ dependencies {
     androidTestImplementation(libs.mockito.core)
     androidTestImplementation(libs.kotlin.mockito.kotlin)
     androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.androidx.navigation.testing)
     androidTestImplementation(project(":test_utils"))
 }
 

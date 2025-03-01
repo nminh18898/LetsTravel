@@ -3,6 +3,8 @@
 package com.minhhnn18898.discover.test_helper
 
 import com.minhhnn18898.discover.data.model.Article
+import com.minhhnn18898.discover.data.model.ArticlePreview
+import com.minhhnn18898.discover.data.model.toArticlePreview
 import com.minhhnn18898.discover.data.repo.DiscoverRepository
 import com.minhhnn18898.discover.data.repo.ExceptionGetDiscoverArticle
 
@@ -16,12 +18,14 @@ class FakeDiscoveryRepository: DiscoverRepository {
         australiaArticleTest
     )
 
-    override suspend fun getArticles(): List<Article> {
+    override suspend fun getArticlesPreview(): List<ArticlePreview> {
         if(forceError) {
             throw ExceptionGetDiscoverArticle()
         }
 
-        return testData
+        return testData.map {
+            it.toArticlePreview()
+        }
     }
 
     override suspend fun getArticle(id: String): Article? {

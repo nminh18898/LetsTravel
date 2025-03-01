@@ -9,6 +9,7 @@ import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.test_helper.FakeDateTimeFormatter
 import com.minhhnn18898.core.utils.BaseDateTimeFormatter
 import com.minhhnn18898.discover.domain.GetListArticlesDiscoveryUseCase
+import com.minhhnn18898.discover.presentation.ui_models.toArticlePreviewDisplayInfo
 import com.minhhnn18898.discover.test_helper.FakeDiscoveryRepository
 import com.minhhnn18898.discover.test_helper.australiaArticleDisplayInfoTest
 import com.minhhnn18898.discover.test_helper.icelandArticleDisplayInfoTest
@@ -129,7 +130,9 @@ class DiscoverViewModelTest {
                 vietnamArticleDisplayInfoTest,
                 icelandArticleDisplayInfoTest,
                 australiaArticleDisplayInfoTest
-            )
+            ).map {
+                it.toArticlePreviewDisplayInfo()
+            }
         )
     }
 

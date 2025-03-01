@@ -14,3 +14,13 @@ data class Article(
     var originalSrc: String = "",
     val tag: List<String> = ArrayList()
 )
+
+fun Article.toArticlePreview(): ArticlePreview {
+    return ArticlePreview(
+        id = this.id,
+        title = this.title,
+        content = this.content,
+        thumbUrl = this.thumbUrl,
+        lastEdited = this.lastEdited
+    )
+}
