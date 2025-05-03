@@ -39,6 +39,7 @@ firebaseStorageKtx = "21.0.0"
 lifecycleRuntimeComposeAndroid = "2.8.6"
 truthVersion = "1.4.4"
 lifecycleRuntimeComposeAndroidVersion = "2.8.6"
+roomCommonJvm = "2.7.1"
 
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
@@ -95,6 +96,7 @@ mockito-android = { module = "org.mockito:mockito-android", version.ref = "mocki
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroidVersion" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 
 
 [plugins]

@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/manage_trip" />
             <option value="$PROJECT_DIR$/photo_view" />
             <option value="$PROJECT_DIR$/test_utils" />
+            <option value="$PROJECT_DIR$/trip_data" />
             <option value="$PROJECT_DIR$/ui_components" />
           </set>
         </option>

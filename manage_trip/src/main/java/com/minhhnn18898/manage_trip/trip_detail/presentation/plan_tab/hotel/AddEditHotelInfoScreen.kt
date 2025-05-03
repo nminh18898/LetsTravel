@@ -28,12 +28,12 @@ import com.minhhnn18898.app_navigation.destination.EditHotelInfoDestination
 import com.minhhnn18898.core.utils.StringUtils
 import com.minhhnn18898.manage_trip.R
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.DatePickerWithDialog
-import com.minhhnn18898.ui_components.error_view.DefaultErrorView
 import com.minhhnn18898.ui_components.base_components.DeleteConfirmationDialog
+import com.minhhnn18898.ui_components.base_components.TopMessageBar
+import com.minhhnn18898.ui_components.error_view.DefaultErrorView
 import com.minhhnn18898.ui_components.input.InputPriceRow
 import com.minhhnn18898.ui_components.input.InputTextRow
 import com.minhhnn18898.ui_components.loading_view.ProgressDialog
-import com.minhhnn18898.ui_components.base_components.TopMessageBar
 import com.minhhnn18898.ui_components.theme.typography
 import com.minhhnn18898.core.R.string as CommonStringRes
 import com.minhhnn18898.ui_components.R.drawable as CommonDrawableRes
@@ -113,6 +113,7 @@ fun AddEditHotelInfoScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             EditHotelInfo(
+                hotelName = uiState.hotelUiState.hotelName,
                 uiState = uiState.hotelUiState,
                 onHotelNameUpdated = viewModel::onHotelNameUpdated,
                 onAddressNameUpdated = viewModel::onAddressUpdated,
@@ -143,6 +144,7 @@ fun AddEditHotelInfoScreen(
 
 @Composable
 fun EditHotelInfo(
+    hotelName: String,
     uiState: HotelUiState,
     onHotelNameUpdated: (String) -> Unit,
     onAddressNameUpdated: (String) -> Unit,
@@ -156,7 +158,7 @@ fun EditHotelInfo(
         InputTextRow(
             iconRes = R.drawable.home_24,
             label = "${stringResource(id = R.string.hotel_name)} ${StringUtils.getRequiredFieldIndicator()}",
-            inputText = uiState.hotelName,
+            inputText = hotelName,
             onTextChanged = onHotelNameUpdated
         )
 
