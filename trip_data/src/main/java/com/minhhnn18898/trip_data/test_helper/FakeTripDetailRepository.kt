@@ -363,6 +363,7 @@ class FakeTripDetailRepository: TripDetailRepository {
 
         return observableActivities.map { listActivity ->
             listActivity
+                .sortedBy { it.timeFrom }
                 .toTripActivityInfo()
         }
     }

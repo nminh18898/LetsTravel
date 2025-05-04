@@ -4,17 +4,22 @@ import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
+import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.test_helper.FakeTripActivityDateSeparatorResourceProvider
 import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailDateTimeFormatter
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.member_info.GetAllMembersUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.member_info.GetMemberReceiptPaymentStatisticInfo
+import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.receipt.GetAllReceiptsUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.memories_config.GetMemoriesConfigUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.memories_config.UpdateMemoriesConfigUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.photo.AddTripPhotoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.photo.DeleteTripPhotoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.photo.GetAllPhotoFrameTypeUseCase
+import com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.photo.GetAllTripPhotosUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.GetListHotelInfoUseCase
-import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
+import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProviderImpl
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.AirportDisplayInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.BudgetPortion
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.BudgetType
@@ -22,12 +27,24 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.Fligh
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.HotelDisplayInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.TripActivityDateGroupHeader
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.TripActivityDisplayInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
+import com.minhhnn18898.manage_trip.trip_detail.test_helper.FakeMemoriesTabResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.model.plan.AirportInfo
+import com.minhhnn18898.trip_data.model.plan.FlightInfo
+import com.minhhnn18898.trip_data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.trip_data.model.plan.HotelInfo
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfo
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
+import com.minhhnn18898.trip_data.model.trip_info.TripInfoModel
+import com.minhhnn18898.trip_data.test_helper.FakeMemberInfoRepository
+import com.minhhnn18898.trip_data.test_helper.FakeMemoriesConfigRepository
+import com.minhhnn18898.trip_data.test_helper.FakeReceiptRepository
+import com.minhhnn18898.trip_data.test_helper.FakeTripDetailRepository
+import com.minhhnn18898.trip_data.test_helper.FakeTripInfoRepository
+import com.minhhnn18898.trip_data.test_helper.FakeTripPhotoRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -44,12 +61,14 @@ class TripDetailScreenViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var fakeTripInfoRepository: FakeTripInfoRepository
-
     private lateinit var fakeTripDetailRepository: FakeTripDetailRepository
-
     private lateinit var fakeCoverDefaultResourceProvider: FakeCoverDefaultResourceProvider
-
     private lateinit var fakeTripActivityDateSeparatorResourceProvider: FakeTripActivityDateSeparatorResourceProvider
+    private lateinit var fakeMemberInfoRepository: FakeMemberInfoRepository
+    private lateinit var fakeTripPhotoRepository: FakeTripPhotoRepository
+    private lateinit var fakeReceiptRepository: FakeReceiptRepository
+    private lateinit var fakeMemoriesConfigRepository: FakeMemoriesConfigRepository
+    private lateinit var fakeMemoriesTabResourceProvider: FakeMemoriesTabResourceProvider
 
     private lateinit var viewModel: TripDetailScreenViewModel
 
@@ -62,6 +81,12 @@ class TripDetailScreenViewModelTest {
         fakeCoverDefaultResourceProvider = FakeCoverDefaultResourceProvider()
         fakeTripActivityDateSeparatorResourceProvider = FakeTripActivityDateSeparatorResourceProvider()
         fakeDateTimeFormatter = FakeTripDetailDateTimeFormatter()
+        fakeMemberInfoRepository = FakeMemberInfoRepository()
+        fakeTripPhotoRepository = FakeTripPhotoRepository()
+        fakeReceiptRepository = FakeReceiptRepository()
+        fakeMemoriesConfigRepository = FakeMemoriesConfigRepository()
+        fakeMemoriesTabResourceProvider = FakeMemoriesTabResourceProvider()
+
     }
 
     private fun setupViewModel() {
@@ -72,8 +97,19 @@ class TripDetailScreenViewModelTest {
             getTripInfoUseCase = GetTripInfoUseCase(fakeTripInfoRepository),
             getListFlightInfoUseCase = GetListFlightInfoUseCase(fakeTripDetailRepository),
             getListHotelInfoUseCase = GetListHotelInfoUseCase(fakeTripDetailRepository),
-            getSortedListTripActivityInfoUseCase = GetSortedListTripActivityInfoUseCase(fakeTripDetailRepository),
-            dateTimeFormatter = fakeDateTimeFormatter
+            getSortedListTripActivityInfoUseCase = GetSortedListTripActivityInfoUseCase(fakeTripDetailRepository, fakeDateTimeFormatter),
+            dateTimeFormatter = fakeDateTimeFormatter,
+            getAllMembersUseCase = GetAllMembersUseCase(fakeMemberInfoRepository),
+            memberResourceProvider = ManageMemberResourceProviderImpl(),
+            addTripPhotoUseCase = AddTripPhotoUseCase(fakeTripPhotoRepository),
+            getAllPhotoFrameTypeUseCase = GetAllPhotoFrameTypeUseCase(),
+            getAllReceiptsUseCase = GetAllReceiptsUseCase(fakeReceiptRepository, fakeDateTimeFormatter),
+            getAllTripPhotosUseCase = GetAllTripPhotosUseCase(fakeTripPhotoRepository),
+            getMemberPaymentStatisticInfo = GetMemberReceiptPaymentStatisticInfo(fakeMemberInfoRepository, fakeReceiptRepository),
+            getMemoriesConfigUseCase = GetMemoriesConfigUseCase(fakeMemoriesConfigRepository),
+            memoriesTabResourceProvider = fakeMemoriesTabResourceProvider,
+            removeTripPhotoUseCase = DeleteTripPhotoUseCase(fakeTripPhotoRepository),
+            updateMemoriesConfigUseCase = UpdateMemoriesConfigUseCase(fakeMemoriesConfigRepository)
         )
     }
 
@@ -167,7 +203,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then: progress indicator is shown
-        Truth.assertThat(viewModel.flightInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
+        Truth.assertThat(viewModel.planTabUIController.flightInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
     }
 
     @Test
@@ -179,7 +215,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.flightInfoContentState.first()
+        val uiState = viewModel.planTabUIController.flightInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
         Truth.assertThat((uiState as UiState.Success).data).isEqualTo(flightInfoOutput)
     }
@@ -190,7 +226,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.flightInfoContentState.first()
+        val uiState = viewModel.planTabUIController.flightInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
         Truth.assertThat((uiState as UiState.Success).data).isEmpty()
     }
@@ -204,7 +240,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.flightInfoContentState.first()
+        val uiState = viewModel.planTabUIController.flightInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Error::class.java)
     }
 
@@ -215,11 +251,11 @@ class TripDetailScreenViewModelTest {
 
         // When
         setupViewModel()
-        viewModel.flightInfoContentState.first()
+        viewModel.planTabUIController.flightInfoContentState.first()
 
         // Then
-        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 6_600_000)
-        Truth.assertThat(viewModel.budgetDisplay.portions).isEqualTo(
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.total).isEqualTo( 6_600_000)
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.portions).isEqualTo(
             listOf(
                 BudgetPortion(
                     type = BudgetType.FLIGHT,
@@ -235,7 +271,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then: progress indicator is shown
-        Truth.assertThat(viewModel.flightInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
+        Truth.assertThat(viewModel.planTabUIController.flightInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
     }
 
     @Test
@@ -247,7 +283,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.hotelInfoContentState.first()
+        val uiState = viewModel.planTabUIController.hotelInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
         Truth.assertThat((uiState as UiState.Success).data).isEqualTo(hotelInfoOutput)
     }
@@ -258,7 +294,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.hotelInfoContentState.first()
+        val uiState = viewModel.planTabUIController.hotelInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
         Truth.assertThat((uiState as UiState.Success).data).isEmpty()
     }
@@ -272,7 +308,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.hotelInfoContentState.first()
+        val uiState = viewModel.planTabUIController.hotelInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Error::class.java)
     }
 
@@ -283,11 +319,11 @@ class TripDetailScreenViewModelTest {
 
         // When
         setupViewModel()
-        viewModel.hotelInfoContentState.first()
+        viewModel.planTabUIController.hotelInfoContentState.first()
 
         // Then
-        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 7_900_000)
-        Truth.assertThat(viewModel.budgetDisplay.portions).isEqualTo(
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.total).isEqualTo( 7_900_000)
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.portions).isEqualTo(
             listOf(
                 BudgetPortion(
                     type = BudgetType.HOTEL,
@@ -303,7 +339,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then: progress indicator is shown
-        Truth.assertThat(viewModel.activityInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
+        Truth.assertThat(viewModel.planTabUIController.activityInfoContentState.value).isInstanceOf(UiState.Loading::class.java)
     }
 
     @Test
@@ -315,7 +351,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.activityInfoContentState.first()
+        val uiState = viewModel.planTabUIController.activityInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
         Truth.assertThat((uiState as UiState.Success).data).isEqualTo(activityInfoOutput)
     }
@@ -326,7 +362,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.activityInfoContentState.first()
+        val uiState = viewModel.planTabUIController.activityInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Success::class.java)
         Truth.assertThat((uiState as UiState.Success).data).isEmpty()
     }
@@ -340,7 +376,7 @@ class TripDetailScreenViewModelTest {
         setupViewModel()
 
         // Then
-        val uiState = viewModel.activityInfoContentState.first()
+        val uiState = viewModel.planTabUIController.activityInfoContentState.first()
         Truth.assertThat(uiState).isInstanceOf(UiState.Error::class.java)
     }
 
@@ -351,11 +387,11 @@ class TripDetailScreenViewModelTest {
 
         // When
         setupViewModel()
-        viewModel.activityInfoContentState.first()
+        viewModel.planTabUIController.activityInfoContentState.first()
 
         // Then
-        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 7_100_000)
-        Truth.assertThat(viewModel.budgetDisplay.portions).isEqualTo(
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.total).isEqualTo( 7_100_000)
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.portions).isEqualTo(
             listOf(
                 BudgetPortion(
                     type = BudgetType.ACTIVITY,
@@ -375,13 +411,13 @@ class TripDetailScreenViewModelTest {
         fakeTripDetailRepository.upsertActivityInfo(1L, *activityInfoInput.toTypedArray())
 
         // When
-        viewModel.flightInfoContentState.first()
-        viewModel.hotelInfoContentState.first()
-        viewModel.activityInfoContentState.first()
+        viewModel.planTabUIController.flightInfoContentState.first()
+        viewModel.planTabUIController.hotelInfoContentState.first()
+        viewModel.planTabUIController.activityInfoContentState.first()
 
         // Then
-        Truth.assertThat(viewModel.budgetDisplay.total).isEqualTo( 21_600_000)
-        Truth.assertThat(viewModel.budgetDisplay.portions).containsExactlyElementsIn(
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.total).isEqualTo( 21_600_000)
+        Truth.assertThat(viewModel.planTabUIController.budgetDisplay.portions).containsExactlyElementsIn(
             listOf(
                 BudgetPortion(
                     type = BudgetType.HOTEL,

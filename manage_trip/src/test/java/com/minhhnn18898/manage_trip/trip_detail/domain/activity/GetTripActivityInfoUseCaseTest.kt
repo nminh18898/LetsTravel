@@ -2,10 +2,11 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertActivityInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfo
+import com.minhhnn18898.trip_data.test_helper.FakeTripDetailRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch

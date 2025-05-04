@@ -6,18 +6,18 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth
-import com.minhhnn18898.manage_trip.database.UserTripDatabase
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepositoryImpl
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepository
-import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepositoryImpl
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.database.UserTripDatabase
+import com.minhhnn18898.trip_data.model.plan.AirportInfo
+import com.minhhnn18898.trip_data.model.plan.FlightInfo
+import com.minhhnn18898.trip_data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.trip_data.model.plan.HotelInfo
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfo
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
+import com.minhhnn18898.trip_data.repo.plan.TripDetailRepositoryImpl
+import com.minhhnn18898.trip_data.repo.trip_info.TripInfoRepository
+import com.minhhnn18898.trip_data.repo.trip_info.TripInfoRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -27,9 +27,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 @Suppress("SpellCheckingInspection")
@@ -79,8 +77,7 @@ class TripDetailRepositoryImplTest {
                 airportInfoDao =  database.airportInfoDao(),
                 flightInfoDao = database.flightInfoDao(),
                 hotelInfoDao = database.hotelInfoDao(),
-                activityInfoDao = database.activityInfoDao(),
-                dateTimeFormatter = dateTimeFormatter
+                activityInfoDao = database.activityInfoDao()
             )
     }
 
@@ -737,7 +734,7 @@ class TripDetailRepositoryImplTest {
     }
 
     @Test
-    fun getSortedActivityInfoByStartTime() = runTest {
+    fun getAllActivityInfo() = runTest {
         // Given
         val firstActivity = TripActivityInfo(
             activityId = 0L,
@@ -780,30 +777,13 @@ class TripDetailRepositoryImplTest {
             activityInfo = thirdActivity
         )
 
-        Mockito
-            .`when`(dateTimeFormatter.getStartOfTheDay(anyLong()))
-            .thenAnswer {
-                val param = it.arguments[0] as Long
-                (param / 1_000_000f).toInt() * 1_000_000L
-            }
-
         // When
-        val result = repository.getSortedActivityInfo(1L).first()
+        val result = repository.getAllActivityInfo(1L).first()
 
         // Then
-        Truth.assertThat(result).hasSize(2)
-
-        // list activity that map by the start of day
-        val firstDateActivities = result[1_000_000]
-        val secondDateActivities = result[2_000_000]
-
-        // expected: first date has two activities, and the second day has one
-        Truth.assertThat(firstDateActivities).hasSize(2)
-        Truth.assertThat(secondDateActivities).hasSize(1)
-
-        assertActivityInfo(secondActivity, firstDateActivities?.get(0))
-        assertActivityInfo(firstActivity, firstDateActivities?.get(1))
-        assertActivityInfo(thirdActivity, secondDateActivities?.get(0))
+        assertActivityInfo(secondActivity, result[0])
+        assertActivityInfo(firstActivity, result[1])
+        assertActivityInfo(thirdActivity, result[2])
     }
 
     @Test

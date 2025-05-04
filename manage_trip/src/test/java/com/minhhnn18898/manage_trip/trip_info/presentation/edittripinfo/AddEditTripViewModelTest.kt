@@ -4,14 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
 import com.minhhnn18898.manage_trip.trip_info.domain.CreateTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.DeleteTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.GetListDefaultCoverUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.GetTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.UpdateTripInfoUseCase
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
+import com.minhhnn18898.trip_data.model.trip_info.TripInfoModel
+import com.minhhnn18898.trip_data.test_helper.FakeTripInfoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList

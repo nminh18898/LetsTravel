@@ -5,9 +5,6 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.flight
 import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.CreateNewFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.DeleteFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.GetFlightInfoUseCase
@@ -18,6 +15,10 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.flight.Add
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertFlightAndAirportEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.model.plan.AirportInfo
+import com.minhhnn18898.trip_data.model.plan.FlightInfo
+import com.minhhnn18898.trip_data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.trip_data.test_helper.FakeTripDetailRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList

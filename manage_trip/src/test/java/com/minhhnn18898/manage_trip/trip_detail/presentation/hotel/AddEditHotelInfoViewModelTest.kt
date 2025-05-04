@@ -3,7 +3,6 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.hotel
 import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.CreateNewHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.DeleteHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.GetHotelInfoUseCase
@@ -12,6 +11,8 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddE
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.AddEditHotelUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.hotel.HotelUiState
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.model.plan.HotelInfo
+import com.minhhnn18898.trip_data.test_helper.FakeTripDetailRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList

@@ -6,10 +6,12 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth
-import com.minhhnn18898.manage_trip.database.UserTripDatabase
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.utils.assertTripInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.database.UserTripDatabase
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
+import com.minhhnn18898.trip_data.repo.trip_info.DefaultCoverElement
+import com.minhhnn18898.trip_data.repo.trip_info.TripInfoRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

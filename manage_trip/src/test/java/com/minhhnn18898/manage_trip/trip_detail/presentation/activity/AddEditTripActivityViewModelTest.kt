@@ -3,7 +3,6 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.activity
 import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.CreateTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.DeleteTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetTripActivityInfoUseCase
@@ -12,6 +11,8 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.A
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.activity.AddEditTripActivityViewModel
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfo
+import com.minhhnn18898.trip_data.test_helper.FakeTripDetailRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList

@@ -2,10 +2,12 @@ package com.minhhnn18898.manage_trip.trip_detail.domain.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetSortedListTripActivityInfoUseCase
+import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.manage_trip.trip_detail.utils.assertActivityInfoEqual
 import com.minhhnn18898.test_utils.MainDispatcherRule
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfo
+import com.minhhnn18898.trip_data.test_helper.FakeTripDetailRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -15,6 +17,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetSortedListTripActivityInfoUseCaseTest {
@@ -29,10 +35,24 @@ class GetSortedListTripActivityInfoUseCaseTest {
 
     private lateinit var fakeTripDetailRepository: FakeTripDetailRepository
 
+    private lateinit var mockAnnotations: AutoCloseable
+
+    @Mock
+    private lateinit var dateTimeFormatter: TripDetailDateTimeFormatter
+
     @Before
     fun setup() {
+        mockAnnotations = MockitoAnnotations.openMocks(this)
+
+        Mockito
+            .`when`(dateTimeFormatter.getStartOfTheDay(anyLong()))
+            .thenAnswer {
+                val param = it.arguments[0] as Long
+                (param / 1_000_000f).toInt() * 1_000_000L
+            }
+
         fakeTripDetailRepository = FakeTripDetailRepository()
-        getSortedListTripActivityInfoUseCase = GetSortedListTripActivityInfoUseCase(fakeTripDetailRepository)
+        getSortedListTripActivityInfoUseCase = GetSortedListTripActivityInfoUseCase(fakeTripDetailRepository, dateTimeFormatter)
     }
 
     @After
