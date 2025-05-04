@@ -3,7 +3,7 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.memories_tab
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.data.model.memories.TripPhotoInfo
+import com.minhhnn18898.trip_data.model.memories.TripPhotoInfo
 
 data class PhotoItemUiState(
     val photoId: Long,

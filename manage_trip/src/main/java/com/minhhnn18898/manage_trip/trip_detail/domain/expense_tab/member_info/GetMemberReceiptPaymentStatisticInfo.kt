@@ -1,8 +1,8 @@
 package com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.member_info
 
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberReceiptPaymentStatisticInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.MemberInfoRepository
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
+import com.minhhnn18898.trip_data.model.expense.MemberReceiptPaymentStatisticInfo
+import com.minhhnn18898.trip_data.repo.expense.MemberInfoRepository
+import com.minhhnn18898.trip_data.repo.expense.ReceiptRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject

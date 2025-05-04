@@ -1,9 +1,9 @@
 package com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.receipt
 
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
+import com.minhhnn18898.trip_data.model.expense.ReceiptInfo
+import com.minhhnn18898.trip_data.model.expense.ReceiptPayerInfo
+import com.minhhnn18898.trip_data.repo.expense.ReceiptRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow

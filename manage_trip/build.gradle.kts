@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":architecture"))
     implementation(project(":photo_view"))
+    implementation(project(":trip_data"))
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.core.testing)

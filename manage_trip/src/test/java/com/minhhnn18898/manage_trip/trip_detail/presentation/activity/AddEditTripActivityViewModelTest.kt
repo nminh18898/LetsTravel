@@ -3,7 +3,6 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.activity
 import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
-import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.CreateTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.DeleteTripActivityInfoUseCase

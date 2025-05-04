@@ -1,29 +1,30 @@
-package com.minhhnn18898.manage_trip.test_helper
+package com.minhhnn18898.trip_data.test_helper
 
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfoModel
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfoModel
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfoModel
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.toFlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.toFlightInfoModel
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.toHotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.toHotelInfoModel
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.toTripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.toTripActivityModel
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionDeleteFlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionDeleteHotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionDeleteTripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionInsertFlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionInsertHotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionInsertTripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionUpdateFlightInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionUpdateHotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.ExceptionUpdateTripActivityInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepository
+
+import com.minhhnn18898.trip_data.model.plan.AirportInfo
+import com.minhhnn18898.trip_data.model.plan.FlightInfo
+import com.minhhnn18898.trip_data.model.plan.FlightInfoModel
+import com.minhhnn18898.trip_data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.trip_data.model.plan.HotelInfo
+import com.minhhnn18898.trip_data.model.plan.HotelInfoModel
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfo
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfoModel
+import com.minhhnn18898.trip_data.model.plan.toFlightInfo
+import com.minhhnn18898.trip_data.model.plan.toFlightInfoModel
+import com.minhhnn18898.trip_data.model.plan.toHotelInfo
+import com.minhhnn18898.trip_data.model.plan.toHotelInfoModel
+import com.minhhnn18898.trip_data.model.plan.toTripActivityInfo
+import com.minhhnn18898.trip_data.model.plan.toTripActivityModel
+import com.minhhnn18898.trip_data.repo.plan.ExceptionDeleteFlightInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionDeleteHotelInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionDeleteTripActivityInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionInsertFlightInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionInsertHotelInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionInsertTripActivityInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionUpdateFlightInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionUpdateHotelInfo
+import com.minhhnn18898.trip_data.repo.plan.ExceptionUpdateTripActivityInfo
+import com.minhhnn18898.trip_data.repo.plan.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -168,23 +169,6 @@ class FakeTripDetailRepository: TripDetailRepository {
             val newHotels = LinkedHashMap<Long, HotelInfoModel>(listHotel)
             newHotels.remove(hotelId)
             newHotels
-        }
-    }
-
-    override fun getSortedActivityInfo(tripId: Long): Flow<Map<Long?, List<TripActivityInfo>>> {
-        if(forceError) {
-            return flow { throw Exception() }
-        }
-
-        return observableActivities.map { listActivity ->
-            listActivity
-                .toTripActivityInfo()
-                .sortedBy {
-                    it.timeFrom
-                }
-                .groupBy {
-                    if (it.timeFrom != null) ((it.timeFrom / 1_000_000f).toInt() * 1_000_000L) else null
-                }
         }
     }
 
@@ -369,6 +353,17 @@ class FakeTripDetailRepository: TripDetailRepository {
             val newAirports = LinkedHashMap<String, AirportInfo>(listAirportInfo)
             newAirports[airportInfo.code] = airportInfo
             newAirports
+        }
+    }
+
+    override fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>> {
+        if(forceError) {
+            return flow { throw Exception() }
+        }
+
+        return observableActivities.map { listActivity ->
+            listActivity
+                .toTripActivityInfo()
         }
     }
 }

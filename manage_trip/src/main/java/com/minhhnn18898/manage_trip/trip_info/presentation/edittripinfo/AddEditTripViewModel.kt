@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.domain.CreateTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.DeleteTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.domain.GetListDefaultCoverUseCase
@@ -18,6 +17,7 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripCustomCoverD
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripDefaultCoverDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.edittripinfo.AddEditTripViewModel.CoverUIElement
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

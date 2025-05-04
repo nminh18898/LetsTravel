@@ -2,7 +2,7 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.memories_tab
 
 import androidx.annotation.StringRes
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.MemoriesConfigRepository
+import com.minhhnn18898.trip_data.repo.memories.MemoriesConfigRepository
 
 interface MemoriesTabResourceProvider {
 

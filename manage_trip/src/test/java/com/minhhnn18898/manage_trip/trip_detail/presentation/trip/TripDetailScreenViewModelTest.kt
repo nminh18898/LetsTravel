@@ -6,7 +6,6 @@ import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.manage_trip.test_helper.FakeTripActivityDateSeparatorResourceProvider
 import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailDateTimeFormatter
-import com.minhhnn18898.manage_trip.test_helper.FakeTripDetailRepository
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightInfo
 import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
@@ -16,7 +15,6 @@ import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetSort
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.manage_trip.test_helper.FakeCoverDefaultResourceProvider
-import com.minhhnn18898.manage_trip.test_helper.FakeTripInfoRepository
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.AirportDisplayInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.BudgetPortion
 import com.minhhnn18898.manage_trip.trip_detail.presentation.plan_tab.main.BudgetType

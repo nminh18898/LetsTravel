@@ -1,6 +1,6 @@
 package com.minhhnn18898.manage_trip.trip_detail.domain.memories_tab.photo
 
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.memories.MemoriesConfigRepository
+import com.minhhnn18898.trip_data.repo.memories.MemoriesConfigRepository
 import javax.inject.Inject
 
 

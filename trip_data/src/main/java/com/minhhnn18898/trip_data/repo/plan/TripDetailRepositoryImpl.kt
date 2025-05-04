@@ -1,6 +1,5 @@
 package com.minhhnn18898.trip_data.repo.plan
 
-import com.minhhnn18898.core.di.IODispatcher
 import com.minhhnn18898.trip_data.dao.plan.ActivityInfoDao
 import com.minhhnn18898.trip_data.dao.plan.AirportInfoDao
 import com.minhhnn18898.trip_data.dao.plan.FlightInfoDao
@@ -189,7 +188,7 @@ class TripDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>> =
+    override fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>> =
         activityInfoDao
             .getTripActivities(tripId)
             .map {

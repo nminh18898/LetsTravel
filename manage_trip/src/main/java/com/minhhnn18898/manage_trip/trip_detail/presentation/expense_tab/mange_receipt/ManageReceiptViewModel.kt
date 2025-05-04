@@ -11,12 +11,6 @@ import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.DateTimeProvider
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
 import com.minhhnn18898.core.utils.safeDiv
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.DefaultBillOwnerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.default_bill_owner.GetTripDefaultBillOwnerStreamUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.member_info.GetAllMembersUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.receipt.CreateReceiptUseCase
@@ -31,6 +25,12 @@ import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.to
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main.toReceiptPayerInfoUiState
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
+import com.minhhnn18898.trip_data.model.expense.DefaultBillOwnerInfo
+import com.minhhnn18898.trip_data.model.expense.MemberInfo
+import com.minhhnn18898.trip_data.model.expense.ReceiptInfo
+import com.minhhnn18898.trip_data.model.expense.ReceiptPayerInfo
+import com.minhhnn18898.trip_data.model.expense.ReceiptWithAllPayersInfo
+import com.minhhnn18898.trip_data.repo.expense.ReceiptRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

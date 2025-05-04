@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.app_navigation.destination.route.MainAppRoute
 import com.minhhnn18898.architecture.usecase.Result
 import com.minhhnn18898.core.utils.isNotBlankOrEmpty
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.CreateNewHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.DeleteHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.GetHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.UpdateHotelInfoUseCase
+import com.minhhnn18898.trip_data.model.plan.HotelInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

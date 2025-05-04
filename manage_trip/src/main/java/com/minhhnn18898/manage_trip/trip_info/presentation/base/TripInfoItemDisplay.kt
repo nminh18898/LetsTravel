@@ -1,9 +1,9 @@
 package com.minhhnn18898.manage_trip.trip_info.presentation.base
 
 import androidx.annotation.DrawableRes
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfoModel
-import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
+import com.minhhnn18898.trip_data.model.trip_info.TripInfoModel
+import com.minhhnn18898.trip_data.repo.trip_info.DefaultCoverElement
 
 interface TripInfoItemDisplay
 data class UserTripDisplay(

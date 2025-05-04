@@ -41,6 +41,8 @@ interface TripDetailRepository {
     suspend fun deleteHotelInfo(hotelId: Long)
 
     // Trip activity info
+    fun getAllActivityInfo(tripId: Long): Flow<List<TripActivityInfo>>
+
     fun getActivityInfo(activityId: Long): Flow<TripActivityInfo?>
 
     suspend fun insertActivityInfo(tripId: Long, activityInfo: TripActivityInfo): Long

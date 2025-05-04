@@ -1,11 +1,11 @@
-package com.minhhnn18898.manage_trip.test_helper
+package com.minhhnn18898.trip_data.test_helper
 
-import com.minhhnn18898.manage_trip.trip_info.data.model.ExceptionDeleteTripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.ExceptionInsertTripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.ExceptionUpdateTripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
-import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
-import com.minhhnn18898.manage_trip.trip_info.data.repo.TripInfoRepository
+import com.minhhnn18898.trip_data.model.trip_info.ExceptionDeleteTripInfo
+import com.minhhnn18898.trip_data.model.trip_info.ExceptionInsertTripInfo
+import com.minhhnn18898.trip_data.model.trip_info.ExceptionUpdateTripInfo
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
+import com.minhhnn18898.trip_data.repo.trip_info.DefaultCoverElement
+import com.minhhnn18898.trip_data.repo.trip_info.TripInfoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow

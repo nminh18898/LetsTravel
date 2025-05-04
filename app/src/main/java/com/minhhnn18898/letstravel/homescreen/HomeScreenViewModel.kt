@@ -3,7 +3,6 @@ package com.minhhnn18898.letstravel.homescreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minhhnn18898.core.utils.WhileUiSubscribed
-import com.minhhnn18898.manage_trip.trip_info.data.model.TripInfo
 import com.minhhnn18898.manage_trip.trip_info.domain.GetListTripInfoUseCase
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.CreateNewTripCtaDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfoContentError
@@ -13,6 +12,7 @@ import com.minhhnn18898.manage_trip.trip_info.presentation.base.GetSavedTripInfo
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.TripInfoItemDisplay
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.toTripItemDisplay
+import com.minhhnn18898.trip_data.model.trip_info.TripInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch

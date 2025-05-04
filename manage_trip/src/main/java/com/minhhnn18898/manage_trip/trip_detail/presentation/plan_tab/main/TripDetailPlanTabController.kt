@@ -6,15 +6,15 @@ import androidx.compose.runtime.setValue
 import com.minhhnn18898.architecture.ui.UiState
 import com.minhhnn18898.core.utils.WhileUiSubscribed
 import com.minhhnn18898.core.utils.formatWithCommas
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.AirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.HotelInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.TripActivityInfo
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.activity.GetSortedListTripActivityInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight.GetListFlightInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.hotel.GetListHotelInfoUseCase
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ITripActivityDateSeparatorResourceProvider
+import com.minhhnn18898.trip_data.model.plan.AirportInfo
+import com.minhhnn18898.trip_data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.trip_data.model.plan.HotelInfo
+import com.minhhnn18898.trip_data.model.plan.TripActivityInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -142,9 +142,9 @@ class TripDetailPlanTabController(
     }
 
     private fun TripActivityInfo.toActivityDisplayInfo(): TripActivityDisplayInfo {
-        val dateString = if(this.timeFrom != null) dateTimeFormatter.millisToActivityFormattedString(this.timeFrom) else ""
-        val startTimeString =  if(this.timeFrom != null) dateTimeFormatter.formatHourMinutes(this.timeFrom) else ""
-        val endTimeString = if(this.timeTo != null) dateTimeFormatter.formatHourMinutes(this.timeTo) else ""
+        val dateString = this.timeFrom?.let {  dateTimeFormatter.millisToActivityFormattedString(it) } ?: ""
+        val startTimeString = this.timeFrom?.let { dateTimeFormatter.formatHourMinutes(it) } ?: ""
+        val endTimeString = this.timeTo?.let { dateTimeFormatter.formatHourMinutes(it) } ?: ""
 
         return TripActivityDisplayInfo(
             activityId = this.activityId,

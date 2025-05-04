@@ -2,7 +2,7 @@ package com.minhhnn18898.manage_trip.trip_info.presentation.base
 
 import androidx.annotation.DrawableRes
 import com.minhhnn18898.manage_trip.R
-import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
+import com.minhhnn18898.trip_data.repo.trip_info.DefaultCoverElement
 import javax.inject.Inject
 
 class CoverDefaultResourceProvider @Inject constructor(): ICoverDefaultResourceProvider {

@@ -1,7 +1,7 @@
 package com.minhhnn18898.manage_trip.test_helper
 
-import com.minhhnn18898.manage_trip.trip_info.data.repo.DefaultCoverElement
 import com.minhhnn18898.manage_trip.trip_info.presentation.base.ICoverDefaultResourceProvider
+import com.minhhnn18898.trip_data.repo.trip_info.DefaultCoverElement
 
 class FakeCoverDefaultResourceProvider: ICoverDefaultResourceProvider {
     override fun getCoverResource(coverId: Int): Int {

@@ -1,8 +1,8 @@
 package com.minhhnn18898.manage_trip.trip_detail.domain.expense_tab.receipt
 
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.expense.ReceiptRepository
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
+import com.minhhnn18898.trip_data.model.expense.ReceiptWithAllPayersInfo
+import com.minhhnn18898.trip_data.repo.expense.ReceiptRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

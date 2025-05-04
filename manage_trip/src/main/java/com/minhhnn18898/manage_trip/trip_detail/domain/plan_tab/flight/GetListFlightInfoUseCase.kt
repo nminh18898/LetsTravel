@@ -1,8 +1,8 @@
 package com.minhhnn18898.manage_trip.trip_detail.domain.plan_tab.flight
 
 import com.minhhnn18898.architecture.usecase.UseCase
-import com.minhhnn18898.manage_trip.trip_detail.data.model.plan.FlightWithAirportInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.repo.plan.TripDetailRepository
+import com.minhhnn18898.trip_data.model.plan.FlightWithAirportInfo
+import com.minhhnn18898.trip_data.repo.plan.TripDetailRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

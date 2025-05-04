@@ -3,13 +3,13 @@ package com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.main
 import androidx.annotation.DrawableRes
 import com.minhhnn18898.core.utils.formatWithCommas
 import com.minhhnn18898.core.utils.toCompactString
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.MemberReceiptPaymentStatisticInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptPayerInfo
-import com.minhhnn18898.manage_trip.trip_detail.data.model.expense.ReceiptWithAllPayersInfo
 import com.minhhnn18898.manage_trip.trip_detail.presentation.expense_tab.manage_member.ManageMemberResourceProvider
 import com.minhhnn18898.manage_trip.trip_detail.presentation.trip.TripDetailDateTimeFormatter
+import com.minhhnn18898.trip_data.model.expense.MemberInfo
+import com.minhhnn18898.trip_data.model.expense.MemberReceiptPaymentStatisticInfo
+import com.minhhnn18898.trip_data.model.expense.ReceiptInfo
+import com.minhhnn18898.trip_data.model.expense.ReceiptPayerInfo
+import com.minhhnn18898.trip_data.model.expense.ReceiptWithAllPayersInfo
 
 data class MemberInfoUiState(
     val memberId: Long = 0,
